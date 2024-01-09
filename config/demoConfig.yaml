@@ -1,0 +1,62 @@
+# WARNING
+# This config is designed to be embedded DIRECTLY into a docker image for a demo presentation
+#
+# Obviously, in the long run the docker image will load config files, it WILL NOT hard code them.
+
+---
+inputKafkaPropFile: /config/inKafka.prop
+kafkaPartitionMappingFile: /config/partitions.txt
+
+airborneConfig:
+  algorithmDef:
+    hostId: "airborne-compute-1"
+    maxReportableScore: 50.0
+    filterByAirspace: true
+    publishAirborneDynamics: true
+    publishTrackData: false
+    requiredDiverganceDistInNM: 0.5
+    onGroundSpeedInKnots: 80.0
+    requiredTimeOverlapInMs: 7500
+    formationFilters: "0.5,60,false"
+    requiredProximityInNM: 7.5
+    sizeOfTrackSmoothingCache: 500
+    trackSmoothingExpirationSec: 120
+    logDuplicateTracks: false
+    applySmoothing: true
+    requireDataTag: true
+    logFileDirectory: "logs"
+    airborneDynamicsRadiusNm: 15.0
+    verbose: false
+
+  trackPairingDistanceInNM: 8.33
+  inMemorySortBufferSec: 600
+
+  #This sample OutputConfig creates 3 OutputSink<AirborneEvent> that will be used to route ARIA Events..
+  #Each OutputSink is create by 1st Creating a class that implements Supplier<OutputSink>
+  outputConfig:
+    outputSinkSuppliers:
+      - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
+      - pluginClass: org.mitre.openaria.airborne.config.AirborneFileSinkSupplier
+        configOptions:
+          eventDirectory: myEventsGoHere
+      - pluginClass: org.mitre.openaria.airborne.config.AirborneKafkaSinkSupplier
+        configOptions:
+          topic: aria-airborne-events
+          kafkaPropFile: /config/outKafka.prop
+          kafkaPartitionMappingFile: /config/partitions.txt
+
+dataProcessingOptions:
+  pointPrefetchLimit: 500000
+  numWorkerThreads: 2
+  milliSecBtwPollAttempts: 2000
+  useConsumerGroups: false
+  minPartition: 0
+  maxPartition: 1
+  pointTopic: nop-messages
+
+
+loggingPeriodSec: 300
+logSinkSuppliers:
+  - pluginClass: org.mitre.openaria.airborne.config.FileSinkSupplier
+    configOptions:
+      logDir: logs

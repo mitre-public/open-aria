@@ -1,0 +1,12 @@
+#This sample OutputConfig creates 3 OutputSink<AirborneEvent> that will be used to route ARIA Events..
+#Each OutputSink is create by 1st Creating a class that implements Supplier<OutputSink>
+outputSinkSuppliers:
+  - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
+  - pluginClass: org.mitre.openaria.airborne.config.AirborneFileSinkSupplier
+    configOptions:
+      eventDirectory: myEventsGoHere
+  - pluginClass: org.mitre.openaria.airborne.config.AirborneKafkaSinkSupplier
+    configOptions:
+      topic: airborneEvents
+      kafkaPropFile: src/test/resources/outKafka.prop
+      kafkaPartitionMappingFile: src/test/resources/eimPartitions.txt

@@ -1,0 +1,17 @@
+#### KafkaConsumer Properties ####
+
+# This config is designed for use within a docker-compose setup.
+# The "broker\:29092" below is used because the Kafka cluster in the docker-compose file:
+# has the name "broker" and is exposed (with the composed services) on port 29092
+
+bootstrap.servers=broker\:29092
+group.id=someGroupId
+enable.auto.commit=true
+auto.commit.interval.ms=1001
+max.poll.records=100000
+session.timeout.ms=30000
+key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+partition.assignment.strategy=org.apache.kafka.clients.consumer.RoundRobinAssignor
+
+

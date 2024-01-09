@@ -1,0 +1,37 @@
+---
+algorithmDef:
+  hostId: "airborne-compute-2"
+  maxReportableScore: 21.0
+  filterByAirspace: false
+  publishAirborneDynamics: false
+  publishTrackData: true
+  requiredDiverganceDistInNM: 1.5
+  onGroundSpeedInKnots: 81.0
+  requiredTimeOverlapInMs: 7600
+  formationFilters: "0.6,61,true"
+  requiredProximityInNM: 8.5
+  sizeOfTrackSmoothingCache: 5000
+  trackSmoothingExpirationSec: 1200
+  logDuplicateTracks: true
+  applySmoothing: false
+  requireDataTag: false
+  logFileDirectory: "notLogs"
+  airborneDynamicsRadiusNm: 25.0
+  verbose: true
+
+trackPairingDistanceInNM: 8.33
+inMemorySortBufferSec: 600
+
+#This sample OutputConfig creates 3 OutputSink<AirborneEvent> that will be used to route ARIA Events..
+#Each OutputSink is create by 1st Creating a class that implements Supplier<OutputSink>
+outputConfig:
+  outputSinkSuppliers:
+    - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
+    - pluginClass: org.mitre.openaria.airborne.config.AirborneFileSinkSupplier
+      configOptions:
+        eventDirectory: myEventsGoHere
+    - pluginClass: org.mitre.openaria.airborne.config.AirborneKafkaSinkSupplier
+      configOptions:
+        topic: airborneEvents
+        kafkaPropFile: src/test/resources/outKafka.prop
+        kafkaPartitionMappingFile: src/test/resources/eimPartitions.txt

@@ -1,0 +1,20 @@
+#This YAML Airborne Algorithm Definition overrides every default value (to help test correctness)
+---
+hostId: "airborne-compute-2"
+maxReportableScore: 21.0
+filterByAirspace: false
+publishAirborneDynamics: false
+publishTrackData: true
+requiredDiverganceDistInNM: 1.5
+onGroundSpeedInKnots: 81.0
+requiredTimeOverlapInMs: 7600
+formationFilters: "0.6,61,true"
+requiredProximityInNM: 8.5
+sizeOfTrackSmoothingCache: 5000
+trackSmoothingExpirationSec: 1200
+logDuplicateTracks: true
+applySmoothing: false
+requireDataTag: false
+logFileDirectory: "notLogs"
+airborneDynamicsRadiusNm: 25.0
+verbose: true

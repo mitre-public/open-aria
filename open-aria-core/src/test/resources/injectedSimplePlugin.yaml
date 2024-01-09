@@ -1,0 +1,6 @@
+---
+pluginClass: org.mitre.openaria.core.config.PluginFactoryTest$SimplePlugin
+#these config options are read-in --BUT IGNORED-- because SimplePlugin does not implement YamlConfigured
+configOptions:
+  keyA: hello
+  keyB: 5

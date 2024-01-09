@@ -1,0 +1,14 @@
+#### KafkaProducer Properties ####
+
+# This config is designed for use within a docker-compose setup.
+# The "broker\:29092" below is used because the Kafka cluster in the docker-compose file:
+# has the name "broker" and is exposed (with the composed services) on port 29092
+
+bootstrap.servers=broker\:29092
+key.serializer=org.apache.kafka.common.serialization.StringSerializer
+value.serializer=org.apache.kafka.common.serialization.StringSerializer
+compression.type=none
+acks=1
+retries=0
+batch.size=16384
+linger.ms=100

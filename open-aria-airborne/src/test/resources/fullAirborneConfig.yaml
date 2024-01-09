@@ -1,0 +1,61 @@
+---
+inputKafkaPropFile: src/test/resources/inKafka.prop
+kafkaPartitionMappingFile: src/test/resources/eimPartitions.txt
+
+airborneConfig:
+  algorithmDef:
+    hostId: "airborne-compute-1"
+    maxReportableScore: 20.0
+    filterByAirspace: true
+    publishAirborneDynamics: true
+    publishTrackData: false
+    requiredDiverganceDistInNM: 0.5
+    onGroundSpeedInKnots: 80.0
+    requiredTimeOverlapInMs: 7500
+    formationFilters: "0.5,60,false"
+    requiredProximityInNM: 7.5
+    sizeOfTrackSmoothingCache: 500
+    trackSmoothingExpirationSec: 120
+    logDuplicateTracks: false
+    applySmoothing: true
+    requireDataTag: true
+    logFileDirectory: "logs"
+    airborneDynamicsRadiusNm: 15.0
+    verbose: false
+
+  trackPairingDistanceInNM: 8.33
+  inMemorySortBufferSec: 600
+
+  #This sample OutputConfig creates 3 OutputSink<AirborneEvent> that will be used to route ARIA Events..
+  #Each OutputSink is create by 1st Creating a class that implements Supplier<OutputSink>
+  outputConfig:
+    outputSinkSuppliers:
+      - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
+      - pluginClass: org.mitre.openaria.airborne.config.AirborneFileSinkSupplier
+        configOptions:
+          eventDirectory: myEventsGoHere
+      - pluginClass: org.mitre.openaria.airborne.config.AirborneKafkaSinkSupplier
+        configOptions:
+          topic: airborneEvents
+          kafkaPropFile: src/test/resources/outKafka.prop
+          kafkaPartitionMappingFile: src/test/resources/eimPartitions.txt
+
+dataProcessingOptions:
+  pointPrefetchLimit: 12345
+  numWorkerThreads: 40
+  milliSecBtwPollAttempts: 54321
+  useConsumerGroups: true
+  #minPartition: 0
+  #maxPartition: 100
+  pointTopic: points
+
+
+loggingPeriodSec: 15243
+logSinkSuppliers:
+  - pluginClass: org.mitre.openaria.airborne.config.FileSinkSupplier
+    configOptions:
+      logDir: logs
+  - pluginClass: org.mitre.openaria.airborne.config.KafkaStringEmitterSupplier
+    configOptions:
+      topic: ariaLogs
+      kafkaPropFile: src/test/resources/outKafka.prop

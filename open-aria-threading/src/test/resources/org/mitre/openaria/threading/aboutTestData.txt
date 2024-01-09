@@ -1,0 +1,9 @@
+
+About:
+simultaneousLandingsOnCrossingRunways.txt
+
+-This file contains tracks from two separate aircraft.  
+-Both aircraft try to land -- at the same time -- at an airport with crossing runways.  
+-One of the aircraft has its data spread across multiple tracks because it is making touch and goes (at multiple airports)
+-This file was retained because the data could prove useful for (1) joining tracks with different track ids and (2) detecting the serious safety event that this is.
+

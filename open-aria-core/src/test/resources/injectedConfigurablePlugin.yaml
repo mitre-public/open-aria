@@ -1,0 +1,7 @@
+---
+pluginClass: org.mitre.openaria.core.config.PluginFactoryTest$ConfigurablePlugin
+#these config options are read-in and passed to the ConfigurablePlugin because it implements YamlConfigured
+configOptions:
+  keyA: hello
+  keyB: 5
+  otherNumber: 2

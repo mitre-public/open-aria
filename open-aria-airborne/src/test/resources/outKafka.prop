@@ -1,0 +1,9 @@
+#### KafkaProducer Properties ####
+bootstrap.servers=localhost\:9092
+key.serializer=org.apache.kafka.common.serialization.StringSerializer
+value.serializer=org.apache.kafka.common.serialization.StringSerializer
+compression.type=none
+acks=1
+retries=0
+batch.size=16384
+linger.ms=100

@@ -1,0 +1,9 @@
+#This YAML Airborne Algorithm Definition overrides every default value (to help test correctness)
+---
+pointPrefetchLimit: 500001
+numWorkerThreads: 5
+milliSecBtwPollAttempts: 2001
+useConsumerGroups: false
+minPartition: 2
+maxPartition: 4
+pointTopic: omgPOINTS

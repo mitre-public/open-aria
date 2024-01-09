@@ -1,0 +1,67 @@
+# This docker-compose file spins up a Kafka cluster we can use for testing the "downstream of Kafka" piece
+# Ideally this docker-compose file will spin up an image to "push data to Kafka" and "read data from Kafka"
+#
+# Sourced from: https://developer.confluent.io/quickstart/kafka-docker/
+---
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    ports:
+      # To learn about configuring Kafka for access across networks see
+      # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+      #
+      # Here, we make this image reachable on 9092 from the host and on 29092 from inside docker compose
+      - "9092:9092"
+    expose:
+      - '29092'
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  # The purpose of this image is to:
+  # (1) "Provide Access to Kafka Command Line Tools" and
+  # (2) "Initialize Kafka topic" (by using these Kafka Command Line tools)
+  init-kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    depends_on:
+      - broker
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server broker:29092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic nop-messages --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic aria-airborne-events --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server broker:29092 --list
+      "
+
+  # The purpose of this image is to:
+  # (1) "Run Airborne ARIA"
+  open-aria-demo:
+    build: .
+    container_name: aria
+    expose:
+      - '29092'
+    depends_on:
+      - broker
+      - init-kafka
