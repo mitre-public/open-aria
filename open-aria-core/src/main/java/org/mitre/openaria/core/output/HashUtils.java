@@ -2,12 +2,18 @@ package org.mitre.openaria.core.output;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.mitre.hashing.Hashers.getHasherFor;
+import static java.util.Objects.isNull;
 
-import org.mitre.hashing.Hashables;
+import java.nio.charset.Charset;
+import java.util.stream.Stream;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+
 
 public class HashUtils {
 
@@ -15,6 +21,9 @@ public class HashUtils {
     private static final JsonParser PARSER = new JsonParser();
 
     public static final String HASH_FIELD_NAME = "uniqueId";
+
+    private static HashFunction HASH_FUNCTION = Hashing.md5();
+    public static final Charset UTF8 = Charset.forName("UTF-8");
 
     /**
      * Compute a unique hash for this JSON String. The hash is computed from a "normalized" version
@@ -32,8 +41,7 @@ public class HashUtils {
 
         String regularizedJson = removeWhiteSpaceFromJson(json);
 
-        String hash = Hashables.computeHashFor(regularizedJson);
-        return hash;
+        return computeHashFor(regularizedJson);
     }
 
     /** @return An equivalent form of the incoming Json flattened to a single line. */
@@ -105,7 +113,7 @@ public class HashUtils {
     public static String hashForStringArray(String[] stringData) {
         checkNotNull(stringData);
 
-        return getHasherFor(String[].class).hash(stringData);
+        return computeHashFor(stringData);
     }
 
     /**
@@ -133,6 +141,36 @@ public class HashUtils {
         }
 
         return workingCopy.toString();
+    }
+
+    /** Intentionally hiding the implementation of the hashing function. */
+    private static String computeHashFor(String s) {
+
+        Hasher hasher = HASH_FUNCTION.newHasher();
+
+        hasher.putString(s, UTF8);
+
+        HashCode hash = hasher.hash();
+        return hash.toString();
+    }
+
+    /** Intentionally hiding the implementation of this hashing function. */
+    private static String computeHashFor(String[] array) {
+
+        Hasher hasher = HASH_FUNCTION.newHasher();
+
+        byte NULL_STAND_IN = 1;
+
+        Stream.of(array).forEach(s -> {
+            if(isNull(s)) {
+                hasher.putByte(NULL_STAND_IN);
+            } else {
+                hasher.putString(s, UTF8);
+            }
+        });
+
+        HashCode hash = hasher.hash();
+        return hash.toString();
     }
 
 }

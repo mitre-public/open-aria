@@ -3,10 +3,9 @@ package org.mitre.openaria.core.output;
 import static java.lang.Math.PI;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mitre.openaria.core.output.HashUtils.HASH_FIELD_NAME;
-import static org.mitre.openaria.core.output.HashUtils.hashForJson;
-import static org.mitre.openaria.core.output.HashUtils.removeArrayWhiteSpace;
-import static org.mitre.openaria.core.output.HashUtils.removeWhiteSpaceFromJson;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mitre.openaria.core.output.HashUtils.*;
 
 
 import org.junit.jupiter.api.Test;
@@ -160,6 +159,30 @@ public class HashUtilsTest {
         //BUT!  The two copies of the raw json have different number of lines
         assertThat(linesPre.length, is(17));
         assertThat(linesPost.length, is(8));
+    }
+
+    @Test
+    public void hashForStringArrayAcceptsNull() {
+        String[] arrayWithNullValue = new String[]{"a", "b", null};
+
+        assertDoesNotThrow(() -> hashForStringArray(arrayWithNullValue));
+    }
+
+    @Test
+    public void hashForStringArrayDoesNotIgnoreNull() {
+        String[] array1 = new String[]{"a", "b"};
+        String[] array2 = new String[]{"a", "b", null};
+        String[] array3 = new String[]{"a", null, "b"};
+
+        //rehashing produces same output twice
+        assertThat(hashForStringArray(array1), is(hashForStringArray(array1)));
+        assertThat(hashForStringArray(array2), is(hashForStringArray(array2)));
+        assertThat(hashForStringArray(array3), is(hashForStringArray(array3)));
+
+        //all 3 hashes are different
+        assertThat(hashForStringArray(array1), is(not(hashForStringArray(array2))));
+        assertThat(hashForStringArray(array1), is(not(hashForStringArray(array3))));
+        assertThat(hashForStringArray(array2), is(not(hashForStringArray(array3))));
     }
 
 }
