@@ -42,17 +42,10 @@
             <version>${commons.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.mitre.caasd</groupId>
             <artifactId>commons-closed</artifactId>
             <version>${commons-closed.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mitre.caasd</groupId>
-            <artifactId>hashing</artifactId>
-            <version>${mitre-hashing.version}</version>
         </dependency>
 
         <dependency>

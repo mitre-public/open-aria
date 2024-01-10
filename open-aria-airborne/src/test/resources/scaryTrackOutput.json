@@ -1,5 +1,5 @@
 {
-  "uniqueId": "43412a32bac7bb7ae90924a8539d9859",
+  "uniqueId": "76d4b281fe385000594a051467305e92",
   "facility": "D21",
   "eventScore": 1.36204,
   "eventDate": "2018-03-24",
@@ -77,7 +77,7 @@
   "conflictAngle": "CROSSING",
   "aircraft_0": {
     "callsign": "N518SP",
-    "uniqueId": "b3a7789a8c14bc5f8eca8a8072f3d524",
+    "uniqueId": "e45be096f5a2554049aed5d34e8f3346",
     "altitudeInFeet": 2566,
     "climbStatus": "DESCENDING",
     "speedInKnots": 112,
@@ -97,7 +97,7 @@
   },
   "aircraft_1": {
     "callsign": "UNKNOWN",
-    "uniqueId": "11a5e37a42975c18c35cfba444913646",
+    "uniqueId": "08f56223f16e669cd46ee2cfb7ee323c",
     "altitudeInFeet": 2600,
     "climbStatus": "LEVEL",
     "speedInKnots": 66,

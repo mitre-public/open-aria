@@ -119,7 +119,7 @@ public class AirbornePairConsumerTest {
 
         assertThat(eventFromComputation.asJson(), is(eventFromFile.asJson()));
 
-        String expectedUuid = "43412a32bac7bb7ae90924a8539d9859";
+        String expectedUuid = "76d4b281fe385000594a051467305e92";
         assertThat(eventFromComputation.uuid(), is(expectedUuid));
         assertThat(json.contains(expectedUuid), is(true));
 
