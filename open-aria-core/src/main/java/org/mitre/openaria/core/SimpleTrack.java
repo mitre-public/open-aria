@@ -25,9 +25,9 @@ public class SimpleTrack implements Track {
     }
 
     /**
-     * @return A "simple" NavigableSet<Point> that contains all the Points in the Track. Returning
-     *     point data as regular Point objects encourages client code to rely solely on the Point
-     *     interface and not on the specifics of any possible implementation of the Point
+     * @return A "simple" {@code NavigableSet<Point>} that contains all the Points in the Track.
+     *     Returning point data as regular Point objects encourages client code to rely solely on
+     *     the Point interface and not on the specifics of any possible implementation of the Point
      *     interface.
      */
     @Override

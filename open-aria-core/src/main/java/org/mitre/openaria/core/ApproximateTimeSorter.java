@@ -15,7 +15,7 @@ import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.Time;
 
 /**
- * An ApproximateTimeSorter<T> intercepts and organizes timestamped-data that is eventually
+ * An {@code ApproximateTimeSorter<T>} intercepts and organizes timestamped-data that is eventually
  * delivered to a wrapped (i.e., downstream) Consumer<T>. An ApproximateTimeSorter reduces the
  * likelihood the wrapped Consumer<T> receives data that is out of time-order.
  * <p>

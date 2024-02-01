@@ -2,6 +2,7 @@ package org.mitre.openaria.core.config;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,10 +60,10 @@ public class PluginFactoryTest {
         PluginFactory ic = mapper.readValue(yamlFile, PluginFactory.class);
 
         //Validate the data the PluginFactory has...
-        assertThat(ic.pluginClass(), Matchers.is("org.mitre.openaria.core.config.PluginFactoryTest$SimplePlugin"));
-        assertThat(ic.configOptions().size(), Matchers.is(2));
-        assertThat(ic.configOptions().get("keyA"), Matchers.is("hello"));
-        assertThat(ic.configOptions().get("keyB"), Matchers.is(new Integer(5)));
+        assertThat(ic.pluginClass(), is("org.mitre.openaria.core.config.PluginFactoryTest$SimplePlugin"));
+        assertThat(ic.configOptions().size(), is(2));
+        assertThat(ic.configOptions().get("keyA"), is("hello"));
+        assertThat(ic.configOptions().get("keyB"), is(5));
 
         //Use the PluginFactory to actually build the Plugin we want..
         SimplePlugin plugin = (SimplePlugin) ic.createConfiguredInstance(InterfacePluginBuildersMustImplement.class);
@@ -86,17 +87,17 @@ public class PluginFactoryTest {
         PluginFactory ic = mapper.readValue(yamlFile, PluginFactory.class);
 
         //Validate the data the PluginFactory has...
-        assertThat(ic.pluginClass(), Matchers.is("org.mitre.openaria.core.config.PluginFactoryTest$ConfigurablePlugin"));
-        assertThat(ic.configOptions().size(), Matchers.is(3));
-        assertThat(ic.configOptions().get("keyA"), Matchers.is("hello"));
-        assertThat(ic.configOptions().get("keyB"), Matchers.is(5));
-        assertThat(ic.configOptions().get("otherNumber"), Matchers.is(2));
+        assertThat(ic.pluginClass(), is("org.mitre.openaria.core.config.PluginFactoryTest$ConfigurablePlugin"));
+        assertThat(ic.configOptions().size(), is(3));
+        assertThat(ic.configOptions().get("keyA"), is("hello"));
+        assertThat(ic.configOptions().get("keyB"), is(5));
+        assertThat(ic.configOptions().get("otherNumber"), is(2));
 
 
         //Use the PluginFactory to actually build the Plugin we want..
         ConfigurablePlugin plugin = (ConfigurablePlugin) ic.createConfiguredInstance(InterfacePluginBuildersMustImplement.class);
 
-        assertThat(plugin.injectedStrategyBehavior(5), Matchers.is(7));  //should yield 5 + 2
+        assertThat(plugin.injectedStrategyBehavior(5), is(7));  //should yield 5 + 2
 
         assertThat(plugin, instanceOf(ConfigurablePlugin.class));
         assertThat(plugin, instanceOf(InterfacePluginBuildersMustImplement.class));
