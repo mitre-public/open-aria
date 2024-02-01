@@ -27,7 +27,6 @@ import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.threading.TrackMaker;
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
-import org.mitre.caasd.commons.Functions;
 import org.mitre.caasd.commons.Pair;
 import org.mitre.caasd.commons.fileutil.FileUtils;
 import org.mitre.caasd.commons.parsing.nop.NopParser;
@@ -149,14 +148,14 @@ public class TrackPairerTest {
     @Test
     public void confirmFilteringWorks() {
 
-        Predicate<Pair<Point, Point>> predicate = Functions.ALWAYS_FALSE;
+        Predicate<Pair<Point, Point>> alwaysFalsePredicate = (pair) -> false;
         ConsumingArrayList<Track> trackConsumer = newConsumingArrayList();
         ConsumingArrayList<TrackPair> pairConsumer = newConsumingArrayList();
 
         TrackPairer instance = new TrackPairer(
             ConsumerPair.of(trackConsumer, pairConsumer),
             standardPairingProperties(),
-            predicate
+            alwaysFalsePredicate
         );
 
         ArrayList<Point> points = getTestPoints();

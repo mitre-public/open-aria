@@ -26,7 +26,7 @@ public class TrackMakerTest {
     /*
      * Counts calls to "accept"
      */
-    static class TestConsumer<Track> implements Consumer<Track> {
+    static class TestConsumer implements Consumer<Track> {
 
         int numCallsToAccept = 0;
 
@@ -53,7 +53,7 @@ public class TrackMakerTest {
     public void testTrackClosure() {
 
         Duration TIME_LIMIT = Duration.ofSeconds(5);
-        TestConsumer consumer = new TestConsumer<>();
+        TestConsumer consumer = new TestConsumer();
 
         TrackMaker maker = new TrackMaker(TIME_LIMIT, consumer);
 
@@ -98,7 +98,7 @@ public class TrackMakerTest {
     public void testTrackClosure_multipleTracks() {
 
         Duration TIME_LIMIT = Duration.ofSeconds(5);
-        TestConsumer consumer = new TestConsumer<>();
+        TestConsumer consumer = new TestConsumer();
 
         TrackMaker maker = new TrackMaker(TIME_LIMIT, consumer);
 
@@ -318,7 +318,7 @@ public class TrackMakerTest {
         TrackMaker trackMaker = new TrackMaker(
             Duration.ofSeconds(30),
             Duration.ofSeconds(1234),
-            new TestConsumer<>()
+            new TestConsumer()
         );
 
         assertThat(trackMaker.forceTrackClosureAge(), is(Duration.ofSeconds(1234)));

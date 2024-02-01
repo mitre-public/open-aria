@@ -8,7 +8,6 @@ import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
@@ -59,7 +58,7 @@ public class LargeDurationOfZeroAltitudeTrackRemover implements DataCleaner<Trac
             .collect(newTreeSetCollector(missingAltitudes))
             .stream()
             .filter(ts -> missingAltitudes.test(ts.first()))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private Duration durationOfGap(NavigableSet<? extends Point> gap) {
