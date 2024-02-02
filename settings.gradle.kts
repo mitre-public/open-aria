@@ -6,6 +6,7 @@ include("open-aria-pairing")
 include("open-aria-kafka")
 include("open-aria-system")
 include("open-aria-airborne")
+include("open-aria-deploy")
 
 
 // Check that every subproject has a custom build file, based on the project name.
