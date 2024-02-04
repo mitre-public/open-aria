@@ -10,8 +10,8 @@ package org.mitre.openaria.core;
  * ARIA uses a KeyExtractor to organize a continuous Stream of Point data records into a Stream of
  * tracks (where each track contains Points that describe exactly one aircraft).
  * <p>
- * For example, A KeyExtractor can help convert a <code>List<RadarHit></code> where each RadarHit
- * describes a potentially different aircraft into a <code>List<List<RadarHit>></code> where the
+ * For example, A KeyExtractor can help convert a {@code List<RadarHit>} where each RadarHit
+ * describes a potentially different aircraft into a {@code List<RadarHit>} where the
  * entries in each inner list describe a single aircraft.
  *
  * @param <P> The Point class

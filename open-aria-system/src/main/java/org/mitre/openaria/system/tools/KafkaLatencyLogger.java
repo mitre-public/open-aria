@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.mitre.caasd.commons.out.JsonWritable;
+import org.mitre.caasd.commons.parsing.nop.Facility;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,8 +29,8 @@ import com.google.gson.GsonBuilder;
  * The change in these important data streams is computed, bundled into a JsonWritable object, and
  * then emitted to external targets (e.g. Flat Log Files, Kafka Topics, Databases, etc).
  *
- * @param <T> the type of key in the mapping to {@link KafkaLatencyCollector}s, e.g. {@link
- *            Facility}
+ * @param <T> the type of key in the mapping to {@link KafkaLatencyCollector}s, e.g.
+ *            {@link Facility}
  */
 public class KafkaLatencyLogger<T> implements Runnable {
 

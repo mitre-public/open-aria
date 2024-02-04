@@ -15,7 +15,7 @@ import org.apache.commons.math3.linear.RealMatrix;
  * perform smoothing and N-th order derivatives on digital signals to increase the signal-to-noise
  * ratio, via convolution. Importantly, when the data points are equally spaced in time (i.e.
  * constant time-step), analytical solutions to the least-squares problem can be found, represented
- * as convolution coefficients. This can save significant computational time & effort.
+ * as convolution coefficients. This can save significant computational time and effort.
  *
  * <p>Note that the convolution coefficients (with require some matrix inversions) are computed when
  * the filter is created. If this is occurring during smoothing the computation will occur once per

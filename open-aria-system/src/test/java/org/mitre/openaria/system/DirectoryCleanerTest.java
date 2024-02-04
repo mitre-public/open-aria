@@ -2,13 +2,15 @@
 package org.mitre.openaria.system;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
 
 import java.io.File;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
 public class DirectoryCleanerTest {
+
+    static final Consumer<File> NO_OP_CONSUMER = (File f) -> {};
 
     @Test
     public void confirmMissingDirectoryThrowsIaeAtConstruction() {
