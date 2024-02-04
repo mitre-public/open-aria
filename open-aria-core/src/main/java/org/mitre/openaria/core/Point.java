@@ -11,7 +11,7 @@ import org.mitre.caasd.commons.HasPosition;
 import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.Position;
 
-public interface Point extends HasPosition, HasTime, Serializable, Comparable<Point> {
+public interface Point extends HasPosition, HasTime, Comparable<Point> {
 
     public String callsign();
 

@@ -30,7 +30,7 @@ import org.mitre.caasd.commons.out.JsonWritable;
  * manipulate Track data when implementing DataCleaners that correct flawed data (like outlier
  * removers and other noise reduction techniques.)
  */
-public interface Track extends Serializable, JsonWritable {
+public interface Track extends JsonWritable {
 
     /** @return The Points that are inside this track (sorted in time order). */
     NavigableSet<? extends Point> points();
