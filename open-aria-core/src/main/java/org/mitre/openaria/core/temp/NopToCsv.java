@@ -1,40 +1,57 @@
 package org.mitre.openaria.core.temp;
 
-import org.mitre.caasd.commons.parsing.nop.NopMessage;
-import org.mitre.caasd.commons.parsing.nop.NopMessageType;
-import org.mitre.caasd.commons.parsing.nop.NopRadarHit;
-import org.mitre.openaria.core.CsvPositioner;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.mitre.openaria.core.NopPoint;
 
 /**
- * Temporary code to convert NOP data to "Generic CSV data"
+ * This is a "temporary class that we'll use to convert NOP data to CsvPoint data.
  */
 public class NopToCsv {
+
+    private static final Base64.Encoder BASE64_ENCODER = Base64.getUrlEncoder().withoutPadding();
+
+    static String toAriaCsvFormat(NopPoint nop) {
+
+        String linkId = nop.facility() + "-" + nop.trackId();
+        String lat = String.format("%.4f", nop.latitude());
+        String lng = String.format("%.4f", nop.longitude());
+        String alt = String.format("%.0f", nop.altitude().inFeet());
+
+        String rawSourceNop = nop.rawMessage().rawMessage();
+        String nopAsBase64 = BASE64_ENCODER.encodeToString(rawSourceNop.getBytes());
+
+        return ",," + nop.time().toString() + "," + linkId + ","+lat + "," + lng + "," + alt + "," + nopAsBase64;
+    }
+
 
     /**
      * Converts a String of NOP data to a String of "simplified CSV data".
      *
      * The PURPOSE is to strip all "format specific data" from the "general" data model.
      */
-    public static String nopToGenericCsv(String nopString) {
+    public static String nopToAriaCsvFormat(String nopString) {
 
-        NopMessage nopMessage = NopMessageType.parse(nopString);
-        NopRadarHit rhMessage = (NopRadarHit) nopMessage;
+        NopPoint asPoint = NopPoint.from(nopString);
 
-        String[] tokens = nopString.split(",");
-
-        return ",," + CsvPositioner.formatTime(rhMessage.time()) + ","
-            + rhMessage.latitude() + "," + rhMessage.longitude() + ","
-            + rhMessage.altitudeInHundredsOfFeet() * 100 + ","
-            + rhMessage.facility() + ","
-            + tokens[14] + ","
-            + rhMessage.callSign();
+        return toAriaCsvFormat(asPoint);
     }
 
 
-    public static void main(String[] args) {
+    /** Reads a file of NOP data, converts each line to "AriaCsv" format. */
+    public static void convertFileOfNop(File f) throws IOException {
 
+        //read a File, convert each Line to a Point and collect the results in a list
+        List<NopPoint> points = Files.lines(f.toPath())
+            .map((String s) -> NopPoint.from(s))
+            .collect(Collectors.toList());
 
-
-
+        points.forEach(pt -> System.out.println(toAriaCsvFormat(pt)));
     }
+
 }

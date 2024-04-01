@@ -17,7 +17,7 @@ import org.mitre.caasd.commons.LatLong;
  * allows us to write:
  * <p>
  * Point p = (new PointBuilder()).sensor("mySensor").facility("myFacility").build(); <br>
- * Map<PointField, Object> data = (new PointBuilder()).sensor("mySensor").facility("myFacility");
+ * {@code Map<PointField, Object>} data = (new PointBuilder()).sensor("mySensor").facility("myFacility");
  * <p>
  * Field setting methods come in two flavors. The first flavor: "callsign(String callsign)" requires
  * the field to not be set. This is for building Points from scratch. The second flavor
@@ -28,7 +28,7 @@ import org.mitre.caasd.commons.LatLong;
  * <p>
  * Point p1 = (new PointBuilder(otherPoint)).butLatLong(newLatLong).build();
  * <p>
- * Notice, Point data can be converted to a CommonPoint object AND/OR a Map<PointField, Object>
+ * Notice, Point data can be converted to a CommonPoint object AND/OR a {@code Map<PointField, Object>}
  */
 public class PointBuilder {
 
