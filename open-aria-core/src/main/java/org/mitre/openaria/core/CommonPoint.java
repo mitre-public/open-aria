@@ -3,7 +3,6 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.mitre.openaria.core.PointField.ALONG_TRACK_DISTANCE;
 import static org.mitre.openaria.core.PointField.CURVATURE;
 
 import java.time.Duration;
@@ -46,7 +45,6 @@ public class CommonPoint implements Point {
     private final Double speed;
     private final Instant time;
     private final Double curvature;
-    private final Double alongTrackDistance;
 
     public CommonPoint(Map<PointField, Object> map) {
 
@@ -71,7 +69,6 @@ public class CommonPoint implements Point {
         this.speed = (Double) map.get(PointField.SPEED);
         this.time = (Instant) map.get(PointField.TIME);
         this.curvature = (Double) map.get(CURVATURE);
-        this.alongTrackDistance = (Double) map.get(ALONG_TRACK_DISTANCE);
 
         confirmNoEmptyStrings();
     }
@@ -97,7 +94,6 @@ public class CommonPoint implements Point {
         this.speed = (field == PointField.SPEED) ? ((Double) newValue) : copyMe.speed;
         this.time = (field == PointField.TIME) ? ((Instant) newValue) : copyMe.time;
         this.curvature = (field == CURVATURE) ? ((Double) newValue) : copyMe.curvature;
-        this.alongTrackDistance = (field == ALONG_TRACK_DISTANCE) ? ((Double) newValue) : copyMe.alongTrackDistance;
 
         confirmNoEmptyStrings();
     }
@@ -249,11 +245,6 @@ public class CommonPoint implements Point {
     @Override
     public Double curvature() {
         return this.curvature;
-    }
-
-    @Override
-    public Double alongTrackDistance() {
-        return this.alongTrackDistance;
     }
 
     @Override

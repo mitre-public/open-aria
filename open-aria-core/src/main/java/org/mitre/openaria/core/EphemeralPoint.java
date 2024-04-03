@@ -5,21 +5,7 @@ package org.mitre.openaria.core;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.mitre.openaria.core.PointBuilder.checkSpeed;
-import static org.mitre.openaria.core.PointField.AIRCRAFT_TYPE;
-import static org.mitre.openaria.core.PointField.ALONG_TRACK_DISTANCE;
-import static org.mitre.openaria.core.PointField.ALTITUDE;
-import static org.mitre.openaria.core.PointField.BEACON_ACTUAL;
-import static org.mitre.openaria.core.PointField.BEACON_ASSIGNED;
-import static org.mitre.openaria.core.PointField.CALLSIGN;
-import static org.mitre.openaria.core.PointField.COURSE_IN_DEGREES;
-import static org.mitre.openaria.core.PointField.CURVATURE;
-import static org.mitre.openaria.core.PointField.FACILITY;
-import static org.mitre.openaria.core.PointField.FLIGHT_RULES;
-import static org.mitre.openaria.core.PointField.LAT_LONG;
-import static org.mitre.openaria.core.PointField.SENSOR;
-import static org.mitre.openaria.core.PointField.SPEED;
-import static org.mitre.openaria.core.PointField.TIME;
-import static org.mitre.openaria.core.PointField.TRACK_ID;
+import static org.mitre.openaria.core.PointField.*;
 import static org.mitre.openaria.core.Points.toMap;
 
 import java.time.Instant;
@@ -140,10 +126,5 @@ public class EphemeralPoint implements MutablePoint {
     @Override
     public Double curvature() {
         return (Double) data.get(CURVATURE);
-    }
-
-    @Override
-    public Double alongTrackDistance() {
-        return (Double) data.get(ALONG_TRACK_DISTANCE);
     }
 }

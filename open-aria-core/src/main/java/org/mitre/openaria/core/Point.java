@@ -4,8 +4,6 @@ package org.mitre.openaria.core;
 
 import static org.mitre.openaria.core.Points.NULLABLE_COMPARATOR;
 
-import java.io.Serializable;
-
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.HasPosition;
 import org.mitre.caasd.commons.HasTime;
@@ -36,8 +34,6 @@ public interface Point extends HasPosition, HasTime, Comparable<Point> {
     public Double speedInKnots();
 
     public Double curvature();
-
-    public Double alongTrackDistance();
 
     /**
      * @return A String that represent this point as if it were a raw NOP Radar Hit (RH) Message.

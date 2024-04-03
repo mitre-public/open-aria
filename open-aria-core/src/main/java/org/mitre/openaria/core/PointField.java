@@ -96,12 +96,6 @@ public enum PointField {
         public Object get(Point aPoint) {
             return aPoint.curvature();
         }
-    },
-    ALONG_TRACK_DISTANCE(Double.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.alongTrackDistance();
-        }
     };
 
     Class expectedType;

@@ -81,9 +81,4 @@ public class BasicPointImplementation_2 implements Point {
     public Double curvature() {
         return null;
     }
-
-    @Override
-    public Double alongTrackDistance() {
-        return null;
-    }
 }

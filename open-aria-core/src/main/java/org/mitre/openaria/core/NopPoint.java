@@ -8,10 +8,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.time.Instant;
 import java.util.Optional;
 
-import org.mitre.openaria.core.NopPoints.AgwPoint;
-import org.mitre.openaria.core.NopPoints.CenterPoint;
-import org.mitre.openaria.core.NopPoints.MeartsPoint;
-import org.mitre.openaria.core.NopPoints.StarsPoint;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.parsing.nop.AgwRadarHit;
@@ -21,6 +17,10 @@ import org.mitre.caasd.commons.parsing.nop.NopMessage;
 import org.mitre.caasd.commons.parsing.nop.NopMessageType;
 import org.mitre.caasd.commons.parsing.nop.NopRadarHit;
 import org.mitre.caasd.commons.parsing.nop.StarsRadarHit;
+import org.mitre.openaria.core.NopPoints.AgwPoint;
+import org.mitre.openaria.core.NopPoints.CenterPoint;
+import org.mitre.openaria.core.NopPoints.MeartsPoint;
+import org.mitre.openaria.core.NopPoints.StarsPoint;
 
 /**
  * A NopPoint is a Point implementation that wraps a NopRadarHit.
@@ -155,12 +155,6 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point {
 
     @Override
     public Double curvature() {
-        //the nop data format does not contain curvature information
-        return null;
-    }
-
-    @Override
-    public Double alongTrackDistance() {
         //the nop data format does not contain curvature information
         return null;
     }
