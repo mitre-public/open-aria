@@ -11,7 +11,8 @@ This document describes a simple CSV data format OpenARIA can use to ingest and 
 - Users can avoid converting their location data into this CSV format **if** they are willing to develop the necessary
   data parser.
 - The project intends to support additional formats in the future (when time and effort permit)
-
+    - Adding support for ingesting [ASTERIX](https://en.wikipedia.org/wiki/ASTERIX) data is a high priority goal. The
+      official ASTERIX spec can be found [here](https://www.eurocontrol.int/asterix).
 
 ## Why use Comma-Separated Values (CSV)
 
@@ -40,7 +41,7 @@ OpenARIA defines and supports receiving location data in CSV format for these re
     - Small CSV data samples can be kept in git and integrated into unit tests.
 - **Lossless convertibility:**
     - **ANY** format of location data can be losslessly serialized to this CSV format and deserialized back to the
-      original data format.  (This is not the place to prove this claim. But trust us, this claim is true).
+      original data format. [See how here](#converting-unknown-location-data-to-openaria-csv-format).
 
 ## CSV Format Column Definitions
 
@@ -192,6 +193,25 @@ In this section we provide a few examples of location data formatted according t
     - `,,2024-09-15T22:19:27.171,VIN_F,033.94250,-118.40800,2400,FDX456,base64-binary`
 - These examples include:
     - `Timestamp`, `Vehicle ID`, `Latitude`, `Longitude`, `Altitude`, `Callsign`, and a `base64 encoded copy of raw`.
+
+## Converting unknown location data to `OpenARIA CSV format`
+
+- If you have aircraft location data that is not directly supported by Open ARIA
+- Use this algorithm to convert arbitrary location data to the `OpenARIA CSV format`:
+    1. For each item `LD` of location data
+    2. Convert `LD` to a byte[] `byteArray`
+    3. Encode the `byteArray` as a [Base64](https://en.wikipedia.org/wiki/Base64) String `LD_as_base64`
+    4. Create a String like:
+       ```
+       String csvRecord = ",," + 
+       LD.timestamp() + "," + 
+       LD.vehicleId() + "," +
+       LD.latitude() + "," + 
+       LD.longitude() + "," + 
+       LD.altitudeInFeet() + "," + 
+       LD_as_base64;
+       ``` 
+    5. Emit the fully converted `csvRecord`.
 
 ## Potential Data Processing Flow
 

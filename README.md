@@ -34,9 +34,17 @@ location data.
 
 # Getting Started
 
+- Learn about the supported data formats [here](./docs/csv-data-format.md)
+    - **Important Caveat:** The initial code commit includes a dependency that is not available in the open source domain.
+    - We are working to remove this blocker by:
+      1. Proposing [this](./docs/csv-data-format.md) data format (which will replace the legacy format)
+      2. Adding support for this new data format
+      3. Refactoring the code so the closed-source dependency is no longer used or required.
+      4. Building the project using **only** GitHub Actions and publicly available dependencies   
+    - You can view the progress of this work by browsing the branches of the project.
 - To begin **detecting aviation events** see [here](./docs/how-to/detect-encounters.md)
 - To begin **archiving and replaying** aircraft location data see [here](./docs/how-to/replay-encounters.md)
-- To begin detecting **and then aggregating** aviation data see [here](./docs/how-to/aggregate-encounters.md)
+- To begin detecting **and then aggregating** aviation data see [here](./docs/how-to/aggregate-encounters.md)_
 
 ---
 
