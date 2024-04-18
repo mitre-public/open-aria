@@ -3,23 +3,23 @@ package org.mitre.openaria.threading;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
+import static org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.Test;
+import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 import org.mitre.openaria.core.CommonPoint;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointBuilder;
 import org.mitre.openaria.core.Track;
-import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+
+import org.junit.jupiter.api.Test;
 
 public class TrackMakerTest {
 
@@ -43,8 +43,7 @@ public class TrackMakerTest {
         return (new PointBuilder())
             .trackId(trackId)
             .time(pointTime)
-            .facility("AAA")
-            .sensor("AAA")
+            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0)
             .build();
     }
@@ -132,19 +131,19 @@ public class TrackMakerTest {
 
         Point point1 = (new PointBuilder())
             .trackId(trackId).time(time1)
-            .facility("AAA").sensor("AAA")
+            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0)
             .build();
 
         Point point2 = (new PointBuilder())
             .trackId(trackId).time(time2)
-            .facility("AAA").sensor("AAA")
+            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0001)
             .build();
 
         Point point3 = (new PointBuilder())
             .trackId(trackId).time(time3)
-            .facility("AAA").sensor("AAA")
+            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0002)
             .build();
 
@@ -155,7 +154,7 @@ public class TrackMakerTest {
          */
         Point point4 = (new PointBuilder())
             .trackId(trackId).time(time4)
-            .facility("AAA").sensor("AAA")
+            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 1.0)
             .build();
 
@@ -166,7 +165,7 @@ public class TrackMakerTest {
          */
         Point point5 = (new PointBuilder())
             .trackId(trackId).time(time5)
-            .facility("AAA").sensor("AAA")
+            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0004)
             .build();
 

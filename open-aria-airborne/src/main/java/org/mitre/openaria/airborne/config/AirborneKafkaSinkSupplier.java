@@ -2,20 +2,20 @@ package org.mitre.openaria.airborne.config;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
-import static org.mitre.openaria.core.config.YamlUtils.requireMapKeys;
-import static org.mitre.openaria.kafka.FacilityPartitionMapping.parseFacilityMappingFile;
 import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
+import static org.mitre.openaria.core.config.YamlUtils.requireMapKeys;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.mitre.openaria.airborne.AirborneEvent;
 import org.mitre.openaria.airborne.AirborneProducerRecordFactory;
 import org.mitre.openaria.core.config.YamlConfigured;
 import org.mitre.openaria.kafka.KafkaOutputSink;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
 
 /** Designed to be created by parsing a yaml file */
 public class AirborneKafkaSinkSupplier implements Supplier<KafkaOutputSink<AirborneEvent>>, YamlConfigured {
@@ -41,7 +41,8 @@ public class AirborneKafkaSinkSupplier implements Supplier<KafkaOutputSink<Airbo
         Properties props = loadProperties(kafkaPropFile);
 
         return new KafkaOutputSink<AirborneEvent>(
-            new AirborneProducerRecordFactory(topic, parseFacilityMappingFile(mapping)),
+//            new AirborneProducerRecordFactory(topic, parseFacilityMappingFile(mapping)),
+            new AirborneProducerRecordFactory(topic, (AirborneEvent e) -> 0),  //@todo -- Temporary STOP GAP! SHOULD NOT SEND ALL EVENTS TO PARTITION 0! SHOULD NOT IGNORE PARTITION MAPPING FILE
             new KafkaProducer<String, String>(props)
         );
     }

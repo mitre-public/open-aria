@@ -1,14 +1,10 @@
 
 package org.mitre.openaria.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mitre.openaria.core.Tracks.computeTimeInCloseProximity;
-import static org.mitre.openaria.core.Tracks.createTrackFromFile;
-import static org.mitre.openaria.core.Tracks.createTrackFromResource;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
+import static org.mitre.openaria.core.Tracks.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
-import org.mitre.caasd.commons.parsing.nop.Facility;
+
+import org.junit.jupiter.api.Test;
 
 
 public class TracksTest {
@@ -52,7 +48,6 @@ public class TracksTest {
 
         Point p1 = (new PointBuilder())
             .time(Instant.EPOCH)
-            .facility("A80")
             .latLong(0.0, 1.0)
             .build();
 
@@ -75,9 +70,9 @@ public class TracksTest {
         Track track = new SimpleTrack(points);
 
         assertEquals(
-            "[RH],STARS,A80,01/01/1970,00:00:00.000,,,,null,,,,0.00000,1.00000,null,,,,,,,null,,,,,,,,,,,,,,,,,,,{RH}\n"
-                + "[RH],STARS,null,01/01/1970,00:00:04.000,AA123,,,null,,,,0.00000,1.00000,null,,,,,,,null,,,,,,,,,,,,,,,,,,,{RH}\n"
-                + "[RH],STARS,null,01/01/1970,00:00:08.000,,,,null,,,,0.00000,1.00000,null,,,,,,,null,,,,,,,,,,,,,,,,,,,{RH}\n",
+            "[RH],STARS,,01/01/1970,00:00:00.000,,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
+                + "[RH],STARS,,01/01/1970,00:00:04.000,AA123,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
+                + "[RH],STARS,,01/01/1970,00:00:08.000,,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n",
             track.asNop()
         );
     }
@@ -137,7 +132,6 @@ public class TracksTest {
         double longitude = Interpolate.interpolate(-117.61476, -117.6188, fraction);
 
         assertEquals(p.get().latLong(), LatLong.of(latitude, longitude));
-        assertTrue(Facility.toFacility(p.get().facility()) == Facility.GEG);
     }
 
     @Test

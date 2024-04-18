@@ -66,7 +66,7 @@ public class KafkaOutputDestinationTest {
 
         @Override
         public ProducerRecord<String, String> producerRecordFor(DataClassThatCanBecomeJson itemForKafka) {
-            return new ProducerRecord(
+            return new ProducerRecord<>(
                 "targetTopic", //these items ALWAYS go to this topic
                 0, //these items ALWAYS go to partition 0
                 itemForKafka.key,
@@ -84,9 +84,9 @@ public class KafkaOutputDestinationTest {
 
         Properties props = producerProperties();
 
-        KafkaOutputSink kafkaWriter = new KafkaOutputSink(
+        KafkaOutputSink<DataClassThatCanBecomeJson> kafkaWriter = new KafkaOutputSink<>(
             new SimpleProducerRecordFactory(),
-            new KafkaProducer(props)
+            new KafkaProducer<String, String>(props)
         );
 
         DataClassThatCanBecomeJson sendMeToKafka = new DataClassThatCanBecomeJson("myKey", 123);
@@ -104,7 +104,7 @@ public class KafkaOutputDestinationTest {
         Properties props = producerProperties();
         SpyKafkaProducer spyProducer = new SpyKafkaProducer(props);
 
-        KafkaOutputSink kafkaWriter = new KafkaOutputSink(
+        KafkaOutputSink<DataClassThatCanBecomeJson> kafkaWriter = new KafkaOutputSink<>(
             new SimpleProducerRecordFactory(),
             spyProducer
         );

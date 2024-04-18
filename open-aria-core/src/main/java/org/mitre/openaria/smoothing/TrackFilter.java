@@ -2,12 +2,7 @@ package org.mitre.openaria.smoothing;
 
 import static java.lang.Double.max;
 import static java.util.stream.Collectors.toList;
-import static org.mitre.openaria.core.PointField.ALONG_TRACK_DISTANCE;
-import static org.mitre.openaria.core.PointField.COURSE_IN_DEGREES;
-import static org.mitre.openaria.core.PointField.CURVATURE;
-import static org.mitre.openaria.core.PointField.LAT_LONG;
-import static org.mitre.openaria.core.PointField.SPEED;
-import static org.mitre.caasd.commons.util.NeighborIterator.newNeighborIterator;
+import static org.mitre.openaria.core.PointField.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -15,8 +10,6 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutablePoint;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.KineticPosition;
 import org.mitre.caasd.commons.KineticRecord;
@@ -24,8 +17,8 @@ import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.PositionRecord;
 import org.mitre.caasd.commons.math.locationfit.LocalPolyInterpolator;
 import org.mitre.caasd.commons.math.locationfit.PositionInterpolator;
-import org.mitre.caasd.commons.util.IterPair;
-import org.mitre.caasd.commons.util.NeighborIterator;
+import org.mitre.openaria.core.MutablePoint;
+import org.mitre.openaria.core.MutableTrack;
 
 /**
  * This class is a replacement for AlongTrackFilter and CrossTrackFilter.
@@ -60,7 +53,6 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
 
         if (points.size() == 1) {
             MutablePoint pt = points.first();
-            pt.set(ALONG_TRACK_DISTANCE, 0.0);
             //pt.setAcceleration(0.0);  //if points supported this field here is where we'd add it
             pt.set(SPEED, 0.0);
             return Optional.of(track);
@@ -105,38 +97,12 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
         points.clear();
         points.addAll(smoothedPoints);
 
-        setAlongTrackDist(points);
-
         return points.isEmpty() ? Optional.empty() : Optional.of(track);
     }
 
     private PositionRecord<MutablePoint> asPositionRecord(MutablePoint point) {
         Position p = new Position(point.time(), point.latLong());
         return new PositionRecord<>(point, p);
-    }
-
-
-    public void setAlongTrackDist(NavigableSet<MutablePoint> points) {
-
-        //Avoid NoSuchElementException at "points.first()"
-        if (points.isEmpty()) {
-            return;
-        }
-
-        points.first().set(ALONG_TRACK_DISTANCE, 0.0);
-
-        NeighborIterator<MutablePoint> iterator = newNeighborIterator(points);
-
-        while(iterator.hasNext()) {
-            IterPair<MutablePoint> pair = iterator.next();
-
-            double distBtwConsecutivePts = pair.prior().distanceInNmTo(pair.current());
-
-            pair.current().set(
-                ALONG_TRACK_DISTANCE,
-                pair.prior().alongTrackDistance() + distBtwConsecutivePts
-            );
-        }
     }
 
     /**

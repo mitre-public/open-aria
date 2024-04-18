@@ -5,11 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 public class RunAirborneOnFileTest {
 
@@ -57,9 +55,9 @@ public class RunAirborneOnFileTest {
         );
 
         File eventDir = new File("detectedEvents");
-        File event1 = new File(eventDir, "2018-03-24--D21--1200--1200--54226.json");
-        File event2 = new File(eventDir, "2018-03-24--D21--N518SP--1200--54180.json");
-        File event3 = new File(eventDir, "2018-03-24--D21--N518SP--1200--54345.json");
+        File event1 = new File(eventDir, "2018-03-24--7dfdb6a688c0391d599e72efc16e9a5b.json");
+        File event2 = new File(eventDir, "2018-03-24--14e0b873807698e2982efe2605a8b094.json");
+        File event3 = new File(eventDir, "2018-03-24--019a57b51971c96ec970bb7029ed7c3e.json");
 
         event1.delete();
         event2.delete();
@@ -83,9 +81,9 @@ public class RunAirborneOnFileTest {
         );
 
         File eventDir = new File("detectedEvents");
-        File event1 = new File(eventDir, "2018-03-24--D21--1200--1200--54226.json");
-        File event2 = new File(eventDir, "2018-03-24--D21--N518SP--1200--54180.json");
-        File event3 = new File(eventDir, "2018-03-24--D21--N518SP--1200--54345.json");
+        File event1 = new File(eventDir, "2018-03-24--7dfdb6a688c0391d599e72efc16e9a5b.json");
+        File event2 = new File(eventDir, "2018-03-24--14e0b873807698e2982efe2605a8b094.json");
+        File event3 = new File(eventDir, "2018-03-24--019a57b51971c96ec970bb7029ed7c3e.json");
 
         event1.delete();
         event2.delete();

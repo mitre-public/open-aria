@@ -9,18 +9,12 @@ import static java.util.Collections.shuffle;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mitre.openaria.core.Points.fastKNearestPoints;
-import static org.mitre.openaria.core.Points.slowKNearestPoints;
-import static org.mitre.openaria.core.Points.subset;
-import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
-import static org.mitre.openaria.core.Tracks.createTrackFromFile;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
+import static org.mitre.openaria.core.Points.*;
+import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
+import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -30,10 +24,12 @@ import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.temp.Extras;
+
+import org.junit.jupiter.api.Test;
 
 public class PointsTest {
 
@@ -43,9 +39,8 @@ public class PointsTest {
     Point createTestPoint(Instant time) {
         return (new PointBuilder())
             .aircraftType("acType")
-            .sensor("sen")
+            .sourceDetails(new Extras.SourceDetails("sen", "XYZ"))
             .latLong(75.0, 1.0)
-            .facility("XYZ")
             .altitude(Distance.ofFeet(15.0))
             .time(time)
             .build();

@@ -22,7 +22,7 @@ import org.apache.kafka.common.KafkaException;
  * A KafkaEmitter allows client code to easily inject dependencies that perform these two tasks.
  * <p>
  * DEVELOPER NOTE: This class assumes we want to write to Kafka topics that use Strings for both the
- * Keys and Values. This assumption can be retracted by making the Key & Value types generic.
+ * Keys and Values. This assumption can be retracted by making the Key and Value types generic.
  * However, we are choosing not to support this level of flexibility because (1) multiple generic
  * types make code confusing to read AND (2)we have no plans to write non-String Keys or Values
  *

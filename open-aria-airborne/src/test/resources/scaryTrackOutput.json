@@ -1,11 +1,9 @@
 {
-  "uniqueId": "76d4b281fe385000594a051467305e92",
-  "facility": "D21",
+  "uniqueId": "291950f4ec4a102f39f4adbba6155ee4",
   "eventScore": 1.36204,
   "eventDate": "2018-03-24",
   "eventTime": "15:03:00.107",
   "eventEpochMsTime": 1521903780107,
-  "title": "D21--N518SP--1200",
   "latitude": 42.28303,
   "longitude": -83.75898,
   "timeToCpaInMilliSec": 0,

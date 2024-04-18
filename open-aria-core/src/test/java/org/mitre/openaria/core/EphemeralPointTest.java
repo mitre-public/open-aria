@@ -3,15 +3,13 @@ package org.mitre.openaria.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.NopPoints.CenterPoint;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.NopPoints.CenterPoint;
+
+import org.junit.jupiter.api.Test;
 
 
 public class EphemeralPointTest {
@@ -24,9 +22,8 @@ public class EphemeralPointTest {
     @Test
     public void testFrom() {
         //we know the CenterPoint is good...
-        EphemeralPoint point = EphemeralPoint.from(
-            new CenterPoint(CENTER_RH_MESSAGE)
-        );
+        CenterPoint cp = new CenterPoint(CENTER_RH_MESSAGE);
+        EphemeralPoint point = EphemeralPoint.from(cp, cp.sourceDetails());
 
         //make sure the information from the CenterPoint is forwarded to the EmphemeralPoint
         assertEquals("465", point.trackId());
@@ -36,8 +33,8 @@ public class EphemeralPointTest {
 
         assertEquals("SKW5840", point.callsign());
         assertEquals("CRJ2", point.aircraftType());
-        assertEquals("ZLA_B", point.sensor());
-        assertEquals("ZLA", point.facility());
+        assertEquals("ZLA_B", point.sourceDetails().sensor());
+        assertEquals("ZLA", point.sourceDetails().facility());
         assertEquals("4712", point.beaconActual());
         assertEquals("IFR", point.flightRules());
 
@@ -50,7 +47,8 @@ public class EphemeralPointTest {
     }
 
     static EphemeralPoint testPoint() {
-        return EphemeralPoint.from(new CenterPoint(CENTER_RH_MESSAGE));
+        CenterPoint cp = new CenterPoint(CENTER_RH_MESSAGE);
+        return EphemeralPoint.from(cp, cp.sourceDetails());
     }
 
     @Test

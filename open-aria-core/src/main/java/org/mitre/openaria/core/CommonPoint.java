@@ -3,8 +3,9 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.mitre.openaria.core.PointField.ALONG_TRACK_DISTANCE;
 import static org.mitre.openaria.core.PointField.CURVATURE;
+import static org.mitre.openaria.core.temp.Extras.HasSourceDetails;
+import static org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,15 +29,13 @@ import org.mitre.caasd.commons.Time;
  * failed inputs to file for future analysis is straight forward and unit tests can be simplified by
  * having "canned input" and
  */
-public class CommonPoint implements Point {
+public class CommonPoint<T> implements Point<T>, HasSourceDetails {
 
     private static final long serialVersionUID = 1L;
 
     private final String callsign;
     private final String aircraftType;
     private final String trackId;
-    private final String sensor;
-    private final String facility;
     private final String beaconActual;
     private final String beaconAssigned;
     private final String flightRules;
@@ -46,9 +45,12 @@ public class CommonPoint implements Point {
     private final Double speed;
     private final Instant time;
     private final Double curvature;
-    private final Double alongTrackDistance;
 
-    public CommonPoint(Map<PointField, Object> map) {
+    private final SourceDetails sourceDetails;
+    private final T rawData;
+
+
+    public CommonPoint(Map<PointField, Object> map, SourceDetails sourceDetails, T rawData) {
 
         for (Map.Entry<PointField, Object> entry : map.entrySet()) {
             checkArgument(
@@ -60,8 +62,6 @@ public class CommonPoint implements Point {
         this.callsign = (String) map.get(PointField.CALLSIGN);
         this.aircraftType = (String) map.get(PointField.AIRCRAFT_TYPE);
         this.trackId = (String) map.get(PointField.TRACK_ID);
-        this.sensor = (String) map.get(PointField.SENSOR);
-        this.facility = (String) map.get(PointField.FACILITY);
         this.beaconActual = (String) map.get(PointField.BEACON_ACTUAL);
         this.beaconAssigned = (String) map.get(PointField.BEACON_ASSIGNED);
         this.flightRules = (String) map.get(PointField.FLIGHT_RULES);
@@ -71,12 +71,14 @@ public class CommonPoint implements Point {
         this.speed = (Double) map.get(PointField.SPEED);
         this.time = (Instant) map.get(PointField.TIME);
         this.curvature = (Double) map.get(CURVATURE);
-        this.alongTrackDistance = (Double) map.get(ALONG_TRACK_DISTANCE);
+
+        this.sourceDetails = sourceDetails;
+        this.rawData = rawData;
 
         confirmNoEmptyStrings();
     }
 
-    private CommonPoint(CommonPoint copyMe, PointField field, Object newValue) {
+    private CommonPoint(CommonPoint<T> copyMe, PointField field, Object newValue) {
 
         checkArgument(
             field.accepts(newValue),
@@ -86,8 +88,6 @@ public class CommonPoint implements Point {
         this.callsign = (field == PointField.CALLSIGN) ? ((String) newValue) : copyMe.callsign;
         this.aircraftType = (field == PointField.AIRCRAFT_TYPE) ? ((String) newValue) : copyMe.aircraftType;
         this.trackId = (field == PointField.TRACK_ID) ? ((String) newValue) : copyMe.trackId;
-        this.sensor = (field == PointField.SENSOR) ? ((String) newValue) : copyMe.sensor;
-        this.facility = (field == PointField.FACILITY) ? ((String) newValue) : copyMe.facility;
         this.beaconActual = (field == PointField.BEACON_ACTUAL) ? ((String) newValue) : copyMe.beaconActual;
         this.beaconAssigned = (field == PointField.BEACON_ASSIGNED) ? ((String) newValue) : copyMe.beaconAssigned;
         this.flightRules = (field == PointField.FLIGHT_RULES) ? ((String) newValue) : copyMe.flightRules;
@@ -97,7 +97,9 @@ public class CommonPoint implements Point {
         this.speed = (field == PointField.SPEED) ? ((Double) newValue) : copyMe.speed;
         this.time = (field == PointField.TIME) ? ((Instant) newValue) : copyMe.time;
         this.curvature = (field == CURVATURE) ? ((Double) newValue) : copyMe.curvature;
-        this.alongTrackDistance = (field == ALONG_TRACK_DISTANCE) ? ((Double) newValue) : copyMe.alongTrackDistance;
+
+        this.sourceDetails = copyMe.sourceDetails;
+        this.rawData = copyMe.rawData;
 
         confirmNoEmptyStrings();
     }
@@ -177,13 +179,13 @@ public class CommonPoint implements Point {
             "The boundary point \"pointJustAfter\" cannot come occur BEFORE this point's time");
     }
 
-    public Point getCopyWithDeducedCourseAndSpeed(Point pointJustBefore, Point pointJustAfter) {
+    public Point<T> getCopyWithDeducedCourseAndSpeed(Point<T> pointJustBefore, Point<T> pointJustAfter) {
 
         Map<PointField, Object> map = Points.toMap(this);
         map.put(PointField.SPEED, deduceSpeed(pointJustBefore, pointJustAfter));
         map.put(PointField.COURSE_IN_DEGREES, deduceCourse(pointJustBefore, pointJustAfter));
 
-        return new CommonPoint(map);
+        return new CommonPoint(map, null, pointJustBefore.rawData());
     }
 
     @Override
@@ -199,16 +201,6 @@ public class CommonPoint implements Point {
     @Override
     public String trackId() {
         return this.trackId;
-    }
-
-    @Override
-    public String sensor() {
-        return this.sensor;
-    }
-
-    @Override
-    public String facility() {
-        return this.facility;
     }
 
     @Override
@@ -252,12 +244,17 @@ public class CommonPoint implements Point {
     }
 
     @Override
-    public Double alongTrackDistance() {
-        return this.alongTrackDistance;
+    public LatLong latLong() {
+        return this.latLong;
     }
 
     @Override
-    public LatLong latLong() {
-        return this.latLong;
+    public SourceDetails sourceDetails() {
+        return this.sourceDetails;
+    }
+
+    @Override
+    public T rawData() {
+        return rawData;
     }
 }

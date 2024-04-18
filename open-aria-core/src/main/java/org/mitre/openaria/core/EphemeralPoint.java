@@ -5,22 +5,10 @@ package org.mitre.openaria.core;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.mitre.openaria.core.PointBuilder.checkSpeed;
-import static org.mitre.openaria.core.PointField.AIRCRAFT_TYPE;
-import static org.mitre.openaria.core.PointField.ALONG_TRACK_DISTANCE;
-import static org.mitre.openaria.core.PointField.ALTITUDE;
-import static org.mitre.openaria.core.PointField.BEACON_ACTUAL;
-import static org.mitre.openaria.core.PointField.BEACON_ASSIGNED;
-import static org.mitre.openaria.core.PointField.CALLSIGN;
-import static org.mitre.openaria.core.PointField.COURSE_IN_DEGREES;
-import static org.mitre.openaria.core.PointField.CURVATURE;
-import static org.mitre.openaria.core.PointField.FACILITY;
-import static org.mitre.openaria.core.PointField.FLIGHT_RULES;
-import static org.mitre.openaria.core.PointField.LAT_LONG;
-import static org.mitre.openaria.core.PointField.SENSOR;
-import static org.mitre.openaria.core.PointField.SPEED;
-import static org.mitre.openaria.core.PointField.TIME;
-import static org.mitre.openaria.core.PointField.TRACK_ID;
+import static org.mitre.openaria.core.PointField.*;
 import static org.mitre.openaria.core.Points.toMap;
+import static org.mitre.openaria.core.temp.Extras.HasSourceDetails;
+import static org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -35,16 +23,31 @@ import org.mitre.caasd.commons.LatLong;
  * during Track smoothing). In this case, repeatedly copying data from Immutable Point to Immutable
  * Point can become costly.
  */
-public class EphemeralPoint implements MutablePoint {
+public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails{
 
     private final HashMap<PointField, Object> data;
 
-    public static EphemeralPoint from(Point sourcePoint) {
-        return new EphemeralPoint(sourcePoint);
+    private SourceDetails sourceDetails;
+
+    private T rawData;
+
+    public static <T> EphemeralPoint<T> from(Point<T> sourcePoint, SourceDetails sourceDetails) {
+        return new EphemeralPoint<T>(sourcePoint, sourceDetails);
     }
 
-    private EphemeralPoint(Point sourcePoint) {
+    public static <T> EphemeralPoint<T> from(Point<T> sourcePoint) {
+        if(sourcePoint instanceof HasSourceDetails) {
+            SourceDetails sd = ((HasSourceDetails) sourcePoint).sourceDetails();
+            return new EphemeralPoint<T>(sourcePoint, sd);
+        }
+
+        return new EphemeralPoint<>(sourcePoint, null);
+    }
+
+    private EphemeralPoint(Point<T> sourcePoint, SourceDetails sd) {
         this.data = newHashMap(toMap(sourcePoint));
+        this.sourceDetails = sd;
+        this.rawData = sourcePoint.rawData();
     }
 
     /**
@@ -72,6 +75,10 @@ public class EphemeralPoint implements MutablePoint {
         }
     }
 
+    public void set(SourceDetails sd) {
+        this.sourceDetails = sd;
+    }
+
     @Override
     public String callsign() {
         return (String) data.get(CALLSIGN);
@@ -85,16 +92,6 @@ public class EphemeralPoint implements MutablePoint {
     @Override
     public String trackId() {
         return (String) data.get(TRACK_ID);
-    }
-
-    @Override
-    public String sensor() {
-        return (String) data.get(SENSOR);
-    }
-
-    @Override
-    public String facility() {
-        return (String) data.get(FACILITY);
     }
 
     @Override
@@ -143,7 +140,12 @@ public class EphemeralPoint implements MutablePoint {
     }
 
     @Override
-    public Double alongTrackDistance() {
-        return (Double) data.get(ALONG_TRACK_DISTANCE);
+    public SourceDetails sourceDetails() {
+        return sourceDetails;
+    }
+
+    @Override
+    public T rawData() {
+        return null;
     }
 }

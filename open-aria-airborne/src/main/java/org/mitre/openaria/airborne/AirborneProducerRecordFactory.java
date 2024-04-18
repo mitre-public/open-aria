@@ -3,12 +3,14 @@ package org.mitre.openaria.airborne;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Function;
+
+import org.mitre.openaria.kafka.ProducerRecordFactory;
+
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;
-import org.mitre.openaria.kafka.FacilityPartitionMapping;
-import org.mitre.openaria.kafka.ProducerRecordFactory;
 
 /**
  * An AirborneProducerRecordFactory is responsible for making Kafka ProducerRecords whenever an
@@ -19,39 +21,42 @@ import org.mitre.openaria.kafka.ProducerRecordFactory;
 public class AirborneProducerRecordFactory implements ProducerRecordFactory<String, String, AirborneEvent> {
 
     private final String targetTopic;
-    private final FacilityPartitionMapping mapping;
+    private final Function<AirborneEvent, Integer> eventToKafkaPartition;
 
-    public AirborneProducerRecordFactory(String targetTopic, FacilityPartitionMapping mapping) {
-        this.targetTopic = requireNonNull(targetTopic);
-        this.mapping = requireNonNull(mapping);
+    /**
+     * Given an AirborneEvent
+     *
+     * @param targetTopic           The name of the Kafka topic that will accept this event
+     * @param eventToKafkaPartition A function that decide which kafka partition this event should
+     *                              be sent to.
+     */
+    public AirborneProducerRecordFactory(String targetTopic, Function<AirborneEvent, Integer> eventToKafkaPartition) {
+        requireNonNull(targetTopic);
+        requireNonNull(eventToKafkaPartition);
+        this.targetTopic = targetTopic;
+        this.eventToKafkaPartition = eventToKafkaPartition;
     }
 
     @Override
     public ProducerRecord<String, String> producerRecordFor(AirborneEvent record) {
 
-        String key = record.nopFacility().toString(); //examples include "D10", "A80"
+        String key = record.uuid();
         String value = record.asJson();
-        int partition = partitionFor(record);
+        int partition = eventToKafkaPartition.apply(record);
 
         Header[] headers = extractHeaders(record);
 
         return new ProducerRecord<>(targetTopic, partition, key, value, newArrayList(headers));
     }
 
-    private int partitionFor(AirborneEvent e) {
-        return mapping.partitionFor(e.nopFacility()).get();
-    }
-
     static Header[] extractHeaders(AirborneEvent record) {
 
         //Kafka Header -VALUES-
-        String facility = record.nopFacility().toString();
         String ifrVfrStatus = record.pairedIfrVfrStatus().toString();
         String scoreAsString = Double.toString(record.score());
         String epochTimeMs = Long.toString(record.time().toEpochMilli());
 
         Headers headers = new RecordHeaders()
-            .add("facility", facility.getBytes()) //e.g. D10, A80, or ZFW
             .add("ifrVfrStatus", ifrVfrStatus.getBytes()) //IFR-IFR, IFR-VFR, or VFR-VFR
             .add("date", record.eventDate().getBytes()) //e.g. 2020-03-27, YYYY-MM-DD
             .add("time", record.eventTimeOfDay().getBytes()) //e.g. HH:mm:ss.SSS

@@ -3,18 +3,19 @@ package org.mitre.openaria.core;
 
 import static java.time.Instant.EPOCH;
 import static java.util.Objects.isNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.temp.Extras.SourceDetails;
+
+import org.junit.jupiter.api.Test;
 
 public class PointBuilderTest {
 
@@ -48,26 +49,26 @@ public class PointBuilderTest {
     @Test
     public void testSensor() {
 
-        String stringValue = "aString";
+        SourceDetails sd = new SourceDetails("aSensor", "aFacility");
 
-        Point p1 = (new PointBuilder()).sensor(stringValue).build();
-        Point p2 = (new PointBuilder()).sensor(null).build();
+        CommonPoint p1 = (new PointBuilder()).sourceDetails(sd).build();
+        CommonPoint p2 = (new PointBuilder()).sourceDetails(null).build();
 
-        assertTrue(p1.sensor().equals(stringValue));
-        assertTrue(isNull(p2.sensor()));
+        assertThat(p1.sourceDetails(), is(sd));
+        assertThat(p2.sourceDetails(), nullValue());
     }
 
-    @Test
-    public void testFacility() {
-
-        String stringValue = "aString";
-
-        Point p1 = (new PointBuilder()).facility(stringValue).build();
-        Point p2 = (new PointBuilder()).facility(null).build();
-
-        assertTrue(p1.facility().equals(stringValue));
-        assertTrue(isNull(p2.facility()));
-    }
+//    @Test
+//    public void testFacility() {
+//
+//        String stringValue = "aString";
+//
+//        Point p1 = (new PointBuilder()).facility(stringValue).build();
+//        Point p2 = (new PointBuilder()).facility(null).build();
+//
+//        assertTrue(p1.facility().equals(stringValue));
+//        assertTrue(isNull(p2.facility()));
+//    }
 
     @Test
     public void testBeaconActual() {
@@ -191,12 +192,11 @@ public class PointBuilderTest {
         assertTrue(isNull(p2.time()));
     }
 
-    private Point getTestPoint() {
+    private CommonPoint getTestPoint() {
 
         return (new PointBuilder())
             .callsign("callSign")
-            .sensor("sensor")
-            .facility("facility")
+            .sourceDetails(new SourceDetails("sensor", "facility"))
             .time(Instant.now())
             .build();
     }
@@ -219,15 +219,15 @@ public class PointBuilderTest {
     public void butNo() {
         //confirmt "butNo" does indeed remove fields from copied points.
 
-        Point testPoint = getTestPoint();
+        CommonPoint testPoint = getTestPoint();
 
         assertNotNull(testPoint.callsign());
-        assertNotNull(testPoint.facility());
+        assertNotNull(testPoint.sourceDetails());
 
         Point copiedPoint = (new PointBuilder(testPoint)).butNo(PointField.CALLSIGN).build();
 
         assertNull(copiedPoint.callsign());  //this was removed..it should be missing
-        assertNotNull(copiedPoint.facility());  //this wasn't...it should still be here
+//        assertNotNull(copiedPoint.facility());  //this wasn't...it should still be here
     }
 
     @Test
@@ -240,15 +240,15 @@ public class PointBuilderTest {
         assertTrue(p1.callsign().equals("newValue"));
     }
 
-    @Test
-    public void testButSensor() {
-
-        Point testPoint = getTestPoint();
-
-        Point p1 = (new PointBuilder(testPoint)).butSensor("newValue").build();
-
-        assertTrue(p1.sensor().equals("newValue"));
-    }
+//    @Test
+//    public void testButSensor() {
+//
+//        Point testPoint = getTestPoint();
+//
+//        Point p1 = (new PointBuilder(testPoint)).butSensor("newValue").build();
+//
+//        assertTrue(p1.sensor().equals("newValue"));
+//    }
 
     @Test
     public void test_butLatLong() {

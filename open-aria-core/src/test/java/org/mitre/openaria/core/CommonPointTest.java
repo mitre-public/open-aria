@@ -1,18 +1,17 @@
 
 package org.mitre.openaria.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+
+import org.junit.jupiter.api.Test;
 
 public class CommonPointTest {
 
@@ -101,7 +100,7 @@ public class CommonPointTest {
                 map.put(field, "");
 
                 try {
-                    new CommonPoint(map);
+                    new CommonPoint(map, null, null);
                     fail();
                 } catch (IllegalStateException ise) {
                     //skipped the fail above

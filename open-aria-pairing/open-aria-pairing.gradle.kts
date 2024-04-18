@@ -4,6 +4,15 @@ dependencies {
     testImplementation("nl.jqno.equalsverifier:equalsverifier:3.15.2")
 }
 
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+
+    testLogging {
+        events("PASSED", "SKIPPED", "FAILED")
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {

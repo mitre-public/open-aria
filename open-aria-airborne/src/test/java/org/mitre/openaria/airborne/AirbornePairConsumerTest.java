@@ -2,24 +2,23 @@
 package org.mitre.openaria.airborne;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
-import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
-import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
+import static org.hamcrest.Matchers.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
+import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
+import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
 
 import java.io.File;
 import java.io.FileReader;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.airborne.metrics.EventSummarizer;
-import org.mitre.openaria.core.TrackPair;
 import org.mitre.caasd.commons.ConsumingCollections;
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+import org.mitre.openaria.airborne.metrics.EventSummarizer;
+import org.mitre.openaria.core.TrackPair;
+
+import org.junit.jupiter.api.Test;
 
 public class AirbornePairConsumerTest {
 
@@ -66,8 +65,13 @@ public class AirbornePairConsumerTest {
     }
 
     TrackPair scaryTrackPair() {
-        return makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+
+        File f = new File("src/test/resources/scaryTrackData.txt");
+
+//        return makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+        return makeTrackPairFromNopData(f);
     }
+
 
     @Test
     public void endToEndProcessing() {
@@ -114,12 +118,12 @@ public class AirbornePairConsumerTest {
 
         //ALSO, load the output from the last time this canned data was processed
         //this file was created by saving the result calling "String json = eventFromComputation.asJson()"
-        File file = getResourceFile("scaryTrackOutput.json");
+        File file = new File("src/test/resources/scaryTrackOutput.json");
         AirborneEvent eventFromFile = AirborneEvent.parse(new FileReader(file));
 
         assertThat(eventFromComputation.asJson(), is(eventFromFile.asJson()));
 
-        String expectedUuid = "76d4b281fe385000594a051467305e92";
+        String expectedUuid = "291950f4ec4a102f39f4adbba6155ee4";
         assertThat(eventFromComputation.uuid(), is(expectedUuid));
         assertThat(json.contains(expectedUuid), is(true));
 
