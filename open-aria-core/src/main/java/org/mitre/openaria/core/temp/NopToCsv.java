@@ -18,7 +18,7 @@ public class NopToCsv {
 
     static String toAriaCsvFormat(NopPoint nop) {
 
-        String linkId = nop.facility() + "-" + nop.trackId();
+        String linkId = nop.sourceDetails().facility() + "-" + nop.trackId();
         String lat = String.format("%.4f", nop.latitude());
         String lng = String.format("%.4f", nop.longitude());
         String alt = String.format("%.0f", nop.altitude().inFeet());

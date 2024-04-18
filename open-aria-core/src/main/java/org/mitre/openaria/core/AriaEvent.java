@@ -14,8 +14,6 @@ public interface AriaEvent<T> extends JsonWritable, HasPosition, HasTime {
 
     double score();
 
-    String title();
-
     default String uuid() {
 
         //get the JSON string that does not contain a hash within it

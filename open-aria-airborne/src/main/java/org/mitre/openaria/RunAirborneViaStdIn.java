@@ -3,20 +3,19 @@
 package org.mitre.openaria;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.mitre.openaria.core.config.YamlUtils.parseYaml;
 import static org.mitre.caasd.commons.util.DemotedException.demote;
+import static org.mitre.openaria.core.config.YamlUtils.parseYaml;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
+import org.mitre.caasd.commons.parsing.nop.NopParser;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
-import org.mitre.openaria.core.SingleFacilityPointIterator;
 import org.mitre.openaria.system.StreamingKpi;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
 
 /**
  * This program ingests raw text directly from standard-in and pipes it into the Airborne ARIA
@@ -56,7 +55,7 @@ public class RunAirborneViaStdIn {
         StreamingKpi<AirbornePairConsumer> streamingKpi = factory.createKpi(null);
 
         //this Iterator parses System.in and provides Points from exactly one Facility
-        Iterator<Point> pointIter = new SingleFacilityPointIterator(stdInPointIterator());
+        Iterator<Point> pointIter = stdInPointIterator();
 
         System.out.println("Starting ARIA system.");
         pointIter.forEachRemaining(streamingKpi);

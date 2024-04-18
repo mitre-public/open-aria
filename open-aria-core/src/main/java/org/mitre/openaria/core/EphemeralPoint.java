@@ -7,6 +7,8 @@ import static com.google.common.collect.Maps.newHashMap;
 import static org.mitre.openaria.core.PointBuilder.checkSpeed;
 import static org.mitre.openaria.core.PointField.*;
 import static org.mitre.openaria.core.Points.toMap;
+import static org.mitre.openaria.core.temp.Extras.HasSourceDetails;
+import static org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -21,16 +23,31 @@ import org.mitre.caasd.commons.LatLong;
  * during Track smoothing). In this case, repeatedly copying data from Immutable Point to Immutable
  * Point can become costly.
  */
-public class EphemeralPoint implements MutablePoint {
+public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails{
 
     private final HashMap<PointField, Object> data;
 
-    public static EphemeralPoint from(Point sourcePoint) {
-        return new EphemeralPoint(sourcePoint);
+    private SourceDetails sourceDetails;
+
+    private T rawData;
+
+    public static <T> EphemeralPoint<T> from(Point<T> sourcePoint, SourceDetails sourceDetails) {
+        return new EphemeralPoint<T>(sourcePoint, sourceDetails);
     }
 
-    private EphemeralPoint(Point sourcePoint) {
+    public static <T> EphemeralPoint<T> from(Point<T> sourcePoint) {
+        if(sourcePoint instanceof HasSourceDetails) {
+            SourceDetails sd = ((HasSourceDetails) sourcePoint).sourceDetails();
+            return new EphemeralPoint<T>(sourcePoint, sd);
+        }
+
+        return new EphemeralPoint<>(sourcePoint, null);
+    }
+
+    private EphemeralPoint(Point<T> sourcePoint, SourceDetails sd) {
         this.data = newHashMap(toMap(sourcePoint));
+        this.sourceDetails = sd;
+        this.rawData = sourcePoint.rawData();
     }
 
     /**
@@ -58,6 +75,10 @@ public class EphemeralPoint implements MutablePoint {
         }
     }
 
+    public void set(SourceDetails sd) {
+        this.sourceDetails = sd;
+    }
+
     @Override
     public String callsign() {
         return (String) data.get(CALLSIGN);
@@ -71,16 +92,6 @@ public class EphemeralPoint implements MutablePoint {
     @Override
     public String trackId() {
         return (String) data.get(TRACK_ID);
-    }
-
-    @Override
-    public String sensor() {
-        return (String) data.get(SENSOR);
-    }
-
-    @Override
-    public String facility() {
-        return (String) data.get(FACILITY);
     }
 
     @Override
@@ -126,5 +137,15 @@ public class EphemeralPoint implements MutablePoint {
     @Override
     public Double curvature() {
         return (Double) data.get(CURVATURE);
+    }
+
+    @Override
+    public SourceDetails sourceDetails() {
+        return sourceDetails;
+    }
+
+    @Override
+    public T rawData() {
+        return null;
     }
 }

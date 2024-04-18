@@ -2,11 +2,11 @@ package org.mitre.openaria;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
+import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
 import static org.mitre.openaria.core.config.YamlUtils.parseYaml;
 import static org.mitre.openaria.kafka.FacilityPartitionMapping.parseFacilityMappingFile;
 import static org.mitre.openaria.system.ExceptionHandlers.sequentialFileWarner;
 import static org.mitre.openaria.system.KafkaIngestor.nopPlugin;
-import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
 
 import java.io.File;
 import java.time.Duration;
@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.mitre.caasd.commons.parsing.nop.Facility;
 import org.mitre.openaria.airborne.metrics.KpiLogger;
 import org.mitre.openaria.core.config.PluginFactory;
 import org.mitre.openaria.kafka.FacilityPartitionMapping;
@@ -21,7 +22,6 @@ import org.mitre.openaria.system.KafkaIngestor;
 import org.mitre.openaria.system.tools.DataLatencySummarizer;
 import org.mitre.openaria.system.tools.KafkaLatencyLogger;
 import org.mitre.openaria.system.tools.SwimLaneLogger;
-import org.mitre.caasd.commons.parsing.nop.Facility;
 
 public class RunAirborneOnKafkaNop {
 
@@ -44,7 +44,7 @@ public class RunAirborneOnKafkaNop {
             factory::createKpi,
             config.partitionMap(),
             nopPlugin(),
-            DataLatencySummarizer.nopFacilitiesSummarizer(),
+            DataLatencySummarizer.byPartitionSummarizer(),
             sequentialFileWarner("warnings")
         );
 

@@ -8,9 +8,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.max;
 import static java.util.Objects.isNull;
 import static org.mitre.caasd.commons.Spherical.distanceInNM;
-import static org.mitre.caasd.commons.Time.confirmStrictTimeOrdering;
-import static org.mitre.caasd.commons.Time.durationBtw;
-import static org.mitre.caasd.commons.Time.theDuration;
+import static org.mitre.caasd.commons.Time.*;
+import static org.mitre.openaria.threading.TempUtils.keyExtractor;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -22,11 +21,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.mitre.caasd.commons.util.ParallelismDetector;
 import org.mitre.openaria.core.KeyExtractor;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.SimpleTrack;
 import org.mitre.openaria.core.Track;
-import org.mitre.caasd.commons.util.ParallelismDetector;
 
 /**
  * A TrackMaker combines Points from a time-sorted stream of Points to make CommonTracks. Once a
@@ -113,7 +112,7 @@ public class TrackMaker implements Consumer<Point> {
         this.forcedTrackClosureAge = checkNotNull(maxTrackAge);
         checkArgument(theDuration(maxTrackAge).isGreaterThan(maxTimeBetweenPoints));
         this.currentTime = null;
-        this.keyExtractor = Point.keyExtractor();
+        this.keyExtractor = keyExtractor();
         this.tracksUnderConstruction = new LinkedHashMap<>(16, 0.75f, true);
         this.outputMechanism = outputMechanism;
     }

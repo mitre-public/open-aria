@@ -9,17 +9,15 @@ import org.mitre.caasd.commons.HasPosition;
 import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.Position;
 
-public interface Point extends HasPosition, HasTime, Comparable<Point> {
+public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
+
+    T rawData();
 
     public String callsign();
 
     public String aircraftType();
 
     public String trackId();  //almost always an Integer, but sometime this is a number and letter like "25F"
-
-    public String sensor();
-
-    public String facility();
 
     public String beaconActual();
 
@@ -46,13 +44,13 @@ public interface Point extends HasPosition, HasTime, Comparable<Point> {
          * If the implementing class cannot provide the raw Nop RH Message itself encode whatever
          * data is available via the Point interface itself.
          */
-        return (new NopEncoder()).asRawNop(this);
+        return (new NopEncoder()).asRawNop(this, null);
     }
 
-    /** @return a KeyExtractor that generates String keys by concatenating trackId() and facility() */
-    static KeyExtractor<Point> keyExtractor() {
-        return (Point p) -> p.trackId() + p.facility();
-    }
+//    /** @return a KeyExtractor that generates String keys by concatenating trackId() and facility() */
+//    static KeyExtractor<Point> keyExtractor() {
+//        return (Point p) -> p.trackId() + p.facility();
+//    }
 
     /**
      * This comparison technique generates a strict ordering between two Points using as little data

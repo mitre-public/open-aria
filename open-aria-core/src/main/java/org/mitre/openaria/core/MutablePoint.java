@@ -8,7 +8,7 @@ package org.mitre.openaria.core;
  * Block's Effective Java). Consequently, classes that implement this interface should be avoided
  * when possible.
  */
-public interface MutablePoint extends Point {
+public interface MutablePoint<T> extends Point<T> {
 
     /**
      * Set a field of this Point.

@@ -2,11 +2,14 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
  * A NopEncoder converts Points into a raw text format that mimics the NOP RH Message format.
@@ -41,15 +44,17 @@ public class NopEncoder {
      *     "lossy" conversion because the Point interface does not include all the information that
      *     is available in any of the NOP formats (AGW, CENTER, or STARS)
      */
-    public String asRawNop(Point p) {
+    public String asRawNop(Point p, SourceDetails sd) {
 
         StringBuilder sb = new StringBuilder();
+        String sensor = nonNull(sd) ? sd.sensor() : "";
+        String facility = nonNull(sd) ? sd.facility() : "";
 
         String DELIMITER = ",";
 
         sb.append("[RH]").append(DELIMITER)
             .append("STARS").append(DELIMITER) //assume STARS by convention
-            .append(p.facility()).append(DELIMITER) //token 2
+            .append(facility).append(DELIMITER) //token 2
             .append(formatTime(p.time())).append(DELIMITER) //tokens 3 and 4
             .append(format(p.callsign())).append(DELIMITER) //token 5
             .append(format(p.aircraftType())).append(DELIMITER) //token 6
@@ -67,7 +72,7 @@ public class NopEncoder {
             .append(DELIMITER) //token 18-AGW/STARS:keyboard
             .append(DELIMITER) //token 19-AGW/STARS:positionSymbol, CENTER:controllingFacilitySector)
             .append(DELIMITER) //token 20-AGW/STARS:arrivalDepartureStatus lost here)
-            .append(p.sensor()).append(DELIMITER) //token 21???
+            .append(sensor).append(DELIMITER) //token 21???
             .append(DELIMITER) //token 22-AGW/STARS:scratchpad1
             .append(DELIMITER) //token 23-AGW/STARS:entryFix
             .append(DELIMITER) //token 24-AGW/STARS:exitFix

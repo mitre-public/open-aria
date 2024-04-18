@@ -7,6 +7,14 @@ dependencies {
     implementation("com.beust:jcommander:1.78")
 }
 
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+
+    testLogging {
+        events("PASSED", "SKIPPED", "FAILED")
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {

@@ -1,19 +1,16 @@
 package org.mitre.openaria.airborne.metrics;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static java.lang.Double.isNaN;
 import static java.lang.Math.min;
-import static org.mitre.openaria.core.utils.TimeUtils.utcDateAsString;
 import static org.mitre.caasd.commons.YyyyMmDd.verifyYearMonthDayFormat;
+import static org.mitre.openaria.core.utils.TimeUtils.utcDateAsString;
 
 import java.time.Instant;
 import java.util.Arrays;
 
-import org.mitre.openaria.airborne.AirborneEvent;
 import org.mitre.caasd.commons.out.JsonWritable;
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.airborne.AirborneEvent;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,7 +26,6 @@ public class DailyMetrics implements JsonWritable {
 
     /** Date defined like: yyyy-mm-dd */
     private final String date;
-    private final Facility facility;
     private final int eventCount;
     private final double avgEventScore;
     private final int[] histogram;
@@ -37,7 +33,6 @@ public class DailyMetrics implements JsonWritable {
     /** No-argument constructor, should only be used by automated deserialization tools */
     public DailyMetrics() {
         this.date = null;
-        this.facility = null;
         this.eventCount = 0;
         this.avgEventScore = 0;
         this.histogram = new int[NUM_HISTOGRAM_BINS];
@@ -51,23 +46,20 @@ public class DailyMetrics implements JsonWritable {
      * @param record The sole event (must have NOP Facility, event time, and event score
      */
     public DailyMetrics(AirborneEvent record) {
-        this(record.nopFacility(), record.time(), record.score());
+        this(record.time(), record.score());
     }
 
     /**
      * Create a DailyMetrics object that "summarizes" exactly one event
      *
-     * @param nopFacility The facility where the event occurred
      * @param eventTime   The time the event occurred
      * @param eventScore  The score of the event
      */
-    public DailyMetrics(Facility nopFacility, Instant eventTime, double eventScore) {
-        checkNotNull(nopFacility);
+    public DailyMetrics(Instant eventTime, double eventScore) {
         checkNotNull(eventTime);
         checkArgument(eventScore > 0);
 
         this.date = utcDateAsString(eventTime); //save date as YYYY-MM-DD formated String
-        this.facility = nopFacility;
         this.eventCount = 1;
         this.avgEventScore = eventScore;
         this.histogram = new int[NUM_HISTOGRAM_BINS];
@@ -78,7 +70,7 @@ public class DailyMetrics implements JsonWritable {
      * Create a brand new DailyMetrics object that merges the prior state and the new event.
      *
      * @param prior    A DailyMetrics object
-     * @param newEvent Another event from the same Facility and Day
+     * @param newEvent Another event from the same Day
      */
     public DailyMetrics(DailyMetrics prior, AirborneEvent newEvent) {
         checkNotNull(prior);
@@ -86,13 +78,10 @@ public class DailyMetrics implements JsonWritable {
 
         prior.validate();
 
-        //require same facility and date
-        checkNotNull(newEvent.nopFacility());
+        //require same date
         checkNotNull(newEvent.time());
-        checkArgument(prior.facility.equals(newEvent.nopFacility()));
         checkArgument(prior.date.equals(utcDateAsString(newEvent.time())));
 
-        this.facility = prior.facility;
         this.date = prior.date;
 
         this.eventCount = prior.eventCount + 1;
@@ -104,8 +93,8 @@ public class DailyMetrics implements JsonWritable {
 
     /**
      * Combine two DailyMetrics object into a single value. Combining DailyMetrics objects from
-     * different facilities or days will work but the Facility or Date field will be lost because
-     * there is no longer a single "correct date" or "correct facility".
+     * different days will work but the Date field will be lost because there is no longer a single
+     * "correct date" or "correct facility".
      */
     private DailyMetrics(DailyMetrics one, DailyMetrics two) {
         checkNotNull(one);
@@ -115,11 +104,6 @@ public class DailyMetrics implements JsonWritable {
         this.date = ((one.date == null || two.date == null) || !one.date.equals(two.date))
             ? null
             : one.date;
-
-        //facility is null if either input has a null value OR the facility don't match
-        this.facility = ((one.facility == null || two.facility == null) || !one.facility.equals(two.facility))
-            ? null
-            : one.facility;
 
         this.eventCount = one.eventCount + two.eventCount;
         this.avgEventScore = ((one.avgEventScore * one.eventCount) + (two.avgEventScore * two.eventCount)) / ((double) this.eventCount);
@@ -141,8 +125,6 @@ public class DailyMetrics implements JsonWritable {
         checkNotNull(date, "date cannot be null");
         verifyYearMonthDayFormat(date);  //ensure YYYY-MM-DD
 
-        checkNotNull(facility, "facility cannot be null");
-
         checkState(eventCount >= 0, "eventCount must be non-negative");
         checkState(avgEventScore >= 0, "avgEventScore must be non-negative");
 
@@ -161,10 +143,6 @@ public class DailyMetrics implements JsonWritable {
         return date;
     }
 
-    public Facility facility() {
-        return facility;
-    }
-
     public int eventCount() {
         return eventCount;
     }
@@ -177,9 +155,9 @@ public class DailyMetrics implements JsonWritable {
         return histogram;
     }
 
-    /** Create unique key from concatenation of date and facility */
+    /** Create unique key from the date. */
     public String key() {
-        return this.date() + "--" + this.facility();
+        return this.date();
     }
 
     private double sumEventScores() {

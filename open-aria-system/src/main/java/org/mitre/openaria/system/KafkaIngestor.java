@@ -4,17 +4,13 @@ package org.mitre.openaria.system;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Objects.requireNonNull;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG;
-import static org.mitre.openaria.core.NopPoint.parseSafely;
-import static org.mitre.openaria.kafka.KafkaPropertyUtils.verifyKafkaBrokers;
 import static org.mitre.caasd.commons.parsing.nop.Facility.toFacility;
 import static org.mitre.caasd.commons.parsing.nop.NopMessageType.isNopRadarHit;
-import static org.mitre.caasd.commons.util.PropertyUtils.getInt;
-import static org.mitre.caasd.commons.util.PropertyUtils.getOptionalBoolean;
-import static org.mitre.caasd.commons.util.PropertyUtils.getOptionalInt;
-import static org.mitre.caasd.commons.util.PropertyUtils.getString;
+import static org.mitre.caasd.commons.util.PropertyUtils.*;
+import static org.mitre.openaria.core.NopPoint.parseSafely;
+import static org.mitre.openaria.kafka.KafkaPropertyUtils.verifyKafkaBrokers;
 
 import java.io.File;
 import java.time.Duration;
@@ -28,33 +24,33 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.TopicPartition;
-import org.mitre.openaria.core.NopPoint;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.kafka.PartitionMapping;
-import org.mitre.openaria.system.tools.DataLatencySummarizer;
-import org.mitre.openaria.system.tools.KafkaLatencyCollector;
 import org.mitre.caasd.commons.parsing.nop.Facility;
 import org.mitre.caasd.commons.util.ErrorCatchingTask;
 import org.mitre.caasd.commons.util.ExceptionHandler;
+import org.mitre.openaria.core.NopPoint;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.temp.Extras;
+import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
+import org.mitre.openaria.kafka.PartitionMapping;
+import org.mitre.openaria.system.tools.DataLatencySummarizer;
+import org.mitre.openaria.system.tools.KafkaLatencyCollector;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 
 /**
  * A KafkaIngestor pulls and processes data from multiple Kafka Partitions at once. Each Kafka
  * Partition is processed in a separate "swim lane".
  *
  * @param <KAFKA_VAL> The Kafka Value type
- * @param <PK>        The Partition Key (for example NOP Facilities or AsdexAirports). The universe
- *                    of possible partition keys is provided by the PartitionMapping
  */
 public class KafkaIngestor<KAFKA_VAL, PK> {
 
@@ -370,15 +366,6 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
         );
     }
 
-    //extract out the StreamingKpi to facilite aggregate logging
-    public Map<PK, StreamingKpi> kpiMap() {
-        Map<PK, StreamingKpi> kpis = newHashMap();
-        for (Map.Entry<PK, SwimLane> entry : swimLanes.entrySet()) {
-            kpis.put(entry.getKey(), entry.getValue().kpi());
-        }
-        return kpis;
-    }
-
     public Map<PK, KafkaLatencyCollector> latencyCollectors() {
         return this.latencyCollectors;
     }
@@ -438,7 +425,15 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
 
         @Override
         public Facility partitionKeyFor(Point point) {
-            return toFacility(point.facility());
+            System.out.println("BROKEN -- TODO -- FIX ME -- Use List of N SwimLanes, not a Keyed map!");
+
+            if(point instanceof HasSourceDetails) {
+                Extras.SourceDetails sd = ((HasSourceDetails) point).sourceDetails();
+                return toFacility(sd.facility());
+            } else {
+                System.out.println("failing so hard here...NopPlugin.partitionKeyFor(point)");
+                return Facility.A80;
+            }
         }
     }
 

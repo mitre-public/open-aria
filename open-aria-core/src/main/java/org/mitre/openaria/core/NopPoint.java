@@ -21,6 +21,8 @@ import org.mitre.openaria.core.NopPoints.AgwPoint;
 import org.mitre.openaria.core.NopPoints.CenterPoint;
 import org.mitre.openaria.core.NopPoints.MeartsPoint;
 import org.mitre.openaria.core.NopPoints.StarsPoint;
+import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
+import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
  * A NopPoint is a Point implementation that wraps a NopRadarHit.
@@ -31,7 +33,7 @@ import org.mitre.openaria.core.NopPoints.StarsPoint;
  *
  * @param <T> The type of NopRadarHit being wrapped
  */
-public abstract class NopPoint<T extends NopRadarHit> implements Point {
+public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, HasSourceDetails {
 
     NopRadarHit rhMessage;
 
@@ -74,6 +76,10 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point {
     public static NopPoint from(String rhMessage) {
         return from(NopMessageType.parse(rhMessage));
     }
+    
+    public String rawData() {
+        return this.rhMessage.rawMessage();
+    }
 
     /**
      * This is a wrapped version of the other static factory methods. This factory method catches
@@ -108,16 +114,6 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point {
 
     @Override
     public abstract String trackId();
-
-    @Override
-    public String sensor() {
-        return rhMessage.sensorIdLetters();
-    }
-
-    @Override
-    public String facility() {
-        return rhMessage.facility();
-    }
 
     @Override
     public String beaconActual() {
@@ -166,5 +162,10 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point {
     @Override
     public LatLong latLong() {
         return LatLong.of(rhMessage.latitude(), rhMessage.longitude());
+    }
+
+    @Override
+    public SourceDetails sourceDetails() {
+        return new SourceDetails(rhMessage.sensorIdLetters(), rhMessage.facility());
     }
 }

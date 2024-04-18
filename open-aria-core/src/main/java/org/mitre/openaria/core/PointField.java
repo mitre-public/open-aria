@@ -31,18 +31,6 @@ public enum PointField {
             return aPoint.trackId();
         }
     },
-    SENSOR(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.sensor();
-        }
-    },
-    FACILITY(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.facility();
-        }
-    },
     BEACON_ACTUAL(String.class) {
         @Override
         public Object get(Point aPoint) {

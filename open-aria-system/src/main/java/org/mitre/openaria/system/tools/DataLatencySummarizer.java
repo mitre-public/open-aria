@@ -2,30 +2,24 @@ package org.mitre.openaria.system.tools;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.util.stream.Collectors.toSet;
 import static org.mitre.caasd.commons.util.DemotedException.demote;
+import static org.mitre.openaria.core.utils.TimeUtils.utcDateAsString;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.mitre.openaria.core.Point;
-import static org.mitre.openaria.core.utils.TimeUtils.utcDateAsString;
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.Point;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 /**
  * A DataLatencySummarizer measures the latency of data pulled from Kafka.
@@ -46,56 +40,53 @@ public class DataLatencySummarizer {
     /** Contains summaries of lag between Radar Hit times and Kafka Write times. */
     Table<String, String, WriteLatencyRecord> writeLatencySummaries;
 
-    /** All facilities (airports / NOP facilities) that need to be summarized */
-    private final Set<String> allFacilities;
-
-    DataLatencySummarizer(Collection<String> allFacilities) {
+    DataLatencySummarizer() {
         this.readLatencySummaries = HashBasedTable.create();
         this.writeLatencySummaries = HashBasedTable.create();
-        this.allFacilities = ImmutableSet.copyOf(allFacilities);
     }
 
     /**
-     * @return a {@link DataLatencySummarizer} that summarizes all NOP facilities
+     * @return a {@link DataLatencySummarizer} that summarizes latency by Kafka partition number
      */
-    public static DataLatencySummarizer nopFacilitiesSummarizer() {
-        Set<String> all = Arrays.stream(Facility.values()).map(Enum::toString).collect(toSet());
-        return new DataLatencySummarizer(all);
+    public static DataLatencySummarizer byPartitionSummarizer() {
+        return new DataLatencySummarizer();
     }
 
     public void incorporate(ConsumerRecord<?, ?> kafkaRecord, Point point) {
 
         Instant now = Instant.now();
-        String facility = point.facility();
+
+        int partition = kafkaRecord.partition();
+        String partitionAsString = Integer.toString(partition);
 
         String consumptionDate = utcDateAsString(now);
 
-        updateReadLatency(kafkaRecord, now, consumptionDate, facility);
-        updateWriteLatency(kafkaRecord, facility, point);
+        updateReadLatency(kafkaRecord, now, consumptionDate, partitionAsString);
+        updateWriteLatency(kafkaRecord, partitionAsString, point);
     }
 
-    private void updateReadLatency(ConsumerRecord<?, ?> kafkaRecord, Instant now, String consumptionDate, String facility) {
+    private void updateReadLatency(ConsumerRecord<?, ?> kafkaRecord, Instant now, String consumptionDate, String partitionNum) {
         //message creation to message consumption latency
         long latencySec = computeLatencyInSec(kafkaRecord, now);
 
-        ReadLatencyRecord prior = readLatencySummaries.get(consumptionDate, facility);
+        ReadLatencyRecord prior = readLatencySummaries.get(consumptionDate, partitionNum);
         if (prior == null) {
-            readLatencySummaries.put(consumptionDate, facility, new ReadLatencyRecord(consumptionDate, kafkaRecord, latencySec));
+            readLatencySummaries.put(consumptionDate, partitionNum, new ReadLatencyRecord(consumptionDate, kafkaRecord, latencySec));
         } else {
-            readLatencySummaries.put(consumptionDate, facility, new ReadLatencyRecord(prior, kafkaRecord, latencySec));
+            readLatencySummaries.put(consumptionDate, partitionNum, new ReadLatencyRecord(prior, kafkaRecord, latencySec));
         }
     }
 
-    private void updateWriteLatency(ConsumerRecord<?, ?> kafkaRecord, String facility, Point point) {
+    private void updateWriteLatency(ConsumerRecord<?, ?> kafkaRecord, String partitionNum, Point point) {
 
         String eventDate = utcDateAsString(point.time());
 
         //radar hit occurrance to message creation latency
-        WriteLatencyRecord prior = writeLatencySummaries.get(eventDate, facility);
+        WriteLatencyRecord prior = writeLatencySummaries.get(eventDate, partitionNum);
         if (prior == null) {
-            writeLatencySummaries.put(eventDate, facility, new WriteLatencyRecord(eventDate, kafkaRecord, point));
+            writeLatencySummaries.put(eventDate, partitionNum, new WriteLatencyRecord(eventDate, kafkaRecord, point));
         } else {
-            writeLatencySummaries.put(eventDate, facility, new WriteLatencyRecord(prior, kafkaRecord, point));
+            writeLatencySummaries.put(eventDate, partitionNum, new WriteLatencyRecord(prior, kafkaRecord, point));
         }
     }
 
@@ -146,13 +137,13 @@ public class DataLatencySummarizer {
 
         Map<String, ReadLatencyRecord> facilityMap = this.readLatencySummaries.row(dateKey);
 
-        for (String facility : allFacilities) {
-            ReadLatencyRecord record = facilityMap.get(facility);
+        for (String partitionNumber : readLatencySummaries.columnKeySet()) {
+            ReadLatencyRecord record = facilityMap.get(partitionNumber);
 
             if (record == null) {
-                sb.append("\n" + facility + " -- EMPTY");
+                sb.append("\n" + partitionNumber + " -- EMPTY");
             } else {
-                sb.append("\n" + facility + " ");
+                sb.append("\n" + partitionNumber + " ");
                 sb.append(record.asJson());
             }
         }
@@ -168,13 +159,13 @@ public class DataLatencySummarizer {
 
         Map<String, WriteLatencyRecord> facilityMap = this.writeLatencySummaries.row(dateKey);
 
-        for (String facility : allFacilities) {
-            WriteLatencyRecord record = facilityMap.get(facility);
+        for (String partitionNumber : writeLatencySummaries.columnKeySet()) {
+            WriteLatencyRecord record = facilityMap.get(partitionNumber);
 
             if (record == null) {
-                sb.append("\n" + facility + " -- EMPTY");
+                sb.append("\n" + partitionNumber + " -- EMPTY");
             } else {
-                sb.append("\n" + facility + " ");
+                sb.append("\n" + partitionNumber + " ");
                 sb.append(record.asJson());
             }
         }
@@ -198,11 +189,11 @@ public class DataLatencySummarizer {
         while (days.size() > NUM_DAYS_KEPT) {
             String day = days.removeFirst(); //remove oldest day..
 
-            //build a new list so you don't get Concurrent Modification Exceptions
+            //build a new list to avoid Concurrent Modification Exceptions
             List<String> removeThese = newArrayList(table.row(day).keySet());
 
-            for (String fac : removeThese) {
-                table.remove(day, fac);
+            for (String partitionNum : removeThese) {
+                table.remove(day, partitionNum);
             }
         }
     }

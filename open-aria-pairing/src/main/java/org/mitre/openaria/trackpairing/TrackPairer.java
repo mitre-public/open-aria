@@ -7,6 +7,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.mitre.caasd.commons.Functions.ALWAYS_TRUE;
+import static org.mitre.openaria.threading.TempUtils.keyExtractor;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.mitre.caasd.commons.Pair;
 import org.mitre.openaria.core.KeyExtractor;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
@@ -22,7 +24,6 @@ import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.pointpairing.PairingConfig;
 import org.mitre.openaria.pointpairing.PointPairFinder;
 import org.mitre.openaria.threading.TrackMaker;
-import org.mitre.caasd.commons.Pair;
 
 /**
  * A TrackPairer ingests a stream of Point data and simultaneously (1) creates Tracks and (2) finds
@@ -147,7 +148,7 @@ public class TrackPairer implements Consumer<Point> {
         this.downstreamTrackConsumer = downstream.trackConsumer();
         this.trackPairingRequirement = checkNotNull(trackPairingRequirement);
 
-        this.keyExtractor = Point.keyExtractor();
+        this.keyExtractor = keyExtractor();
 
         //when the internal TrackMaker produces a track call "incorporateNewTrack"
         this.trackMaker = new TrackMaker(maxTimeBetweenPointsOfSameTrack, this::incorporateNewTrack);

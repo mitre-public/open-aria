@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
  * A PointBuilder provides a literate method to assemble Point data. For example, a PointBuilder
@@ -30,12 +31,18 @@ import org.mitre.caasd.commons.LatLong;
  * <p>
  * Notice, Point data can be converted to a CommonPoint object AND/OR a {@code Map<PointField, Object>}
  */
-public class PointBuilder {
+public class PointBuilder<T> {
 
     HashMap<PointField, Object> data;
 
+    SourceDetails sourceDetails;
+
+    T rawData;
+
     public PointBuilder() {
         this.data = new HashMap<>();
+        this.sourceDetails = null;
+        this.rawData = null;
     }
 
     /**
@@ -43,9 +50,10 @@ public class PointBuilder {
      *
      * @param p A Point
      */
-    public PointBuilder(Point p) {
+    public PointBuilder(Point<T> p) {
         this();
         this.addAll(Points.toMap(p));
+        this.rawData = p.rawData();
     }
 
     /**
@@ -56,7 +64,7 @@ public class PointBuilder {
      *
      * @return This PointBuilder (to allow method chaining)
      */
-    private PointBuilder set(PointField field, Object value) {
+    private PointBuilder<T> set(PointField field, Object value) {
 
         checkArgument(field.accepts(value), field + " does not accept this value type");
 
@@ -76,58 +84,55 @@ public class PointBuilder {
         return this;
     }
 
-    public PointBuilder addAll(Map<PointField, Object> map) {
+    public PointBuilder<T> addAll(Map<PointField, Object> map) {
         for (Map.Entry<PointField, Object> entry : map.entrySet()) {
             set(entry.getKey(), entry.getValue());
         }
         return this;
     }
 
-    public PointBuilder callsign(String callsign) {
+    public PointBuilder<T> callsign(String callsign) {
         return set(PointField.CALLSIGN, callsign);
     }
 
-    public PointBuilder aircraftType(String aircraftType) {
+    public PointBuilder<T> aircraftType(String aircraftType) {
         return set(PointField.AIRCRAFT_TYPE, aircraftType);
     }
 
-    public PointBuilder trackId(String trackId) {
+    public PointBuilder<T> trackId(String trackId) {
         return set(PointField.TRACK_ID, trackId);
     }
 
-    public PointBuilder sensor(String sensor) {
-        return set(PointField.SENSOR, sensor);
+    public PointBuilder<T> sourceDetails(SourceDetails sd) {
+        this.sourceDetails = sd;
+        return this;
     }
 
-    public PointBuilder facility(String facility) {
-        return set(PointField.FACILITY, facility);
-    }
-
-    public PointBuilder beaconActual(String beaconActual) {
+    public PointBuilder<T> beaconActual(String beaconActual) {
         return set(PointField.BEACON_ACTUAL, beaconActual);
     }
 
-    public PointBuilder beaconAssigned(String beaconAssigned) {
+    public PointBuilder<T> beaconAssigned(String beaconAssigned) {
         return set(PointField.BEACON_ASSIGNED, beaconAssigned);
     }
 
-    public PointBuilder flightRules(String flightRules) {
+    public PointBuilder<T> flightRules(String flightRules) {
         return set(PointField.FLIGHT_RULES, flightRules);
     }
 
-    public PointBuilder latLong(LatLong latitudeAndLongitude) {
+    public PointBuilder<T> latLong(LatLong latitudeAndLongitude) {
         return set(PointField.LAT_LONG, latitudeAndLongitude);
     }
 
-    public PointBuilder latLong(Double latitude, Double longitude) {
+    public PointBuilder<T> latLong(Double latitude, Double longitude) {
         return set(PointField.LAT_LONG, LatLong.of(latitude, longitude));
     }
 
-    public PointBuilder altitude(Distance altitude) {
+    public PointBuilder<T> altitude(Distance altitude) {
         return set(PointField.ALTITUDE, altitude);
     }
 
-    public PointBuilder courseInDegrees(Double courseInDegrees) {
+    public PointBuilder<T> courseInDegrees(Double courseInDegrees) {
         return set(PointField.COURSE_IN_DEGREES, courseInDegrees);
     }
 
@@ -137,12 +142,12 @@ public class PointBuilder {
         }
     }
 
-    public PointBuilder speed(Double speed) {
+    public PointBuilder<T> speed(Double speed) {
         checkSpeed(speed);
         return set(PointField.SPEED, speed);
     }
 
-    public PointBuilder time(Instant time) {
+    public PointBuilder<T> time(Instant time) {
         return set(PointField.TIME, time);
     }
 
@@ -154,7 +159,7 @@ public class PointBuilder {
      *
      * @return This PointBuilder (to allow method chaining)
      */
-    private PointBuilder override(PointField field, Object value) {
+    private PointBuilder<T> override(PointField field, Object value) {
 
         checkArgument(field.accepts(value), field + " does not accept this value type");
 
@@ -173,64 +178,56 @@ public class PointBuilder {
         return this;
     }
 
-    public PointBuilder butCallsign(String callsign) {
+    public PointBuilder<T> butCallsign(String callsign) {
         return override(PointField.CALLSIGN, callsign);
     }
 
-    public PointBuilder butAircraftType(String aircraftType) {
+    public PointBuilder<T> butAircraftType(String aircraftType) {
         return override(PointField.AIRCRAFT_TYPE, aircraftType);
     }
 
-    public PointBuilder butTrackId(String trackId) {
+    public PointBuilder<T> butTrackId(String trackId) {
         return override(PointField.TRACK_ID, trackId);
     }
 
-    public PointBuilder butSensor(String sensor) {
-        return override(PointField.SENSOR, sensor);
-    }
-
-    public PointBuilder butFacility(String facility) {
-        return override(PointField.FACILITY, facility);
-    }
-
-    public PointBuilder butBeaconActual(String beaconActual) {
+    public PointBuilder<T> butBeaconActual(String beaconActual) {
         return override(PointField.BEACON_ACTUAL, beaconActual);
     }
 
-    public PointBuilder butBeaconAssigned(String beaconAssigned) {
+    public PointBuilder<T> butBeaconAssigned(String beaconAssigned) {
         return override(PointField.BEACON_ASSIGNED, beaconAssigned);
     }
 
-    public PointBuilder butFlightRules(String flightRules) {
+    public PointBuilder<T> butFlightRules(String flightRules) {
         return override(PointField.FLIGHT_RULES, flightRules);
     }
 
-    public PointBuilder butLatLong(LatLong latitudeAndLongitude) {
+    public PointBuilder<T> butLatLong(LatLong latitudeAndLongitude) {
         return override(PointField.LAT_LONG, latitudeAndLongitude);
     }
 
-    public PointBuilder butLatLong(Double latitude, Double longitude) {
+    public PointBuilder<T> butLatLong(Double latitude, Double longitude) {
         return butLatLong(LatLong.of(latitude, longitude));
     }
 
-    public PointBuilder butAltitude(Distance altitude) {
+    public PointBuilder<T> butAltitude(Distance altitude) {
         return override(PointField.ALTITUDE, altitude);
     }
 
-    public PointBuilder butCourseInDegrees(Double courseInDegrees) {
+    public PointBuilder<T> butCourseInDegrees(Double courseInDegrees) {
         return override(PointField.COURSE_IN_DEGREES, courseInDegrees);
     }
 
-    public PointBuilder butSpeed(Double speed) {
+    public PointBuilder<T> butSpeed(Double speed) {
         checkSpeed(speed);
         return override(PointField.SPEED, speed);
     }
 
-    public PointBuilder butTime(Instant time) {
+    public PointBuilder<T> butTime(Instant time) {
         return override(PointField.TIME, time);
     }
 
-    public PointBuilder butNo(PointField field) {
+    public PointBuilder<T> butNo(PointField field) {
 
         if (!data.containsKey(field)) {
             throw new IllegalStateException("The field: " + field + " has not been set");
@@ -240,11 +237,11 @@ public class PointBuilder {
         return this;
     }
 
-    public CommonPoint build() {
-        return new CommonPoint(data);
+    public CommonPoint<T> build() {
+        return new CommonPoint<T>(data, sourceDetails, rawData);
     }
 
-    public EphemeralPoint buildMutable() {
+    public EphemeralPoint<T> buildMutable() {
         return EphemeralPoint.from(build());
     }
 

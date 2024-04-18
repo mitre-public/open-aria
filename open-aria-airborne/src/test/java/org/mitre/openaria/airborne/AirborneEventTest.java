@@ -5,24 +5,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.airborne.AirborneEvent.newBuilder;
 import static org.mitre.openaria.airborne.AirborneEvent.parseJson;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
-import static org.mitre.caasd.commons.parsing.nop.Facility.D10;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 
 import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.ScoredInstant;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.caasd.commons.parsing.nop.Facility;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
 
 public class AirborneEventTest {
 
@@ -50,13 +48,12 @@ public class AirborneEventTest {
     }
 
     //simple utility method to make a test EventRecord with a known time, facility, and score
-    public static AirborneEvent testRecord(Instant time, Facility facility, double score) {
+    public static AirborneEvent testRecord(Instant time, double score) {
 
         //manually build the JSON then abuse the "JsonWritable-ness" of AirborneEvent to get a test Record
         // ick...serialization layer abuse
         String json = "{\n"
             + "  \"eventEpochMsTime\": " + time.toEpochMilli() + ",\n"
-            + "  \"facility\": \"" + facility + "\",\n"
             + "  \"eventScore\": " + score + "\n"
             + "}";
 
@@ -67,12 +64,10 @@ public class AirborneEventTest {
     public void testRecord_worksCorrectly() {
         AirborneEvent mockRecord = testRecord(
             Instant.EPOCH.plus(Duration.ofDays(12)),
-            D10,
             123.0
         );
 
         assertThat(mockRecord.time(), is(EPOCH.plus(Duration.ofDays(12))));
-        assertThat(mockRecord.nopFacility(), is(D10));
         assertThat(mockRecord.score(), is(123.0));
     }
 

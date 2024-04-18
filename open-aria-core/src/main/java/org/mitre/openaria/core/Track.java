@@ -5,12 +5,9 @@ package org.mitre.openaria.core;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
-import static org.mitre.openaria.core.PointField.AIRCRAFT_TYPE;
-import static org.mitre.openaria.core.PointField.CALLSIGN;
-import static org.mitre.openaria.core.PointField.TRACK_ID;
+import static org.mitre.openaria.core.PointField.*;
 import static org.mitre.openaria.core.Points.mostCommon;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.NavigableSet;
@@ -22,7 +19,7 @@ import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.out.JsonWritable;
 
 /**
- * A Track is just a collection of radar sensor hits.
+ * A Track is a collection of Points backed by the same type of location data.
  * <p>
  * The Track interface provides access to the underlying point data as well as a handful of
  * convenience methods that operate on that data. Ideally, all Tracks would be immutable. However,

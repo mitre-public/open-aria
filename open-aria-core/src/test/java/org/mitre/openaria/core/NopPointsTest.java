@@ -4,28 +4,25 @@ package org.mitre.openaria.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.core.IfrVfrStatus.IFR;
 import static org.mitre.openaria.core.NopPoint.parseSafely;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.NopPoints.AgwPoint;
-import org.mitre.openaria.core.NopPoints.CenterPoint;
-import org.mitre.openaria.core.NopPoints.MeartsPoint;
-import org.mitre.openaria.core.NopPoints.StarsPoint;
 import org.mitre.caasd.commons.parsing.nop.AgwRadarHit;
 import org.mitre.caasd.commons.parsing.nop.CenterRadarHit;
 import org.mitre.caasd.commons.parsing.nop.MeartsRadarHit;
 import org.mitre.caasd.commons.parsing.nop.NopMessage;
 import org.mitre.caasd.commons.parsing.nop.NopMessageType;
 import org.mitre.caasd.commons.parsing.nop.StarsRadarHit;
+import org.mitre.openaria.core.NopPoints.AgwPoint;
+import org.mitre.openaria.core.NopPoints.CenterPoint;
+import org.mitre.openaria.core.NopPoints.MeartsPoint;
+import org.mitre.openaria.core.NopPoints.StarsPoint;
+
+import org.junit.jupiter.api.Test;
 
 public class NopPointsTest {
 
@@ -183,8 +180,8 @@ public class NopPointsTest {
 
         assertEquals("SKW5840", center.callsign());
         assertEquals("CRJ2", center.aircraftType());
-        assertEquals("ZLA_B", center.sensor());
-        assertEquals("ZLA", center.facility());
+        assertEquals("ZLA_B", center.sourceDetails().sensor());
+        assertEquals("ZLA", center.sourceDetails().facility());
         assertEquals("4712", center.beaconActual());
         assertEquals("IFR", center.flightRules());
 

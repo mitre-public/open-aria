@@ -3,11 +3,11 @@ package org.mitre.openaria.airborne;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Math.abs;
+import static org.mitre.caasd.commons.Distance.mean;
+import static org.mitre.caasd.commons.Time.asZTimeString;
 import static org.mitre.openaria.airborne.SingleAircraftRecord.computeClimbRate;
 import static org.mitre.openaria.core.output.HashUtils.hashForJson;
 import static org.mitre.openaria.core.output.HashUtils.hashForStringArray;
-import static org.mitre.caasd.commons.Distance.mean;
-import static org.mitre.caasd.commons.Time.asZTimeString;
 import static org.mitre.openaria.core.utils.TimeUtils.utcDateAsString;
 
 import java.io.Reader;
@@ -20,17 +20,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import org.mitre.openaria.core.AriaEvent;
-import org.mitre.openaria.core.IfrVfrStatus;
-import org.mitre.openaria.core.PairedIfrVfrStatus;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointPair;
-import org.mitre.openaria.core.ScoredInstant;
-import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.Tracks;
-import org.mitre.openaria.core.output.HashUtils;
-import org.mitre.openaria.core.utils.ConflictAngle;
 import org.mitre.caasd.commons.Course;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
@@ -39,7 +28,16 @@ import org.mitre.caasd.commons.Speed;
 import org.mitre.caasd.commons.Spherical;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.out.JsonWritable;
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.AriaEvent;
+import org.mitre.openaria.core.IfrVfrStatus;
+import org.mitre.openaria.core.PairedIfrVfrStatus;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointPair;
+import org.mitre.openaria.core.ScoredInstant;
+import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.output.HashUtils;
+import org.mitre.openaria.core.utils.ConflictAngle;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,12 +70,10 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
     private final transient TrackPair smoothedTracks;
 
     private final String uniqueId;
-    private final Facility facility;
     private final double eventScore;
     private final String eventDate;
     private final String eventTime;
     private final long eventEpochMsTime;
-    private final String title;
     private final double latitude;
     private final double longitude;
     private final long timeToCpaInMilliSec;
@@ -129,10 +125,8 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         PointPair points = bestAvailableData().interpolatedPointsAt(event.time());
         LatLong location = points.avgLatLong();
 
-        this.facility = Tracks.facility(rawTracks.track1());
         this.eventScore = event.score();
         this.eventEpochMsTime = event.time().toEpochMilli();
-        this.title = createTitleFor(rawTracks, event.time());
         this.eventDate = utcDateAsString(event.time()); //eg "2020-02-20" "YYYY-MM-DD"
         this.eventTime = asZTimeString(event.time());  //eg "HH:mm:ss.SSS"
         this.latitude = location.latitude();
@@ -188,21 +182,21 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         return this;
     }
 
-    private String createTitleFor(TrackPair tracks, Instant eventTime) {
 
-        String acidOrBeacon1 = callsignOrBeacon(tracks.track1(), eventTime);
-        String acidOrBeacon2 = callsignOrBeacon(tracks.track2(), eventTime);
-        Facility nopFacility = Tracks.facility(tracks.track1());
-
-        String title
-            = nopFacility
-            + "--"
-            + acidOrBeacon1
-            + "--"
-            + acidOrBeacon2;
-
-        return title;
-    }
+//    private String createTitleFor(TrackPair tracks, Instant eventTime) {
+//
+//        String acidOrBeacon1 = callsignOrBeacon(tracks.track1(), eventTime);
+//        String acidOrBeacon2 = callsignOrBeacon(tracks.track2(), eventTime);
+//
+//        String title
+//            = nopFacility
+//            + "--"
+//            + acidOrBeacon1
+//            + "--"
+//            + acidOrBeacon2;
+//
+//        return title;
+//    }
 
     /**
      * @param track       A Track
@@ -270,9 +264,9 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         return laterClimbRate.isZero();
     }
 
-    public Facility nopFacility() {
-        return this.facility;
-    }
+//    public Facility nopFacility() {
+//        return this.facility;
+//    }
 
     public TrackPair rawTracks() {
         return rawTracks;
@@ -347,15 +341,6 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         }
 
         throw new IllegalArgumentException("index can only be 0 or 1, not: " + index);
-    }
-
-    /**
-     * @return A short name for this riskiestMoment that includes the Facility and Callsigns (or
-     *     beaconcodes)
-     */
-    @Override
-    public String title() {
-        return this.title;
     }
 
     @Override
@@ -484,12 +469,10 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.uniqueId);
-        hash = 29 * hash + Objects.hashCode(this.facility);
         hash = 29 * hash + (int) (Double.doubleToLongBits(this.eventScore) ^ (Double.doubleToLongBits(this.eventScore) >>> 32));
         hash = 29 * hash + Objects.hashCode(this.eventDate);
         hash = 29 * hash + Objects.hashCode(this.eventTime);
         hash = 29 * hash + (int) (this.eventEpochMsTime ^ (this.eventEpochMsTime >>> 32));
-        hash = 29 * hash + Objects.hashCode(this.title);
         hash = 29 * hash + (int) (Double.doubleToLongBits(this.latitude) ^ (Double.doubleToLongBits(this.latitude) >>> 32));
         hash = 29 * hash + (int) (Double.doubleToLongBits(this.longitude) ^ (Double.doubleToLongBits(this.longitude) >>> 32));
         hash = 29 * hash + (int) (this.timeToCpaInMilliSec ^ (this.timeToCpaInMilliSec >>> 32));
@@ -552,12 +535,6 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         if (!Objects.equals(this.eventTime, other.eventTime)) {
             return false;
         }
-        if (!Objects.equals(this.title, other.title)) {
-            return false;
-        }
-        if (this.facility != other.facility) {
-            return false;
-        }
         if (!Objects.equals(this.atEventTime, other.atEventTime)) {
             return false;
         }
@@ -600,16 +577,14 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
     /**
      * How you might name a file that contains this riskiestMoment record.
      *
-     * @return a String like "2019-11-29--D10--AA123-UAL456--12345"
+     * @return a String like "2019-11-29--76d4b281fe385000594a051467305e92"
      */
     public static String nameFile(JsonWritable anAirborneEventRecord) {
         AirborneEvent record = (AirborneEvent) anAirborneEventRecord;
 
         String date = utcDateAsString(record.time());
-        String title = record.title().replace(' ', '-');
-        String suffix = fileSuffix(record.time()); //
 
-        return date + "--" + title + "--" + suffix;
+        return date + "--" + record.uuid();
     }
 
     /** Create a 5 digit "file suffix" that uses a timestamp. */

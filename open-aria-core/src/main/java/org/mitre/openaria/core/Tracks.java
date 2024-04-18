@@ -21,7 +21,6 @@ import java.util.Optional;
 import org.mitre.caasd.commons.Time;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.Facility;
 import org.mitre.caasd.commons.parsing.nop.NopParser;
 
 /**
@@ -48,13 +47,6 @@ public class Tracks {
      */
     public static String beaconCodeAssigned(Track track) {
         return mostCommon(PointField.BEACON_ASSIGNED, track.points());
-    }
-
-    /**
-     * @return The most common facility for the points inside this Track.
-     */
-    public static Facility facility(Track track) {
-        return Facility.toFacility(mostCommon(PointField.FACILITY, track.points()));
     }
 
     /**
