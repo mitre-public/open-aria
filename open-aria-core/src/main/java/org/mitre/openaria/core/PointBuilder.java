@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.temp.Extras;
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
@@ -37,11 +39,17 @@ public class PointBuilder<T> {
 
     SourceDetails sourceDetails;
 
+    AircraftDetails acDetails;
+
+    String flightRules;
+
     T rawData;
 
     public PointBuilder() {
         this.data = new HashMap<>();
         this.sourceDetails = null;
+        this.acDetails = null;
+        this.flightRules = null;
         this.rawData = null;
     }
 
@@ -54,6 +62,18 @@ public class PointBuilder<T> {
         this();
         this.addAll(Points.toMap(p));
         this.rawData = p.rawData();
+
+        if(p instanceof Extras.HasSourceDetails hsd) {
+            this.sourceDetails = hsd.sourceDetails();
+        }
+
+        if(p instanceof Extras.HasAircraftDetails had) {
+            this.acDetails = had.acDetails();
+        }
+
+        if(p instanceof Extras.HasFlightRules hfr) {
+            this.flightRules = hfr.flightRules();
+        }
     }
 
     /**
@@ -91,13 +111,6 @@ public class PointBuilder<T> {
         return this;
     }
 
-    public PointBuilder<T> callsign(String callsign) {
-        return set(PointField.CALLSIGN, callsign);
-    }
-
-    public PointBuilder<T> aircraftType(String aircraftType) {
-        return set(PointField.AIRCRAFT_TYPE, aircraftType);
-    }
 
     public PointBuilder<T> trackId(String trackId) {
         return set(PointField.TRACK_ID, trackId);
@@ -108,16 +121,17 @@ public class PointBuilder<T> {
         return this;
     }
 
+    public PointBuilder<T> acDetails(AircraftDetails aircraftDetails) {
+        this.acDetails = aircraftDetails;
+        return this;
+    }
+
     public PointBuilder<T> beaconActual(String beaconActual) {
         return set(PointField.BEACON_ACTUAL, beaconActual);
     }
 
     public PointBuilder<T> beaconAssigned(String beaconAssigned) {
         return set(PointField.BEACON_ASSIGNED, beaconAssigned);
-    }
-
-    public PointBuilder<T> flightRules(String flightRules) {
-        return set(PointField.FLIGHT_RULES, flightRules);
     }
 
     public PointBuilder<T> latLong(LatLong latitudeAndLongitude) {
@@ -178,28 +192,9 @@ public class PointBuilder<T> {
         return this;
     }
 
-    public PointBuilder<T> butCallsign(String callsign) {
-        return override(PointField.CALLSIGN, callsign);
-    }
-
-    public PointBuilder<T> butAircraftType(String aircraftType) {
-        return override(PointField.AIRCRAFT_TYPE, aircraftType);
-    }
 
     public PointBuilder<T> butTrackId(String trackId) {
         return override(PointField.TRACK_ID, trackId);
-    }
-
-    public PointBuilder<T> butBeaconActual(String beaconActual) {
-        return override(PointField.BEACON_ACTUAL, beaconActual);
-    }
-
-    public PointBuilder<T> butBeaconAssigned(String beaconAssigned) {
-        return override(PointField.BEACON_ASSIGNED, beaconAssigned);
-    }
-
-    public PointBuilder<T> butFlightRules(String flightRules) {
-        return override(PointField.FLIGHT_RULES, flightRules);
     }
 
     public PointBuilder<T> butLatLong(LatLong latitudeAndLongitude) {
@@ -238,7 +233,7 @@ public class PointBuilder<T> {
     }
 
     public CommonPoint<T> build() {
-        return new CommonPoint<T>(data, sourceDetails, rawData);
+        return new CommonPoint<>(data, sourceDetails, acDetails, flightRules, rawData);
     }
 
     public EphemeralPoint<T> buildMutable() {

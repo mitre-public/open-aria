@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import org.junit.jupiter.api.Test;
@@ -20,30 +21,15 @@ import org.junit.jupiter.api.Test;
 public class PointBuilderTest {
 
     @Test
-    public void testDuplicateAssignment() {
-
-        String stringValue = "aString";
-
-        PointBuilder builder = new PointBuilder();
-        builder.callsign(stringValue);
-
-        assertThrows(
-            IllegalStateException.class,
-            () -> builder.callsign(stringValue),
-            "should generate an IllegalStateException due to duplicate setting"
-        );
-    }
-
-    @Test
     public void testCallsign() {
 
-        String stringValue = "aString";
+        AircraftDetails acDetails = new AircraftDetails("call", "acType");
 
-        Point p1 = (new PointBuilder()).callsign(stringValue).build();
-        Point p2 = (new PointBuilder()).callsign(null).build();
+        CommonPoint p1 = (new PointBuilder()).acDetails(acDetails).build();
+        CommonPoint p2 = (new PointBuilder()).acDetails(null).build();
 
-        assertTrue(p1.callsign().equals(stringValue));
-        assertTrue(isNull(p2.callsign()));
+        assertTrue(p1.acDetails().callsign().equals("call"));
+        assertTrue(isNull(p2.acDetails()));
     }
 
     @Test
@@ -92,18 +78,6 @@ public class PointBuilderTest {
 
         assertTrue(p1.beaconAssigned().equals(stringValue));
         assertTrue(isNull(p2.beaconAssigned()));
-    }
-
-    @Test
-    public void testFlightRules() {
-
-        String stringValue = "aString";
-
-        Point p1 = (new PointBuilder()).flightRules(stringValue).build();
-        Point p2 = (new PointBuilder()).flightRules(null).build();
-
-        assertTrue(p1.flightRules().equals(stringValue));
-        assertTrue(isNull(p2.flightRules()));
     }
 
     @Test
@@ -195,7 +169,7 @@ public class PointBuilderTest {
     private CommonPoint getTestPoint() {
 
         return (new PointBuilder())
-            .callsign("callSign")
+            .acDetails(new AircraftDetails("callsign", "acType"))
             .sourceDetails(new SourceDetails("sensor", "facility"))
             .time(Instant.now())
             .build();
@@ -215,30 +189,7 @@ public class PointBuilderTest {
         }
     }
 
-    @Test
-    public void butNo() {
-        //confirmt "butNo" does indeed remove fields from copied points.
 
-        CommonPoint testPoint = getTestPoint();
-
-        assertNotNull(testPoint.callsign());
-        assertNotNull(testPoint.sourceDetails());
-
-        Point copiedPoint = (new PointBuilder(testPoint)).butNo(PointField.CALLSIGN).build();
-
-        assertNull(copiedPoint.callsign());  //this was removed..it should be missing
-//        assertNotNull(copiedPoint.facility());  //this wasn't...it should still be here
-    }
-
-    @Test
-    public void testButCallsign() {
-
-        Point testPoint = getTestPoint();
-
-        Point p1 = (new PointBuilder(testPoint)).butCallsign("newValue").build();
-
-        assertTrue(p1.callsign().equals("newValue"));
-    }
 
 //    @Test
 //    public void testButSensor() {

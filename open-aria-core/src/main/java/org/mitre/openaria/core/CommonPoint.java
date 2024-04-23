@@ -3,7 +3,6 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.mitre.openaria.core.PointField.CURVATURE;
 import static org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import static org.mitre.openaria.core.temp.Extras.SourceDetails;
 
@@ -16,6 +15,9 @@ import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Spherical;
 import org.mitre.caasd.commons.Time;
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 
 /**
  * The purpose of CommonPoint is to be a "dependency-free data bridge" between important
@@ -24,33 +26,25 @@ import org.mitre.caasd.commons.Time;
  * Important features of this class are: <br> (1) CommonPoint does not contains (m)any dependencies
  * to external APIs. Therefore, trading CommonPoints between processes leaves each process as free
  * as possible to evolve as independent units.
- * <p>
- * (2) CommonPoint is serializable. Therefore, debugging is dramatically simplified because saving
- * failed inputs to file for future analysis is straight forward and unit tests can be simplified by
- * having "canned input" and
  */
-public class CommonPoint<T> implements Point<T>, HasSourceDetails {
+public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules {
 
-    private static final long serialVersionUID = 1L;
-
-    private final String callsign;
-    private final String aircraftType;
     private final String trackId;
     private final String beaconActual;
     private final String beaconAssigned;
-    private final String flightRules;
     private final LatLong latLong;
     private final Distance altitude;
     private final Double course;
     private final Double speed;
     private final Instant time;
-    private final Double curvature;
 
+    private final AircraftDetails acDetails;
     private final SourceDetails sourceDetails;
+    private final String flightRules;
     private final T rawData;
 
 
-    public CommonPoint(Map<PointField, Object> map, SourceDetails sourceDetails, T rawData) {
+    public CommonPoint(Map<PointField, Object> map, SourceDetails sourceDetails, AircraftDetails acDetails, String flightRules, T rawData) {
 
         for (Map.Entry<PointField, Object> entry : map.entrySet()) {
             checkArgument(
@@ -59,47 +53,19 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails {
             );
         }
 
-        this.callsign = (String) map.get(PointField.CALLSIGN);
-        this.aircraftType = (String) map.get(PointField.AIRCRAFT_TYPE);
         this.trackId = (String) map.get(PointField.TRACK_ID);
         this.beaconActual = (String) map.get(PointField.BEACON_ACTUAL);
         this.beaconAssigned = (String) map.get(PointField.BEACON_ASSIGNED);
-        this.flightRules = (String) map.get(PointField.FLIGHT_RULES);
         this.latLong = (LatLong) map.get(PointField.LAT_LONG);
         this.altitude = (Distance) map.get(PointField.ALTITUDE);
         this.course = (Double) map.get(PointField.COURSE_IN_DEGREES);
         this.speed = (Double) map.get(PointField.SPEED);
         this.time = (Instant) map.get(PointField.TIME);
-        this.curvature = (Double) map.get(CURVATURE);
 
+        this.acDetails = acDetails;
         this.sourceDetails = sourceDetails;
+        this.flightRules = flightRules;
         this.rawData = rawData;
-
-        confirmNoEmptyStrings();
-    }
-
-    private CommonPoint(CommonPoint<T> copyMe, PointField field, Object newValue) {
-
-        checkArgument(
-            field.accepts(newValue),
-            "The PointField " + field + " was paired with an illegal value type"
-        );
-
-        this.callsign = (field == PointField.CALLSIGN) ? ((String) newValue) : copyMe.callsign;
-        this.aircraftType = (field == PointField.AIRCRAFT_TYPE) ? ((String) newValue) : copyMe.aircraftType;
-        this.trackId = (field == PointField.TRACK_ID) ? ((String) newValue) : copyMe.trackId;
-        this.beaconActual = (field == PointField.BEACON_ACTUAL) ? ((String) newValue) : copyMe.beaconActual;
-        this.beaconAssigned = (field == PointField.BEACON_ASSIGNED) ? ((String) newValue) : copyMe.beaconAssigned;
-        this.flightRules = (field == PointField.FLIGHT_RULES) ? ((String) newValue) : copyMe.flightRules;
-        this.latLong = (field == PointField.LAT_LONG) ? ((LatLong) newValue) : copyMe.latLong;
-        this.altitude = (field == PointField.ALTITUDE) ? ((Distance) newValue) : copyMe.altitude;
-        this.course = (field == PointField.COURSE_IN_DEGREES) ? ((Double) newValue) : copyMe.course;
-        this.speed = (field == PointField.SPEED) ? ((Double) newValue) : copyMe.speed;
-        this.time = (field == PointField.TIME) ? ((Instant) newValue) : copyMe.time;
-        this.curvature = (field == CURVATURE) ? ((Double) newValue) : copyMe.curvature;
-
-        this.sourceDetails = copyMe.sourceDetails;
-        this.rawData = copyMe.rawData;
 
         confirmNoEmptyStrings();
     }
@@ -179,24 +145,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails {
             "The boundary point \"pointJustAfter\" cannot come occur BEFORE this point's time");
     }
 
-    public Point<T> getCopyWithDeducedCourseAndSpeed(Point<T> pointJustBefore, Point<T> pointJustAfter) {
-
-        Map<PointField, Object> map = Points.toMap(this);
-        map.put(PointField.SPEED, deduceSpeed(pointJustBefore, pointJustAfter));
-        map.put(PointField.COURSE_IN_DEGREES, deduceCourse(pointJustBefore, pointJustAfter));
-
-        return new CommonPoint(map, null, pointJustBefore.rawData());
-    }
-
-    @Override
-    public String callsign() {
-        return this.callsign;
-    }
-
-    @Override
-    public String aircraftType() {
-        return this.aircraftType;
-    }
 
     @Override
     public String trackId() {
@@ -211,11 +159,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails {
     @Override
     public String beaconAssigned() {
         return this.beaconAssigned;
-    }
-
-    @Override
-    public String flightRules() {
-        return this.flightRules;
     }
 
     @Override
@@ -239,11 +182,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails {
     }
 
     @Override
-    public Double curvature() {
-        return this.curvature;
-    }
-
-    @Override
     public LatLong latLong() {
         return this.latLong;
     }
@@ -256,5 +194,15 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails {
     @Override
     public T rawData() {
         return rawData;
+    }
+
+    @Override
+    public AircraftDetails acDetails() {
+        return this.acDetails;
+    }
+
+    @Override
+    public String flightRules() {
+        return this.flightRules;
     }
 }

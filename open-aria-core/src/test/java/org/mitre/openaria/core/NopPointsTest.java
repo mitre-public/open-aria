@@ -273,7 +273,7 @@ public class NopPointsTest {
         CenterPoint point = new CenterPoint(CENTER_RH_WITH_OTP);
         assertThat(point.flightRules(), is("OTP"));
 
-        assertThat(point.flightRulesAsEnum(), is(IFR));
+        assertThat(IfrVfrStatus.from(point.flightRules()), is(IFR));
     }
 
     public static final String MEARTS_RH_NO_TRACKID = "[RH],MEARTS,ZUA_B,11-05-2019,15:28:06.020,UAL185,B737,L,2646,400,450,239,011.6384,141.6778,,,67.50287,145.9169,,ZUA/1F,,ZUA_B,,,,,,,,,,,,E1430,400//400,,L,1,{RH}";

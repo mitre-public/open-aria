@@ -15,6 +15,9 @@ import java.util.HashMap;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 
 /**
  * An EphemeralPoint is a MutablePoint that is meant to be <b>repeatedly</b> manipulated.
@@ -23,30 +26,43 @@ import org.mitre.caasd.commons.LatLong;
  * during Track smoothing). In this case, repeatedly copying data from Immutable Point to Immutable
  * Point can become costly.
  */
-public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails{
+public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules {
 
     private final HashMap<PointField, Object> data;
 
     private SourceDetails sourceDetails;
 
+    private AircraftDetails acDetails;
+
+    private String flightRules;
+
     private T rawData;
 
-    public static <T> EphemeralPoint<T> from(Point<T> sourcePoint, SourceDetails sourceDetails) {
-        return new EphemeralPoint<T>(sourcePoint, sourceDetails);
-    }
-
     public static <T> EphemeralPoint<T> from(Point<T> sourcePoint) {
-        if(sourcePoint instanceof HasSourceDetails) {
-            SourceDetails sd = ((HasSourceDetails) sourcePoint).sourceDetails();
-            return new EphemeralPoint<T>(sourcePoint, sd);
+        SourceDetails sourceDetails = null;
+        AircraftDetails acDetails = null;
+        String flightRules = null;
+
+        if(sourcePoint instanceof HasSourceDetails hsd) {
+            sourceDetails = hsd.sourceDetails();
         }
 
-        return new EphemeralPoint<>(sourcePoint, null);
+        if(sourcePoint instanceof HasAircraftDetails had) {
+            acDetails = had.acDetails();
+        }
+
+        if(sourcePoint instanceof HasFlightRules hfr) {
+            flightRules = hfr.flightRules();
+        }
+
+        return new EphemeralPoint<T>(sourcePoint, sourceDetails, acDetails, flightRules);
     }
 
-    private EphemeralPoint(Point<T> sourcePoint, SourceDetails sd) {
+    private EphemeralPoint(Point<T> sourcePoint, SourceDetails sd, AircraftDetails acDetails, String flightRules) {
         this.data = newHashMap(toMap(sourcePoint));
         this.sourceDetails = sd;
+        this.acDetails = acDetails;
+        this.flightRules = flightRules;
         this.rawData = sourcePoint.rawData();
     }
 
@@ -79,15 +95,10 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails{
         this.sourceDetails = sd;
     }
 
-    @Override
-    public String callsign() {
-        return (String) data.get(CALLSIGN);
+    public void set(AircraftDetails acDetails) {
+        this.acDetails = acDetails;
     }
 
-    @Override
-    public String aircraftType() {
-        return (String) data.get(AIRCRAFT_TYPE);
-    }
 
     @Override
     public String trackId() {
@@ -106,7 +117,7 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails{
 
     @Override
     public String flightRules() {
-        return (String) data.get(FLIGHT_RULES);
+        return flightRules;
     }
 
     @Override
@@ -135,13 +146,13 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails{
     }
 
     @Override
-    public Double curvature() {
-        return (Double) data.get(CURVATURE);
+    public SourceDetails sourceDetails() {
+        return sourceDetails;
     }
 
     @Override
-    public SourceDetails sourceDetails() {
-        return sourceDetails;
+    public AircraftDetails acDetails() {
+        return acDetails;
     }
 
     @Override

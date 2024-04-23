@@ -3,11 +3,7 @@ package org.mitre.openaria.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mitre.openaria.core.IfrVfrStatus.IFR;
-import static org.mitre.openaria.core.IfrVfrStatus.VFR;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -48,34 +44,6 @@ public class PointTest {
         assertTrue(point.hasValidBeaconActual());
     }
 
-    @Test
-    public void testFlightRulesAsEnum_VFR() {
-        String rawNop = "[RH],STARS,D21_B,03/24/2018,14:42:00.130,N518SP,C172,,5256,032,110,186,042.92704,-083.70974,3472,5256,-14.5730,42.8527,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
-        Point point = NopPoint.from(rawNop);
-
-        assertTrue(point.hasFlightRules());
-        assertFalse(point.flightRulesIsMissing());
-        assertEquals(VFR, point.flightRulesAsEnum());
-    }
-
-    @Test
-    public void testFlightRulesAsEnum_IFR() {
-        String rawNop = "[RH],STARS,D21_B,03/24/2018,15:09:14.157,,,,1200,015,059,062,042.20658,-083.77467,2643,0000,-17.6355,-0.3504,,,,D21,,,,,,ACT,IFR,,00000,,,,,,,1,,0,{RH}";
-        Point point = NopPoint.from(rawNop);
-
-        assertTrue(point.hasFlightRules());
-        assertFalse(point.flightRulesIsMissing());
-        assertEquals(IFR, point.flightRulesAsEnum());
-    }
-
-    @Test
-    public void testFlightRulesIsMissing_true() {
-        String rawNop = "[RH],STARS,D21_B,03/24/2018,15:09:14.157,,,,1200,015,059,062,042.20658,-083.77467,2643,0000,-17.6355,-0.3504,,,,D21,,,,,,ACT,,,00000,,,,,,,1,,0,{RH}";
-        Point point = NopPoint.from(rawNop);
-
-        assertFalse(point.hasFlightRules());
-        assertTrue(point.flightRulesIsMissing());
-    }
 
     @Test
     public void test_hasTrackId() {

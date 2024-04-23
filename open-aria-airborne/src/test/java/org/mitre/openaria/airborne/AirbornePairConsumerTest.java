@@ -114,7 +114,7 @@ public class AirbornePairConsumerTest {
         AirborneEvent eventFromComputation = processCannedPair(scaryTrackPair());
         String json = eventFromComputation.asJson();
 
-//		System.out.println("Event From Computation:\n" + json);
+		System.out.println("Event From Computation:\n" + json);
 
         //ALSO, load the output from the last time this canned data was processed
         //this file was created by saving the result calling "String json = eventFromComputation.asJson()"
@@ -123,7 +123,7 @@ public class AirbornePairConsumerTest {
 
         assertThat(eventFromComputation.asJson(), is(eventFromFile.asJson()));
 
-        String expectedUuid = "291950f4ec4a102f39f4adbba6155ee4";
+        String expectedUuid = "48d97732570107da3a3a2037df21300f";
         assertThat(eventFromComputation.uuid(), is(expectedUuid));
         assertThat(json.contains(expectedUuid), is(true));
 

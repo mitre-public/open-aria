@@ -5,8 +5,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Collection;
-
-import com.google.common.collect.ImmutableSortedSet;
+import java.util.Collections;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 /**
  * A SimpleTrack maintains a fixed Collection of Points. These points may be instantiations of one
@@ -14,14 +15,12 @@ import com.google.common.collect.ImmutableSortedSet;
  */
 public class SimpleTrack implements Track {
 
-    private static final long serialVersionUID = 1L;
-
-    private final ImmutableSortedSet<Point> points;
+    private final NavigableSet<Point> points;
 
     public SimpleTrack(Collection<? extends Point> points) {
         checkNotNull(points);
         checkArgument(!points.isEmpty(), "The collection of input points cannot be empty");
-        this.points = ImmutableSortedSet.copyOf(points);
+        this.points = Collections.unmodifiableNavigableSet(new TreeSet<>(points));
     }
 
     /**
@@ -31,7 +30,7 @@ public class SimpleTrack implements Track {
      *     interface.
      */
     @Override
-    public ImmutableSortedSet<Point> points() {
+    public NavigableSet<Point> points() {
         return points;
     }
 

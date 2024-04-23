@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.fileutil.FileUtils;
 import org.mitre.caasd.commons.parsing.nop.NopMessage;
 import org.mitre.caasd.commons.parsing.nop.NopMessageType;
 import org.mitre.caasd.commons.parsing.nop.NopParser;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class PointIteratorTest {
 
@@ -84,7 +85,7 @@ public class PointIteratorTest {
             Point next = iter.next();
 
             if (numPoints == 0) {
-                assertEquals("N732JE", next.callsign());
+                assertEquals(new LatLong(032.35068,-084.54589), next.latLong());
             }
             if (numPoints == 1) {
                 assertEquals(LatLong.of(032.72556, -082.78178), next.latLong());

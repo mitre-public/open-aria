@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +54,7 @@ public class TracksTest {
 
         Point p2 = (new PointBuilder())
             .time(Instant.EPOCH.plusSeconds(4))
-            .callsign("AA123")
+            .acDetails(new AircraftDetails("AA123", "BOEING"))
             .latLong(0.0, 1.0)
             .build();
 
@@ -71,7 +72,7 @@ public class TracksTest {
 
         assertEquals(
             "[RH],STARS,,01/01/1970,00:00:00.000,,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
-                + "[RH],STARS,,01/01/1970,00:00:04.000,AA123,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
+                + "[RH],STARS,,01/01/1970,00:00:04.000,AA123,BOEING,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
                 + "[RH],STARS,,01/01/1970,00:00:08.000,,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n",
             track.asNop()
         );

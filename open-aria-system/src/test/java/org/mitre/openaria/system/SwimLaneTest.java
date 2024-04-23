@@ -10,10 +10,11 @@ import java.io.File;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class SwimLaneTest {
 
@@ -41,8 +42,8 @@ public class SwimLaneTest {
         //Create a SwimLane that can hold exactly 1 point
         SwimLane lane = new SwimLane(simpleStreamingKpi(), 1);
 
-        Point p1 = Point.builder().callsign("A").latLong(0.0, 1.0).time(EPOCH).build();
-        Point p2 = Point.builder().callsign("B").latLong(0.0, 1.0).time(EPOCH.plusSeconds(1)).build();
+        Point p1 = Point.builder().latLong(0.0, 1.0).time(EPOCH).build();
+        Point p2 = Point.builder().latLong(0.0, 1.0).time(EPOCH.plusSeconds(1)).build();
 
         lane.offerToQueue(p1);
         lane.offerToQueue(p2);
@@ -55,7 +56,7 @@ public class SwimLaneTest {
     public void swimLaneEmitsBreadcrumbsOnOverflow() {
 
         SwimLane lane = new SwimLane(simpleStreamingKpi(), 1);
-        Point point = Point.builder().callsign("A").latLong(0.0, 1.0).time(EPOCH).build();
+        Point point = Point.builder().latLong(0.0, 1.0).time(EPOCH).build();
 
         //these files should be made when the swim lane rejects data because the queue was full
         File warn1 = new File(OVER_FLOW_FILEPREFIX + 1 + ".txt");

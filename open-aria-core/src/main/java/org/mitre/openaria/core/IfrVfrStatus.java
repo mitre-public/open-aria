@@ -7,7 +7,7 @@ import java.util.Set;
 
 public enum IfrVfrStatus {
 
-    IFR, //Instramented Flight Rules
+    IFR, //Instrumented Flight Rules
     VFR; //Visual Flight Rules
 
     private static final Set<String> IFR_VALUES = newHashSet("IFR", "OTP");

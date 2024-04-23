@@ -1,10 +1,13 @@
 package org.mitre.openaria;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -55,14 +58,11 @@ public class RunAirborneOnFileTest {
         );
 
         File eventDir = new File("detectedEvents");
-        File event1 = new File(eventDir, "2018-03-24--7dfdb6a688c0391d599e72efc16e9a5b.json");
-        File event2 = new File(eventDir, "2018-03-24--14e0b873807698e2982efe2605a8b094.json");
-        File event3 = new File(eventDir, "2018-03-24--019a57b51971c96ec970bb7029ed7c3e.json");
+        File[] eventFiles = eventDir.listFiles();
 
-        event1.delete();
-        event2.delete();
-        event3.delete();
+        assertThat(eventFiles.length, is(2));
 
+        Stream.of(eventFiles).forEach(file -> file.delete());
         Files.deleteIfExists(eventDir.toPath());
     }
 
@@ -81,14 +81,11 @@ public class RunAirborneOnFileTest {
         );
 
         File eventDir = new File("detectedEvents");
-        File event1 = new File(eventDir, "2018-03-24--7dfdb6a688c0391d599e72efc16e9a5b.json");
-        File event2 = new File(eventDir, "2018-03-24--14e0b873807698e2982efe2605a8b094.json");
-        File event3 = new File(eventDir, "2018-03-24--019a57b51971c96ec970bb7029ed7c3e.json");
+        File[] eventFiles = eventDir.listFiles();
 
-        event1.delete();
-        event2.delete();
-        event3.delete();
+        assertThat(eventFiles.length, is(2));
 
+        Stream.of(eventFiles).forEach(file -> file.delete());
         Files.deleteIfExists(eventDir.toPath());
 
         File targetAvroFile = new File("allEvents.avro");
