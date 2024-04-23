@@ -7,17 +7,16 @@ import static com.google.common.collect.Sets.newTreeSet;
 import java.util.NavigableSet;
 import java.util.Optional;
 
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * Filters out low speed points at the front and back of a track. This filter can be useful when
  * attempting to remove ground-data from Tracks (in cases where you only are interested in the
  * airborne section of a track).
  */
-public class TrimLowSpeedPoints implements DataCleaner<Track> {
+public class TrimLowSpeedPoints<T> implements DataCleaner<Track> {
 
     private final double speedLimitInKnots;
     private final int minNumberPoints;
@@ -46,7 +45,7 @@ public class TrimLowSpeedPoints implements DataCleaner<Track> {
         while (!points.isEmpty() && points.last().speedInKnots() < speedLimitInKnots) {
             points.pollLast();
         }
-        return (points.size() >= minNumberPoints) ? Optional.of(new SimpleTrack(points)) : Optional.empty();
+        return (points.size() >= minNumberPoints) ? Optional.of(Track.of(points)) : Optional.empty();
     }
 
 }

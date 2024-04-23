@@ -13,7 +13,6 @@ import com.google.common.collect.Multiset;
  */
 public class Misc {
 
-
     /**
      * Build a "frequency sorted view" of a dataset
      *
@@ -24,7 +23,6 @@ public class Misc {
      */
     public static <T> List<Multiset.Entry<T>> asMultiset(Iterable<T> iterable) {
 
-        //Convert Guava multiset to "local api" --> sort entries
         Multiset<T> multiset = HashMultiset.create(iterable);
 
         return multiset.entrySet().stream()

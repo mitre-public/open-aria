@@ -200,7 +200,7 @@ public class Tracks {
 
         List<Point> points = newArrayList(ptIter);
 
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 
     /**
@@ -218,7 +218,7 @@ public class Tracks {
      * @return An approximation of the amount of time these two tracks spent in close proximity to
      *     one another.
      */
-    public static Duration computeTimeInCloseProximity(Track t1, Track t2, Duration timeStep, double distInNm) {
+    public static <T> Duration computeTimeInCloseProximity(Track t1, Track t2, Duration timeStep, double distInNm) {
 
         TimeWindow overlap = t1.getOverlapWith(t2).get();
         long endTimeInEpochMs = overlap.end().toEpochMilli();

@@ -4,19 +4,19 @@ package org.mitre.openaria.smoothing;
 import static java.time.Instant.EPOCH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.lessThan;
-import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class AccelerationOutlierDetectorTest {
 
@@ -127,7 +127,7 @@ public class AccelerationOutlierDetectorTest {
             points.add(Point.builder().time(time).latLong(position).build());
         }
 
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 
     private Track trackWithSingleOutlierAtEnd() {
@@ -151,6 +151,6 @@ public class AccelerationOutlierDetectorTest {
                 .build()
         );
 
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 }

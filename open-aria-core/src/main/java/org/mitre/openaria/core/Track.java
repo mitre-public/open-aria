@@ -2,14 +2,18 @@
 
 package org.mitre.openaria.core;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 import static org.mitre.openaria.core.PointField.TRACK_ID;
 import static org.mitre.openaria.core.Points.mostCommon;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.Optional;
@@ -22,28 +26,41 @@ import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 import org.mitre.openaria.core.utils.Misc;
 
 /**
- * A Track is a collection of Points backed by the same type of location data.
+ * A Track is a NavigableSet of Points backed by the same type of raw location data.
  * <p>
- * The Track interface provides access to the underlying point data as well as a handful of
+ * Track provides access to the underlying point data as well as a handful of
  * convenience methods that operate on that data. Ideally, all Tracks would be immutable. However,
  * this interface does not require immutability because it is far more efficient to directly
  * manipulate Track data when implementing DataCleaners that correct flawed data (like outlier
  * removers and other noise reduction techniques.)
  */
-public interface Track extends JsonWritable {
+public record Track(NavigableSet<Point> points) implements JsonWritable {
+
+    public Track {
+        requireNonNull(points);
+        checkArgument(!points.isEmpty());
+    }
+
+    public static Track of(Collection<Point> points) {
+        TreeSet<Point> pts = new TreeSet<>(points);
+        return new Track(unmodifiableNavigableSet(pts));
+    }
+
 
     /** @return The Points that are inside this track (sorted in time order). */
-    NavigableSet<? extends Point> points();
+    public NavigableSet<Point> points() {
+        return this.points;
+    }
 
-    default int size() {
+    public int size() {
         return points().size();
     }
 
-    default String trackId() {
+    public String trackId() {
         return mostCommon(TRACK_ID, points());
     }
 
-    default String aircraftType() {
+    public String aircraftType() {
 
         List<String> aircraftTypes = points().stream()
             .filter(p -> p instanceof HasAircraftDetails)
@@ -54,7 +71,7 @@ public interface Track extends JsonWritable {
         return aircraftTypes.isEmpty() ? "UNKNOWN" : Misc.mostCommon(aircraftTypes);
     }
 
-    default String callsign() {
+    public String callsign() {
         List<String> callsigns = points().stream()
             .filter(p -> p instanceof HasAircraftDetails)
             .map(p -> ((HasAircraftDetails)p).acDetails().callsign())
@@ -69,7 +86,7 @@ public interface Track extends JsonWritable {
      *     Messages. This method relies on each contained Point object to provide the best possible
      *     "nop representation" of itself.
      */
-    default String asNop() {
+    public String asNop() {
 
         //rely on the each point to generate the best possible "nop representation" of itself.
         StringBuilder sb = new StringBuilder();
@@ -82,11 +99,10 @@ public interface Track extends JsonWritable {
     /**
      * @return The minimum TimeWindow that contains all Points within this Track."
      */
-    default TimeWindow asTimeWindow() {
-        NavigableSet<? extends Point> pts = points();
+    public TimeWindow asTimeWindow() {
         return TimeWindow.of(
-            pts.first().time(),
-            pts.last().time()
+            points().first().time(),
+            points().last().time()
         );
     }
 
@@ -95,7 +111,7 @@ public interface Track extends JsonWritable {
      *
      * @return An Optional containing the overlap (in time) between these two Tracks.
      */
-    default Optional<TimeWindow> getOverlapWith(Track otherTrack) {
+    public Optional<TimeWindow> getOverlapWith(Track otherTrack) {
         return asTimeWindow().getOverlapWith(otherTrack.asTimeWindow());
     }
 
@@ -106,7 +122,7 @@ public interface Track extends JsonWritable {
      *     supplied moment in time. An empty optional is returned if the time parameter is outside
      *     this track's TimeWindow (this method interpolates, it does not extrapolate).
      */
-    default Optional<Point> interpolatedPoint(Instant time) {
+    public Optional<Point> interpolatedPoint(Instant time) {
 
         //here we interpolate, we do not extrapolate.
         if (!asTimeWindow().contains(time)) {
@@ -115,7 +131,6 @@ public interface Track extends JsonWritable {
 
         Point pointWithTime = Point.builder().time(time).build();
 
-        NavigableSet<Point> points = (NavigableSet<Point>) points();
         Point ceiling = points.ceiling(pointWithTime);
         Point floor = points.floor(pointWithTime);
 
@@ -135,7 +150,7 @@ public interface Track extends JsonWritable {
      *
      * @return A NavigableSet contain at most k Points from this Track.
      */
-    default NavigableSet<Point> kNearestPoints(Instant time, int k) {
+    public NavigableSet<Point> kNearestPoints(Instant time, int k) {
         return Points.fastKNearestPoints(points(), time, k);
     }
 
@@ -147,14 +162,14 @@ public interface Track extends JsonWritable {
      *
      * @return Exactly 1 Point from this Track
      */
-    default Point nearestPoint(Instant time) {
+    public Point nearestPoint(Instant time) {
         return kNearestPoints(time, 1).first();
     }
 
     /**
      * @return A completely independent, and mutable, copy of this Track
      */
-    default MutableTrack mutableCopy() {
+    public MutableTrack mutableCopy() {
         ArrayList<MutablePoint> mutablePoints = points().stream()
             .map(p -> EphemeralPoint.from(p))
             .collect(toCollection(ArrayList::new));
@@ -175,7 +190,7 @@ public interface Track extends JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    default TreeSet<? extends Point> subset(Predicate<Point> includeIfTrue) {
+    public TreeSet<Point> subset(Predicate<Point> includeIfTrue) {
         checkNotNull(includeIfTrue);
 
         return points()
@@ -195,7 +210,7 @@ public interface Track extends JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    default TreeSet<? extends Point> subset(TimeWindow window) {
+    public TreeSet<Point> subset(TimeWindow window) {
         checkNotNull(window);
         return subset(window.start(), window.end());
     }
@@ -212,18 +227,18 @@ public interface Track extends JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    default TreeSet<? extends Point> subset(Instant startTime, Instant endTime) {
+    public TreeSet<Point> subset(Instant startTime, Instant endTime) {
         return Points.subset(
             TimeWindow.of(startTime, endTime),
-            (NavigableSet<Point>) points()
+            points()
         );
     }
 
-    default Instant startTime() {
+    public Instant startTime() {
         return points().first().time();
     }
 
-    default Instant endTime() {
+    public Instant endTime() {
         return points().last().time();
     }
 }

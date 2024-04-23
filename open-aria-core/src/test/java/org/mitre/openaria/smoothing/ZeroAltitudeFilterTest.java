@@ -1,18 +1,17 @@
 package org.mitre.openaria.smoothing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 import static org.mitre.openaria.smoothing.TrackSmoothing.coreSmoothing;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class ZeroAltitudeFilterTest {
 
@@ -60,7 +59,7 @@ public class ZeroAltitudeFilterTest {
     public void smoothTrackWithAllZeroAltitudesTest() {
 
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "allPointsHaveZeroAltitude.txt").mutableCopy();
-        Optional<Track> cleaned = coreSmoothing().clean(track);
+        Optional<Track> cleaned = coreSmoothing().clean(track.immutableCopy());
 
         assertFalse(cleaned.isPresent());
     }
@@ -69,7 +68,7 @@ public class ZeroAltitudeFilterTest {
     public void smoothTrackThatStartsWithZeroAltitudesTest() {
 
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "firstPointsHaveZeroAltitude.txt").mutableCopy();
-        Track cleaned = coreSmoothing().clean(track).get();
+        Track cleaned = coreSmoothing().clean(track.immutableCopy()).get();
 
         assertEquals(40000.0, cleaned.points().first().altitude().inFeet(), 0.1);
     }
@@ -78,7 +77,7 @@ public class ZeroAltitudeFilterTest {
     public void smoothTrackThatEndsWithZeroAltitudesTest() {
 
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "lastPointsHaveZeroAltitude.txt").mutableCopy();
-        Track cleaned = coreSmoothing().clean(track).get();
+        Track cleaned = coreSmoothing().clean(track.immutableCopy()).get();
 
         assertEquals(19600.0, cleaned.points().last().altitude().inFeet(), 0.1);
     }
@@ -87,7 +86,7 @@ public class ZeroAltitudeFilterTest {
     public void smoothTrackWithZeroAltitudesInMiddleTest() {
 
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "middleOfTrackHasZeroAltitudes.txt").mutableCopy();
-        Track cleaned = coreSmoothing().clean(track).get();
+        Track cleaned = coreSmoothing().clean(track.immutableCopy()).get();
 
         Optional<? extends Point> missing = cleaned.points().stream().filter(pt -> pt.altitudeIsMissing() || pt.altitude().inFeet() <= 0.0).findFirst();
 

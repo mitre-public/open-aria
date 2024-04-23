@@ -10,17 +10,17 @@ import static org.mitre.caasd.commons.Time.durationBtw;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointBuilder;
-import org.mitre.openaria.core.SimpleTrack;
 import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class TimeDownSamplerTest {
 
     public static Track testTrack() {
-        return new SimpleTrack(newArrayList(
+        return Track.of(newArrayList(
             newPoint(EPOCH),
             newPoint(EPOCH.plusSeconds(1)),
             newPoint(EPOCH.plusSeconds(2)),

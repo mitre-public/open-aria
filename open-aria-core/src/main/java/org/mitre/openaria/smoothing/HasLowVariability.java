@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.Pair;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 import com.google.common.base.Preconditions;
 
@@ -19,7 +19,7 @@ import com.google.common.base.Preconditions;
  * that reflected off a stationary objects (like a radio tower or tall building). This phenomenon
  * produces very long tracks that have very little movement.
  */
-public class HasLowVariability<T extends Track> implements Predicate<T> {
+public class HasLowVariability implements Predicate<MutableTrack> {
 
     private final int trackSizeReq;
     private final double fracUniqueLocations;
@@ -56,13 +56,13 @@ public class HasLowVariability<T extends Track> implements Predicate<T> {
     }
 
     @Override
-    public boolean test(Track track) {
+    public boolean test(MutableTrack track) {
         if (track.size() < trackSizeReq) {
             return false;
         }
 
         Set<Pair<Integer, Integer>> positions = track.points().stream()
-            .map((x) -> getRoundedPositionValue(x))
+            .map(x -> getRoundedPositionValue(x))
             .collect(Collectors.toSet());
 
         //values as double, not ints

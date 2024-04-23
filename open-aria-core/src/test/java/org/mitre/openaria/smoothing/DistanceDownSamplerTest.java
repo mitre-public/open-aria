@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.LinkedList;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
 import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class DistanceDownSamplerTest {
 
@@ -51,7 +51,7 @@ public class DistanceDownSamplerTest {
         addStagnantPoints(points);
         addMovingPoints(points);
 
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 
     private void addMovingPoints(LinkedList<Point> points) {

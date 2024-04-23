@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.caasd.commons.Distance;
 import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.Track;
-import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.caasd.commons.Distance;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 /**
  * A VerticalOutlierDetector can perform two highly related tasks. It can be used as a DataCleaner
@@ -85,7 +85,7 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
      *
      * @return An AnalysisResult object that summarizes the altitude analysis.
      */
-    private AnalysisResult analyzePoint(Point testPoint, Track track) {
+    private AnalysisResult analyzePoint(Point testPoint, MutableTrack track) {
 
         Collection<Point> pointsNearby = track.kNearestPoints(
             testPoint.time(),

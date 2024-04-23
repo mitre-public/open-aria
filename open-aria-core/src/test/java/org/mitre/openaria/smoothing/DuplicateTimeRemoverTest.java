@@ -8,12 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
+import org.mitre.caasd.commons.Distance;
+import org.mitre.openaria.core.EphemeralPoint;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointBuilder;
+import org.mitre.openaria.core.Track;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.*;
-import org.mitre.caasd.commons.Distance;
 
 public class DuplicateTimeRemoverTest {
 
@@ -107,7 +112,7 @@ public class DuplicateTimeRemoverTest {
             .map(pt -> EphemeralPoint.from(pt))
             .toList();
 
-        return new SimpleTrack(points).mutableCopy();
+        return Track.of( (List) points).mutableCopy();
     }
 
     private Matcher<MutableTrack> hasSameTimesAs(MutableTrack expected) {

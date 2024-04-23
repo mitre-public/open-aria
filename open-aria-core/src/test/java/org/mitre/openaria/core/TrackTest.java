@@ -5,31 +5,28 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Optional.empty;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
-import static org.mitre.openaria.core.Tracks.createTrackFromFile;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.Functions.ALWAYS_FALSE;
 import static org.mitre.caasd.commons.Functions.ALWAYS_TRUE;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
+import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
+import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.NavigableSet;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.parsing.nop.NopParsingUtils;
 
+import org.junit.jupiter.api.Test;
+
 
 public class TrackTest {
+
 
     @Test
     public void testKNearestPoints() {
@@ -67,7 +64,7 @@ public class TrackTest {
 
         Instant t1 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:17.000");
 
-        Track fullTrack = new SimpleTrack(newArrayList(p1, p2, p3, p4, p5, p6));
+        Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
 
         Optional<Point> result = fullTrack.interpolatedPoint(t1);
         assertTrue(result.isPresent());
@@ -88,12 +85,12 @@ public class TrackTest {
         Instant t2 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:29.000");
         Instant t3 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:42.000");
 
-        Track fullTrack = new SimpleTrack(newArrayList(p1, p2, p3, p4, p5, p6));
-        Track firstHalf = new SimpleTrack(newArrayList(p1, p2, p3));
-        Track secondHalf = new SimpleTrack(newArrayList(p4, p5, p6));
+        Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
+        Track firstHalf = Track.of(newArrayList(p1, p2, p3));
+        Track secondHalf = Track.of(newArrayList(p4, p5, p6));
 
-        Track firstAndThirdPoints = new SimpleTrack(newArrayList(p1, p3));
-        Track secondAndFourthPoints = new SimpleTrack(newArrayList(p2, p4));
+        Track firstAndThirdPoints = Track.of(newArrayList(p1, p3));
+        Track secondAndFourthPoints = Track.of(newArrayList(p2, p4));
 
         assertEquals(
             fullTrack.getOverlapWith(firstHalf).get(),
@@ -132,14 +129,14 @@ public class TrackTest {
         assertThat(t1.size(), is(NUM_TRACK_POINTS));
 
         //get everything
-        Collection<Point> everything = t1.subset(ALWAYS_TRUE);
+        Collection<Point<String>> everything = t1.subset(ALWAYS_TRUE);
         assertThat(everything, hasSize(NUM_TRACK_POINTS));
 
         //get nothing
-        Collection<Point> nothing = t1.subset(ALWAYS_FALSE);
+        Collection<Point<String>> nothing = t1.subset(ALWAYS_FALSE);
         assertThat(nothing, hasSize(0));
 
-        Collection<Point> lowSpeedPoints = (Collection<Point>) t1.subset(pt -> pt.speedInKnots() < 90);
+        Collection<Point> lowSpeedPoints = t1.subset(pt -> pt.speedInKnots() < 90);
 
         //get something...
         assertThat(lowSpeedPoints, not(empty()));

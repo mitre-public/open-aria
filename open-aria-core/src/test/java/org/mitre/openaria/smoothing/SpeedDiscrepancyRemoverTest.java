@@ -9,11 +9,11 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class SpeedDiscrepancyRemoverTest {
 
@@ -99,7 +99,7 @@ public class SpeedDiscrepancyRemoverTest {
     }
 
     private Track cleanTrack(TreeSet<Point> trackPoints) {
-        return CLEANER.clean(new SimpleTrack(trackPoints))
+        return CLEANER.clean(Track.of(trackPoints))
             .orElseThrow(() -> new AssertionError("SpeedDiscrepancyRemover should not remove track"));
     }
 

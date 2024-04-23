@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.caasd.commons.LatLong;
 import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointField;
-import org.mitre.openaria.core.SimpleTrack;
 import org.mitre.openaria.core.Track;
-import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.caasd.commons.LatLong;
+
+import org.junit.jupiter.api.Test;
 
 
 public class MutableSmootherTest {
@@ -77,7 +77,7 @@ public class MutableSmootherTest {
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .build();
 
-        return new SimpleTrack(newArrayList(p1, p2, p3));
+        return Track.of(newArrayList(p1, p2, p3));
     }
 
 }

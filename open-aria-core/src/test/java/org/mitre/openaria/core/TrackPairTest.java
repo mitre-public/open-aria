@@ -2,11 +2,7 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.openaria.core.TrackPairs.overlapInTime;
 
 import java.util.ArrayList;
@@ -23,12 +19,12 @@ public class TrackPairTest {
     final static NopPoint P5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
     final static NopPoint P6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
-    final static Track A_TRACK = new SimpleTrack(newArrayList(P1, P2, P3, P4, P5, P6));
+    final static Track A_TRACK = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
 
     @Test
     public void testConstructor() {
-        Track track1 = new SimpleTrack(newArrayList(P1, P2, P3));
-        Track track2 = new SimpleTrack(newArrayList(P4, P5, P6));
+        Track track1 = Track.of(newArrayList(P1, P2, P3));
+        Track track2 = Track.of(newArrayList(P4, P5, P6));
 
         TrackPair pair = new TrackPair(track1, track2);
         assertEquals(pair.track1(), track1);
@@ -38,8 +34,8 @@ public class TrackPairTest {
     @Test
     public void testOf() {
 
-        Track track1 = new SimpleTrack(newArrayList(P1, P2, P3));
-        Track track2 = new SimpleTrack(newArrayList(P4, P5, P6));
+        Track track1 = Track.of(newArrayList(P1, P2, P3));
+        Track track2 = Track.of(newArrayList(P4, P5, P6));
 
         TrackPair pair = TrackPair.of(track1, track2);
         assertEquals(pair.track1(), track1);
@@ -67,10 +63,10 @@ public class TrackPairTest {
     @Test
     public void testOverlapInTime() {
 
-        Track fullTrack = new SimpleTrack(newArrayList(P1, P2, P3, P4, P5, P6));
-        Track earlyTrack = new SimpleTrack(newArrayList(P1, P2, P3));
-        Track endTrack = new SimpleTrack(newArrayList(P4, P5, P6));
-        Track endTrack_2 = new SimpleTrack(newArrayList(P3, P4, P5, P6));
+        Track fullTrack = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
+        Track earlyTrack = Track.of(newArrayList(P1, P2, P3));
+        Track endTrack = Track.of(newArrayList(P4, P5, P6));
+        Track endTrack_2 = Track.of(newArrayList(P3, P4, P5, P6));
 
         assertTrue(overlapInTime(fullTrack, earlyTrack));
         assertTrue(overlapInTime(earlyTrack, fullTrack));
@@ -88,8 +84,8 @@ public class TrackPairTest {
     @Test
     public void testFromCollection_happyPath() {
 
-        Track earlyTrack = new SimpleTrack(newArrayList(P1, P2, P3));
-        Track fullTrack = new SimpleTrack(newArrayList(P1, P2, P3, P4, P5, P6));
+        Track earlyTrack = Track.of(newArrayList(P1, P2, P3));
+        Track fullTrack = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
 
         ArrayList<Track> tracks = newArrayList(fullTrack, earlyTrack);
 
@@ -103,7 +99,7 @@ public class TrackPairTest {
     @Test
     public void testFromCollection_tooFewTracks() {
 
-        Track oneTrack = new SimpleTrack(newArrayList(P1, P2, P3));
+        Track oneTrack = Track.of(newArrayList(P1, P2, P3));
 
         ArrayList<Track> tracks = newArrayList(oneTrack);
 
@@ -117,9 +113,9 @@ public class TrackPairTest {
     @Test
     public void testFromCollection_tooManyTracks() {
 
-        Track track1 = new SimpleTrack(newArrayList(P1, P2, P3));
-        Track track2 = new SimpleTrack(newArrayList(P1, P2, P3, P4, P5, P6));
-        Track track3 = new SimpleTrack(newArrayList(P3, P4, P5, P6));
+        Track track1 = Track.of(newArrayList(P1, P2, P3));
+        Track track2 = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
+        Track track3 = Track.of(newArrayList(P3, P4, P5, P6));
 
         ArrayList<Track> tracks = newArrayList(track1, track2, track3);
 

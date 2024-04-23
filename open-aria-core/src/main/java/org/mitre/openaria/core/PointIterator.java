@@ -17,7 +17,7 @@ public class PointIterator implements Iterator<Point> {
 
     private final Iterator<NopMessage> nopMessageIter;
 
-    Point nextPoint;
+    Point<String> nextPoint;
 
     public PointIterator(NopParser parser) {
         this.nopMessageIter = checkNotNull(parser, "The NopParser cannot be null");
@@ -30,13 +30,13 @@ public class PointIterator implements Iterator<Point> {
     }
 
     @Override
-    public Point next() {
-        Point returnMe = nextPoint;
+    public Point<String> next() {
+        Point<String> returnMe = nextPoint;
         this.nextPoint = getNext();
         return returnMe;
     }
 
-    private Point getNext() {
+    private Point<String> getNext() {
 
         if (usingNop()) {
             return getNextPointFromNop();
@@ -49,7 +49,7 @@ public class PointIterator implements Iterator<Point> {
         return this.nopMessageIter != null;
     }
 
-    private Point getNextPointFromNop() {
+    private Point<String> getNextPointFromNop() {
 
         while (nopMessageIter.hasNext()) {
             NopMessage message = nopMessageIter.next();

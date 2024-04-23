@@ -1,9 +1,7 @@
 
 package org.mitre.openaria.core;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.requireNonNull;
 import static org.mitre.openaria.core.SeparationTimeSeries.dynamicTimeStep;
@@ -157,8 +155,8 @@ public class TrackPair implements Serializable {
         checkArgument(timeOverlap().get().contains(time), "The provided time must occur within the overlap");
 
         return PointPair.of(
-            track1.interpolatedPoint(time).get(),
-            track2.interpolatedPoint(time).get()
+            (Point) track1.interpolatedPoint(time).get(),
+            (Point) track2.interpolatedPoint(time).get()
         );
     }
 
