@@ -36,7 +36,7 @@ public class TracksTest {
         points.add(p2);
         points.add(p3);
 
-        Track track = new SimpleTrack(points);
+        Track track = Track.of( (List) points);
 
         assertEquals(
             raw1 + "\n" + raw2 + "\n" + raw3 + "\n",
@@ -68,7 +68,7 @@ public class TracksTest {
         points.add(p2);
         points.add(p3);
 
-        Track track = new SimpleTrack(points);
+        Track track = Track.of(points);
 
         assertEquals(
             "[RH],STARS,,01/01/1970,00:00:00.000,,,,null,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"

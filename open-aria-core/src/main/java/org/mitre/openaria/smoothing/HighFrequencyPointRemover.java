@@ -10,10 +10,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * A HighFrequencyPointRemover removes all Points with time values that are so close together that
@@ -45,7 +44,7 @@ public class HighFrequencyPointRemover implements DataCleaner<Track> {
 
         return (points.isEmpty())
             ? Optional.empty()
-            : Optional.of(new SimpleTrack(points));
+            : Optional.of(Track.of( (NavigableSet) points));
     }
 
     /**
@@ -63,7 +62,8 @@ public class HighFrequencyPointRemover implements DataCleaner<Track> {
         Point lastPoint = null;
         Instant lastTime = Instant.MIN; //do not use null here, it triggers a "possible null reference" flag during a FAA code scan
 
-        for (Point curPoint : track.points()) {
+        for (Object c : track.points()) {
+            Point curPoint = (Point) c;
 
             //the first time through the loop set the "last" variables
             if (lastPoint == null) {

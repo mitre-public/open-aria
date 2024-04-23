@@ -9,9 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.LatLong;
+
+import org.junit.jupiter.api.Test;
 
 public class TrackPairCleanerTest {
 
@@ -73,7 +74,7 @@ public class TrackPairCleanerTest {
                 .build();
             points.add(newPoint);
         }
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 
 }

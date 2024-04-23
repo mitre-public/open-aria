@@ -4,27 +4,25 @@ package org.mitre.openaria.smoothing;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.time.Instant.EPOCH;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mitre.openaria.core.Tracks.createTrackFromResource;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.Speed.Unit.KNOTS;
+import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.NavigableSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.mitre.caasd.commons.Distance;
+import org.mitre.caasd.commons.LatLong;
+import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.EphemeralPoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
 import org.mitre.openaria.core.Track;
-import org.mitre.caasd.commons.Distance;
-import org.mitre.caasd.commons.LatLong;
-import org.mitre.caasd.commons.Speed;
+
+import org.junit.jupiter.api.Test;
 
 
 public class LateralOutlierDetectorTest {
@@ -46,7 +44,7 @@ public class LateralOutlierDetectorTest {
         assertEquals(outliers.first().time(), theOutlier.time());
 
         int sizeBeforeCleaning = testTrack.size();
-        Track cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
+        MutableTrack cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
 
         assertEquals(sizeBeforeCleaning, cleanedTrack.size() + 1);
         assertNotEquals(cleanedTrack.nearestPoint(theOutlier.time()).time(), theOutlier.time());
@@ -65,7 +63,7 @@ public class LateralOutlierDetectorTest {
 
         assertEquals(0, outliers.size());
 
-        Track cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
+        MutableTrack cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
 
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
@@ -80,7 +78,7 @@ public class LateralOutlierDetectorTest {
         NavigableSet<Point> outliers = outlierDetector.getOutliers(testTrack);
         assertEquals(0, outliers.size());
 
-        Track cleanedTrack = outlierDetector.clean(testTrack).get();
+        MutableTrack cleanedTrack = outlierDetector.clean(testTrack).get();
 
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
@@ -121,7 +119,7 @@ public class LateralOutlierDetectorTest {
         Point adjustedPoint = Point.builder(prior).butLatLong(newPosition).build();
         points.set(14, adjustedPoint);
 
-        return new SimpleTrack(points).mutableCopy();
+        return Track.of(points).mutableCopy();
     }
 
     @Test

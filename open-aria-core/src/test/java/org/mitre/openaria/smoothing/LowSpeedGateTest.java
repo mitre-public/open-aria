@@ -7,11 +7,11 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class LowSpeedGateTest {
 
@@ -26,7 +26,7 @@ public class LowSpeedGateTest {
             points.add(point);
         }
 
-        Track track = new SimpleTrack(points);
+        Track track = Track.of(points);
         Optional<Track> smoothedTrack = smoother.clean(track);
 
         assertThat("No points should be removed from the track", smoothedTrack.get().size() == 10);

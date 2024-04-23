@@ -3,19 +3,15 @@ package org.mitre.openaria.smoothing;
 
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NavigableSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.EphemeralPoint;
 import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
@@ -23,6 +19,8 @@ import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.smoothing.VerticalOutlierDetector.AnalysisResult;
+
+import org.junit.jupiter.api.Test;
 
 public class VerticalOutlierDetectorTest {
 
@@ -56,10 +54,10 @@ public class VerticalOutlierDetectorTest {
 
         assertTrue(outliers.isEmpty());
 
-        Track postSmoothing = (new VerticalOutlierDetector()).clean(testTrack).get();
+        MutableTrack postSmoothing = (new VerticalOutlierDetector()).clean(testTrack).get();
 
-        Iterator<MutablePoint> iter1 = ((NavigableSet<MutablePoint>) testTrack.points()).iterator();
-        Iterator<MutablePoint> iter2 = ((NavigableSet<MutablePoint>) postSmoothing.points()).iterator();
+        Iterator<MutablePoint> iter1 = testTrack.points().iterator();
+        Iterator<MutablePoint> iter2 = postSmoothing.points().iterator();
 
         while (iter1.hasNext() && iter2.hasNext()) {
             MutablePoint nextFrom1 = iter1.next();

@@ -18,13 +18,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import org.mitre.caasd.commons.util.ParallelismDetector;
 import org.mitre.openaria.core.KeyExtractor;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
 import org.mitre.openaria.core.Track;
 
 /**
@@ -316,7 +316,7 @@ public class TrackMaker implements Consumer<Point> {
         numPointsPublished += closeMe.size();
         numTracksPublished++;
 
-        Track trackToPublish = new SimpleTrack(closeMe.points());
+        Track trackToPublish = Track.of( (LinkedList) closeMe.points());
         outputMechanism.accept(trackToPublish);
     }
 

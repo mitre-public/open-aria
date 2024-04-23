@@ -29,7 +29,7 @@ public class NopTrackStringTranslatorTest {
         Point p2 = NopPoint.from(nopHit2);
 
         List<Point> points = Lists.newArrayList(p1, p2);
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 
     @Test

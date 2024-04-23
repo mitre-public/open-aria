@@ -4,9 +4,7 @@ package org.mitre.openaria.core;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newTreeSet;
-import static org.mitre.caasd.commons.Time.durationBtw;
-import static org.mitre.caasd.commons.Time.max;
-import static org.mitre.caasd.commons.Time.theDuration;
+import static org.mitre.caasd.commons.Time.*;
 
 import java.time.Duration;
 import java.time.Instant;

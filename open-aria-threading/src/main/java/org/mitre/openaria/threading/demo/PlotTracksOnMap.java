@@ -1,7 +1,7 @@
 package org.mitre.openaria.threading.demo;
 
-import static org.mitre.openaria.threading.TrackMaking.makeTracksFromNopData;
 import static org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+import static org.mitre.openaria.threading.TrackMaking.makeTracksFromNopData;
 
 import java.awt.Color;
 import java.io.File;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.mitre.openaria.core.Track;
-import org.mitre.caasd.commons.HasPosition;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.maps.MapBuilder;
 import org.mitre.caasd.commons.maps.MapFeature;
 import org.mitre.caasd.commons.maps.MapFeatures;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 import com.google.common.io.Files;
 
@@ -77,9 +77,9 @@ public class PlotTracksOnMap {
 
     public static LatLong computeAverageLatLong(ArrayList<Track> tracks) {
 
-        List<LatLong> locations = tracks.stream()
+        List<LatLong> locations = (List<LatLong>) tracks.stream()
             .flatMap(track -> track.points().stream())
-            .map(point -> point.latLong())
+            .map(point -> ((Point) point).latLong())
             .collect(Collectors.toList());
 
         return LatLong.avgLatLong(locations.toArray(new LatLong[0]));
@@ -88,8 +88,8 @@ public class PlotTracksOnMap {
 
     public static MapFeature asMapFeature(Track track) {
 
-        List<LatLong> locations = track.points().stream()
-            .map(HasPosition::latLong)
+        List<LatLong> locations = (List<LatLong>) track.points().stream()
+            .map(obj -> ((Point)obj).latLong())
             .collect(Collectors.toList());
 
         return MapFeatures.path(locations, TRACK_COLOR, TRACK_STROKE_WIDTH);

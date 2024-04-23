@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.NopPoint;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
 import org.mitre.caasd.commons.parsing.nop.NopParsingUtils;
+import org.mitre.openaria.core.NopPoint;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 
 public class TrimLowSpeedGroundPointsTest {
@@ -66,7 +66,7 @@ public class TrimLowSpeedGroundPointsTest {
             .map(str -> NopPoint.from(str))
             .collect(toList());
 
-        return new SimpleTrack(points);
+        return Track.of((List) points);
     }
 
     @Test
@@ -83,11 +83,12 @@ public class TrimLowSpeedGroundPointsTest {
         Optional<Track> cleanedTrack = smoother.clean(testTrack);
 
         assertThat(cleanedTrack.isPresent(), is(true));
+        Track track = cleanedTrack.get();
         int numRemovedFromFront = 4;
         int numRemovedFromBack = 8;
-        assertThat(cleanedTrack.get().size(), is(27 - numRemovedFromFront - numRemovedFromBack));
+        assertThat(track.size(), is(27 - numRemovedFromFront - numRemovedFromBack));
 
-        assertTrue(cleanedTrack.get().points().first().time().equals(
+        assertTrue(track.points().first().time().equals(
             NopParsingUtils.parseNopTime("08/27/2021", "13:20:02.249")
         ));
     }

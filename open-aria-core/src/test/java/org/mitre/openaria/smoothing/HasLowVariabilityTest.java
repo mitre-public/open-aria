@@ -11,11 +11,12 @@ import static org.mitre.caasd.commons.Spherical.feetPerNM;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 
 public class HasLowVariabilityTest {
@@ -32,8 +33,8 @@ public class HasLowVariabilityTest {
 
         HasLowVariability filter = new HasLowVariability(20, 0.1, 1e5);
 
-        Track shortTestTrack = createTestTrack(19, 0.0);
-        Track longTestTrack = createTestTrack(21, 0.0);
+        MutableTrack shortTestTrack = createTestTrack(19, 0.0);
+        MutableTrack longTestTrack = createTestTrack(21, 0.0);
 
         assertFalse(
             filter.test(shortTestTrack),
@@ -51,10 +52,10 @@ public class HasLowVariabilityTest {
         HasLowVariability filter = new HasLowVariability(300, 0.2, 1e5);
 
         double higherDistFromCenterStdDev = 20.0 / feetPerNM();
-        Track highVarienceTrack = createTestTrack(1000, higherDistFromCenterStdDev);
+        MutableTrack highVarienceTrack = createTestTrack(1000, higherDistFromCenterStdDev);
 
         double lowerDistFromCenterStdDev = 10 / feetPerNM();
-        Track lowVarienceTrack = createTestTrack(1000, lowerDistFromCenterStdDev);
+        MutableTrack lowVarienceTrack = createTestTrack(1000, lowerDistFromCenterStdDev);
 
         assertFalse(
             filter.test(highVarienceTrack),
@@ -68,14 +69,14 @@ public class HasLowVariabilityTest {
     }
 
     /* This track contains Points in a guassian distribution centered around CENTER_POINT. */
-    private static Track createTestTrack(int numPoints, double distStandardDev) {
+    private static MutableTrack createTestTrack(int numPoints, double distStandardDev) {
         List<Point> points = newArrayList();
 
         for (int i = 0; i < numPoints; i++) {
             points.add(gaussianPoint(i, distStandardDev));
         }
 
-        return new SimpleTrack(points);
+        return Track.of((List) points).mutableCopy();
     }
 
     private static Point gaussianPoint(int i, double distStandardDev) {

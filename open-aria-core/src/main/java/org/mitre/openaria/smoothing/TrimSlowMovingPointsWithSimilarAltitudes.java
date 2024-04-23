@@ -7,13 +7,13 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.TreeSet;
 
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.SimpleTrack;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * Filters out low speed points at the front and back of a track that have a common altitude
@@ -46,13 +46,13 @@ public class TrimSlowMovingPointsWithSimilarAltitudes implements DataCleaner<Tra
 
     @Override
     public Optional<Track> clean(Track track) {
-        NavigableSet<Point> points = newTreeSet(track.points());
+        TreeSet<Point> points = newTreeSet(track.points());
 
         removePointsFromBeginning(points);
         removePointsFromEnd(points);
 
         return (points.size() >= minNumberPoints)
-            ? Optional.of(new SimpleTrack(points))
+            ? Optional.of(Track.of( (TreeSet) points))
             : Optional.empty();
     }
 

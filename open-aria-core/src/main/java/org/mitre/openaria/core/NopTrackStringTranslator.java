@@ -25,6 +25,6 @@ public class NopTrackStringTranslator implements Translator<Track, String> {
         for (String line : lines) {
             points.add(NopPoint.from(line));
         }
-        return new SimpleTrack(points);
+        return Track.of(points);
     }
 }

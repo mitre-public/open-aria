@@ -29,7 +29,7 @@ public class Interpolate {
      *
      * @return
      */
-    public static Point interpolate(Point p1, Point p2, Instant targetTime) {
+    public static <T> Point<T> interpolate(Point<T> p1, Point<T> p2, Instant targetTime) {
         checkNotNull(p1, "Cannot perform interpolation when the first input points is null");
         checkNotNull(p2, "Cannot perform interpolation when the second input points is null");
         checkNotNull(targetTime, "Cannot perform interpolation when the targetTime is null");
