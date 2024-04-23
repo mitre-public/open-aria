@@ -38,7 +38,6 @@ public class PointsTest {
      */
     Point createTestPoint(Instant time) {
         return (new PointBuilder())
-            .aircraftType("acType")
             .sourceDetails(new Extras.SourceDetails("sen", "XYZ"))
             .latLong(75.0, 1.0)
             .altitude(Distance.ofFeet(15.0))

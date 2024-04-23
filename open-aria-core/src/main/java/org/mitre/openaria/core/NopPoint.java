@@ -21,6 +21,9 @@ import org.mitre.openaria.core.NopPoints.AgwPoint;
 import org.mitre.openaria.core.NopPoints.CenterPoint;
 import org.mitre.openaria.core.NopPoints.MeartsPoint;
 import org.mitre.openaria.core.NopPoints.StarsPoint;
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
@@ -33,7 +36,7 @@ import org.mitre.openaria.core.temp.Extras.SourceDetails;
  *
  * @param <T> The type of NopRadarHit being wrapped
  */
-public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, HasSourceDetails {
+public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, HasSourceDetails, HasAircraftDetails, HasFlightRules {
 
     NopRadarHit rhMessage;
 
@@ -103,16 +106,6 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
     }
 
     @Override
-    public String callsign() {
-        return rhMessage.callSign();
-    }
-
-    @Override
-    public String aircraftType() {
-        return rhMessage.aircraftType();
-    }
-
-    @Override
     public abstract String trackId();
 
     @Override
@@ -126,6 +119,15 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
     @Override
     public String flightRules() {
         return rhMessage.flightRules();
+    }
+
+    public boolean hasFlightRules() {
+        return !flightRulesIsMissing();
+    }
+
+    public boolean flightRulesIsMissing() {
+        String rules = this.flightRules();
+        return (rules == null || rules.equals(""));
     }
 
     @Override
@@ -149,12 +151,6 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
         return rhMessage.time();
     }
 
-    @Override
-    public Double curvature() {
-        //the nop data format does not contain curvature information
-        return null;
-    }
-
     public T rawMessage() {
         return (T) this.rhMessage;
     }
@@ -167,5 +163,10 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
     @Override
     public SourceDetails sourceDetails() {
         return new SourceDetails(rhMessage.sensorIdLetters(), rhMessage.facility());
+    }
+
+    @Override
+    public AircraftDetails acDetails() {
+        return new AircraftDetails(rhMessage.callSign(), rhMessage.aircraftType());
     }
 }

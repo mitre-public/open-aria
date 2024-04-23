@@ -8,9 +8,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 import static org.mitre.openaria.core.Point.builder;
 import static org.mitre.openaria.pointpairing.PairingConfig.standardPairingProperties;
-import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 
 import java.io.File;
 import java.time.Instant;
@@ -20,16 +20,17 @@ import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.junit.jupiter.api.Test;
+import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+import org.mitre.caasd.commons.Pair;
+import org.mitre.caasd.commons.fileutil.FileUtils;
+import org.mitre.caasd.commons.parsing.nop.NopParser;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.threading.TrackMaker;
-import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
-import org.mitre.caasd.commons.Pair;
-import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
+
+import org.junit.jupiter.api.Test;
 
 public class TrackPairerTest {
 
@@ -250,6 +251,8 @@ public class TrackPairerTest {
         assertThat(trackConsumer, hasSize(4));
         assertThat(pairConsumer, hasSize(2));
 
+        System.out.println(pairConsumer.get(0).track2());
+
         //in the bug this is the only event that was found...
         assertThat(pairConsumer.get(0).track1().callsign(), is("N80AB"));
         assertThat(pairConsumer.get(0).track2().callsign(), is("UNKNOWN"));
@@ -261,7 +264,8 @@ public class TrackPairerTest {
 
     private static ArrayList<Point> getDataForEventThatWasMissed() {
 
-        File testFile = FileUtils.getResourceFile("missedPair.txt");
+//        File testFile = FileUtils.getResourceFile("missedPair.txt");
+        File testFile = new File("src/test/resources/missedPair.txt");
 
         if (!testFile.exists()) {
             fail("could not find test file: " + TEST_FILE);

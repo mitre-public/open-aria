@@ -6,9 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.Test;
 
 public class NopTrackStringTranslatorTest {
 
@@ -41,6 +40,7 @@ public class NopTrackStringTranslatorTest {
         Track track = translator.from(nopTrackString);
 
         assertEquals(NopPoints.StarsPoint.class, track.points().first().getClass());
-        assertEquals("JIA5545", track.points().first().callsign());
+        NopPoint p = (NopPoint) track.points().first();
+        assertEquals("JIA5545", p.acDetails().callsign());
     }
 }

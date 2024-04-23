@@ -100,7 +100,7 @@ public class CommonPointTest {
                 map.put(field, "");
 
                 try {
-                    new CommonPoint(map, null, null);
+                    new CommonPoint(map, null, null, null, null);
                     fail();
                 } catch (IllegalStateException ise) {
                     //skipped the fail above

@@ -6,17 +6,17 @@ import static org.mitre.openaria.core.EventRecords.safeBeaconCode;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.mitre.caasd.commons.Course;
+import org.mitre.caasd.commons.Distance;
+import org.mitre.caasd.commons.Speed;
+import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.caasd.commons.out.JsonWritable;
 import org.mitre.openaria.core.IfrVfrAssigner;
 import org.mitre.openaria.core.IfrVfrStatus;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.metadata.Direction;
 import org.mitre.openaria.core.metadata.SimplifiedAircraftTypeMapping;
-import org.mitre.caasd.commons.Course;
-import org.mitre.caasd.commons.Distance;
-import org.mitre.caasd.commons.Speed;
-import org.mitre.caasd.commons.TimeWindow;
-import org.mitre.caasd.commons.out.JsonWritable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

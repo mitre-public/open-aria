@@ -20,12 +20,12 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.mitre.openaria.core.ClosestPointOfApproach;
-import org.mitre.openaria.core.ScoredInstant;
-import org.mitre.openaria.core.TrackPair;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Triple;
+import org.mitre.openaria.core.ClosestPointOfApproach;
+import org.mitre.openaria.core.ScoredInstant;
+import org.mitre.openaria.core.TrackPair;
 
 public class AirborneAria {
 
@@ -56,7 +56,7 @@ public class AirborneAria {
         this.filterByAirspace = properties.filterByAirspace();
         this.requireDataTag = properties.requireAtLeastOneDataTag();
         this.dataCleaner = properties.pairCleaner();
-        this.shouldPublish = new TempShouldPublishPredicate(maxReportableScore);
+        this.shouldPublish = new TempShouldPublishPredicate(maxReportableScore, requireDataTag);
     }
 
     /** Create a new AirborneAria algorithm that uses the default properties. */
@@ -93,21 +93,24 @@ public class AirborneAria {
 
         private final double maxPublishableScore;
 
-        private final boolean passesFormationFilter = true;
+        private final boolean requireDataTag;
 
-        private final boolean meetsDataTagReq = true;
+        private final boolean passesFormationFilter = true;
 
         private final boolean meetsAirspaceReq = true;
 
-        TempShouldPublishPredicate(double maxReportableScore) {
+        TempShouldPublishPredicate(double maxReportableScore, boolean requireDataTag) {
             checkArgument(0 < maxReportableScore);
             this.maxPublishableScore = maxReportableScore;
+            this.requireDataTag = requireDataTag;
         }
 
         @Override
         public boolean test(AirborneEvent event) {
 
             boolean reportableScore = event.score() <= maxPublishableScore;
+
+            boolean meetsDataTagReq = requireDataTag ? event.containsAircraftWithDataTag() : true;
 
             return reportableScore && passesFormationFilter && meetsDataTagReq && meetsAirspaceReq;
         }
@@ -335,12 +338,6 @@ public class AirborneAria {
         throw new AssertionError("Should never get here.");
     }
 
-//    private boolean meetsDataTagRequirement(AirborneEvent summary) {
-//
-//        return (requireDataTag)
-//            ? summary.containsAircraftWithDataTag()
-//            : true; //ALL events meet the data tag requirement if we aren't placing a requirement
-//    }
 //
 //    private boolean meetsAirspaceRequirement(AirborneEvent summary) {
 //

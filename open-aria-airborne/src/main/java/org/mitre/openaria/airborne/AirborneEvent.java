@@ -183,44 +183,6 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
     }
 
 
-//    private String createTitleFor(TrackPair tracks, Instant eventTime) {
-//
-//        String acidOrBeacon1 = callsignOrBeacon(tracks.track1(), eventTime);
-//        String acidOrBeacon2 = callsignOrBeacon(tracks.track2(), eventTime);
-//
-//        String title
-//            = nopFacility
-//            + "--"
-//            + acidOrBeacon1
-//            + "--"
-//            + acidOrBeacon2;
-//
-//        return title;
-//    }
-
-    /**
-     * @param track       A Track
-     * @param timeOfEvent The time of a bookmarkable riskiestMoment occurs
-     *
-     * @return A callsign or beaconcode used to identify this track (typically for short strings or
-     *     filenames). If both the callsign and beaconcode are missing the String "unknown" is
-     *     returned.
-     */
-    private static String callsignOrBeacon(Track track, Instant timeOfEvent) {
-
-        Point closestPoint = track.nearestPoint(timeOfEvent);
-
-        if (closestPoint.hasValidCallsign()) {
-            return closestPoint.callsign();
-        }
-
-        if (closestPoint.hasValidBeaconActual()) {
-            return closestPoint.beaconActual();
-        }
-
-        return "unknown";
-    }
-
     /**
      * A "Level off event" occurs when aircraft are predicted to have a very low future vertical
      * separation because one aircraft is climbing/descending into another aircraft's altitude

@@ -9,6 +9,10 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.mitre.openaria.core.temp.Extras.AircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasFlightRules;
+import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
@@ -44,11 +48,29 @@ public class NopEncoder {
      *     "lossy" conversion because the Point interface does not include all the information that
      *     is available in any of the NOP formats (AGW, CENTER, or STARS)
      */
-    public String asRawNop(Point p, SourceDetails sd) {
+    public String asRawNop(Point p) {
+
+        AircraftDetails acDetails = null;
+        SourceDetails sourceDetails = null;
+        String flightRules = null;
+        if (p instanceof HasAircraftDetails had) {
+            acDetails = had.acDetails();
+        }
+
+        if (p instanceof HasSourceDetails hsd) {
+            sourceDetails = hsd.sourceDetails();
+        }
+
+        if( p instanceof HasFlightRules hfr) {
+            flightRules = hfr.flightRules();
+        }
 
         StringBuilder sb = new StringBuilder();
-        String sensor = nonNull(sd) ? sd.sensor() : "";
-        String facility = nonNull(sd) ? sd.facility() : "";
+        String sensor = nonNull(sourceDetails) ? sourceDetails.sensor() : "";
+        String facility = nonNull(sourceDetails) ? sourceDetails.facility() : "";
+
+        String callsign = nonNull(acDetails) ? acDetails.callsign() : "";
+        String acType = nonNull(acDetails) ? acDetails.aircraftType() : "";
 
         String DELIMITER = ",";
 
@@ -56,8 +78,8 @@ public class NopEncoder {
             .append("STARS").append(DELIMITER) //assume STARS by convention
             .append(facility).append(DELIMITER) //token 2
             .append(formatTime(p.time())).append(DELIMITER) //tokens 3 and 4
-            .append(format(p.callsign())).append(DELIMITER) //token 5
-            .append(format(p.aircraftType())).append(DELIMITER) //token 6
+            .append(callsign).append(DELIMITER) //token 5
+            .append(acType).append(DELIMITER) //token 6
             .append(DELIMITER) //token 7 (STARS:equipmentTypeSuffix)
             .append(p.beaconActual()).append(DELIMITER) //token 8
             .append(formatAltitude(p)).append(DELIMITER) //token 9
@@ -79,7 +101,7 @@ public class NopEncoder {
             .append(DELIMITER) //token 25-STARS:ptdTime, CENTER:coordinationTime
             .append(DELIMITER) //token 26-STARS:arrivalAirport
             .append(DELIMITER) //token 27-STARS:trackStatus
-            .append(format(p.flightRules())).append(DELIMITER) //token 28
+            .append(format(flightRules)).append(DELIMITER) //token 28
             .append(DELIMITER) //token 29-CENTER:cmsField153A
             .append(DELIMITER) //token 30-STARS:systemFlightPlanNumber, AGW:fdfNumber
             .append(DELIMITER) //token 31-AGW/CENTER:sequenceNumber

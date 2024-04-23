@@ -13,18 +13,6 @@ import org.mitre.caasd.commons.LatLong;
  */
 public enum PointField {
 
-    CALLSIGN(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.callsign();
-        }
-    },
-    AIRCRAFT_TYPE(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.aircraftType();
-        }
-    },
     TRACK_ID(String.class) {
         @Override
         public Object get(Point aPoint) {
@@ -41,12 +29,6 @@ public enum PointField {
         @Override
         public Object get(Point aPoint) {
             return aPoint.beaconAssigned();
-        }
-    },
-    FLIGHT_RULES(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.flightRules();
         }
     },
     LAT_LONG(LatLong.class) {
@@ -78,13 +60,7 @@ public enum PointField {
         public Object get(Point aPoint) {
             return aPoint.time();
         }
-    },
-    CURVATURE(Double.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.curvature();
-        }
-    };
+    },;
 
     Class expectedType;
 

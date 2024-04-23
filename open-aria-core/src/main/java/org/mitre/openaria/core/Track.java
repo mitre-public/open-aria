@@ -5,11 +5,12 @@ package org.mitre.openaria.core;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
-import static org.mitre.openaria.core.PointField.*;
+import static org.mitre.openaria.core.PointField.TRACK_ID;
 import static org.mitre.openaria.core.Points.mostCommon;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
@@ -17,6 +18,8 @@ import java.util.function.Predicate;
 
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.out.JsonWritable;
+import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.utils.Misc;
 
 /**
  * A Track is a collection of Points backed by the same type of location data.
@@ -32,26 +35,33 @@ public interface Track extends JsonWritable {
     /** @return The Points that are inside this track (sorted in time order). */
     NavigableSet<? extends Point> points();
 
-    public default int size() {
+    default int size() {
         return points().size();
     }
 
-    public default String trackId() {
+    default String trackId() {
         return mostCommon(TRACK_ID, points());
     }
 
-    public default String aircraftType() {
-        String aircraftType = mostCommon(AIRCRAFT_TYPE, points());
-        return (nonNull(aircraftType))
-            ? aircraftType
-            : "UNKNOWN";
+    default String aircraftType() {
+
+        List<String> aircraftTypes = points().stream()
+            .filter(p -> p instanceof HasAircraftDetails)
+            .map(p -> ((HasAircraftDetails)p).acDetails().aircraftType())
+            .filter(acType -> nonNull(acType))
+            .toList();
+
+        return aircraftTypes.isEmpty() ? "UNKNOWN" : Misc.mostCommon(aircraftTypes);
     }
 
-    public default String callsign() {
-        String callsign = mostCommon(CALLSIGN, points());
-        return (nonNull(callsign))
-            ? callsign
-            : "UNKNOWN";
+    default String callsign() {
+        List<String> callsigns = points().stream()
+            .filter(p -> p instanceof HasAircraftDetails)
+            .map(p -> ((HasAircraftDetails)p).acDetails().callsign())
+            .filter(callsign -> nonNull(callsign))
+            .toList();
+
+        return callsigns.isEmpty() ? "UNKNOWN" : Misc.mostCommon(callsigns);
     }
 
     /**
@@ -59,7 +69,7 @@ public interface Track extends JsonWritable {
      *     Messages. This method relies on each contained Point object to provide the best possible
      *     "nop representation" of itself.
      */
-    public default String asNop() {
+    default String asNop() {
 
         //rely on the each point to generate the best possible "nop representation" of itself.
         StringBuilder sb = new StringBuilder();
@@ -72,7 +82,7 @@ public interface Track extends JsonWritable {
     /**
      * @return The minimum TimeWindow that contains all Points within this Track."
      */
-    public default TimeWindow asTimeWindow() {
+    default TimeWindow asTimeWindow() {
         NavigableSet<? extends Point> pts = points();
         return TimeWindow.of(
             pts.first().time(),
@@ -85,7 +95,7 @@ public interface Track extends JsonWritable {
      *
      * @return An Optional containing the overlap (in time) between these two Tracks.
      */
-    public default Optional<TimeWindow> getOverlapWith(Track otherTrack) {
+    default Optional<TimeWindow> getOverlapWith(Track otherTrack) {
         return asTimeWindow().getOverlapWith(otherTrack.asTimeWindow());
     }
 
@@ -96,7 +106,7 @@ public interface Track extends JsonWritable {
      *     supplied moment in time. An empty optional is returned if the time parameter is outside
      *     this track's TimeWindow (this method interpolates, it does not extrapolate).
      */
-    public default Optional<Point> interpolatedPoint(Instant time) {
+    default Optional<Point> interpolatedPoint(Instant time) {
 
         //here we interpolate, we do not extrapolate.
         if (!asTimeWindow().contains(time)) {
@@ -125,7 +135,7 @@ public interface Track extends JsonWritable {
      *
      * @return A NavigableSet contain at most k Points from this Track.
      */
-    public default NavigableSet<Point> kNearestPoints(Instant time, int k) {
+    default NavigableSet<Point> kNearestPoints(Instant time, int k) {
         return Points.fastKNearestPoints(points(), time, k);
     }
 
@@ -137,14 +147,14 @@ public interface Track extends JsonWritable {
      *
      * @return Exactly 1 Point from this Track
      */
-    public default Point nearestPoint(Instant time) {
+    default Point nearestPoint(Instant time) {
         return kNearestPoints(time, 1).first();
     }
 
     /**
      * @return A completely independent, and mutable, copy of this Track
      */
-    public default MutableTrack mutableCopy() {
+    default MutableTrack mutableCopy() {
         ArrayList<MutablePoint> mutablePoints = points().stream()
             .map(p -> EphemeralPoint.from(p))
             .collect(toCollection(ArrayList::new));
@@ -165,7 +175,7 @@ public interface Track extends JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    public default NavigableSet<? extends Point> subset(Predicate<Point> includeIfTrue) {
+    default TreeSet<? extends Point> subset(Predicate<Point> includeIfTrue) {
         checkNotNull(includeIfTrue);
 
         return points()
@@ -185,7 +195,7 @@ public interface Track extends JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    public default NavigableSet<? extends Point> subset(TimeWindow window) {
+    default TreeSet<? extends Point> subset(TimeWindow window) {
         checkNotNull(window);
         return subset(window.start(), window.end());
     }
@@ -202,18 +212,18 @@ public interface Track extends JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    public default NavigableSet<? extends Point> subset(Instant startTime, Instant endTime) {
+    default TreeSet<? extends Point> subset(Instant startTime, Instant endTime) {
         return Points.subset(
             TimeWindow.of(startTime, endTime),
             (NavigableSet<Point>) points()
         );
     }
 
-    public default Instant startTime() {
+    default Instant startTime() {
         return points().first().time();
     }
 
-    public default Instant endTime() {
+    default Instant endTime() {
         return points().last().time();
     }
 }

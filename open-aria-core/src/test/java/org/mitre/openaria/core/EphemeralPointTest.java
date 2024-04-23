@@ -23,7 +23,7 @@ public class EphemeralPointTest {
     public void testFrom() {
         //we know the CenterPoint is good...
         CenterPoint cp = new CenterPoint(CENTER_RH_MESSAGE);
-        EphemeralPoint point = EphemeralPoint.from(cp, cp.sourceDetails());
+        EphemeralPoint point = EphemeralPoint.from(cp);
 
         //make sure the information from the CenterPoint is forwarded to the EmphemeralPoint
         assertEquals("465", point.trackId());
@@ -48,7 +48,7 @@ public class EphemeralPointTest {
 
     static EphemeralPoint testPoint() {
         CenterPoint cp = new CenterPoint(CENTER_RH_MESSAGE);
-        return EphemeralPoint.from(cp, cp.sourceDetails());
+        return EphemeralPoint.from(cp);
     }
 
     @Test

@@ -7,26 +7,30 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
 import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 
+import java.io.File;
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.TrackPair;
 import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.openaria.core.TrackPair;
+
+import org.junit.jupiter.api.Test;
 
 public class AirborneAriaTest {
 
     TrackPair scaryTrackPair() {
-        return makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+        File file = new File("src/test/resources/scaryTrackData.txt");
+        return makeTrackPairFromNopData(file);
     }
 
     TrackPair scaryTrackPairWithoutCallsigns() {
-        return makeTrackPairFromNopData(getResourceFile("scaryTrackData_noCallSign.txt"));
+        File file = new File("src/test/resources/scaryTrackData_noCallSign.txt");
+        return makeTrackPairFromNopData(file);
     }
 
     TrackPair safeTrackPair() {
-        return makeTrackPairFromNopData(getResourceFile("safeTrackData.txt"));
+        File file = new File("src/test/resources/safeTrackData.txt");
+        return makeTrackPairFromNopData(file);
     }
 
 

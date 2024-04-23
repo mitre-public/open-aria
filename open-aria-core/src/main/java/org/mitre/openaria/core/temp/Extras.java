@@ -11,6 +11,32 @@ public class Extras {
         SourceDetails sourceDetails();
     }
 
+    @FunctionalInterface
+    public interface HasAircraftDetails {
+        AircraftDetails acDetails();
+
+        default String callsign() {
+            return acDetails().callsign;
+        }
+
+        default String aircraftType() {
+            return acDetails().aircraftType;
+        }
+
+        static String castAndGetCallsign(Object o) {
+            if (o instanceof HasAircraftDetails had) {
+                return had.callsign();
+            } else {
+                throw new IllegalArgumentException("Must be instanceof HasAircraftDetails");
+            }
+        }
+    }
+
+    @FunctionalInterface
+    public interface HasFlightRules {
+        String flightRules();
+    }
+
 
     public record SourceDetails(String sensor, String facility) {
     }
@@ -26,12 +52,9 @@ public class Extras {
      */
 
 //    public String callsign();
-//
 //    public String aircraftType();
 
-//
 //    public String sensor();
-//
 //    public String facility();
 
 //
@@ -44,6 +67,4 @@ public class Extras {
 //    public Double course();
 //
 //    public Double speedInKnots();
-//
-//    public Double curvature();
 }

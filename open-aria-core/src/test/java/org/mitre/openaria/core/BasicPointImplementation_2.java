@@ -18,16 +18,6 @@ public class BasicPointImplementation_2<T> implements Point<T> {
     }
 
     @Override
-    public String callsign() {
-        return null;
-    }
-
-    @Override
-    public String aircraftType() {
-        return null;
-    }
-
-    @Override
     public String trackId() {
         return null;
     }
@@ -39,11 +29,6 @@ public class BasicPointImplementation_2<T> implements Point<T> {
 
     @Override
     public String beaconAssigned() {
-        return null;
-    }
-
-    @Override
-    public String flightRules() {
         return null;
     }
 
@@ -70,10 +55,5 @@ public class BasicPointImplementation_2<T> implements Point<T> {
     @Override
     public Instant time() {
         return Instant.EPOCH;
-    }
-
-    @Override
-    public Double curvature() {
-        return null;
     }
 }

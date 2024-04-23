@@ -84,7 +84,6 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
             pt.set(SPEED, max(0.0, kr.kinetics().speed().inKnots()));
             pt.set(LAT_LONG, kr.kinetics().latLong());
             pt.set(COURSE_IN_DEGREES, kr.kinetics().course().inDegrees());
-            pt.set(CURVATURE, 1.0 / kr.kinetics().turnRadius().inNauticalMiles());
         }
 
         //The output MutableTrack may have fewer points than the input MutableTrack

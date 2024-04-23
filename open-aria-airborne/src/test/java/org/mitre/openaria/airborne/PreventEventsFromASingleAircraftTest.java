@@ -3,10 +3,12 @@ package org.mitre.openaria.airborne;
 
 import static org.mitre.openaria.airborne.AirborneTestUtils.confirmNoAirborneEventsAreDetected;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+
+import java.io.File;
+
+import org.mitre.openaria.core.TrackPair;
 
 import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.TrackPair;
 
 /**
  * The purpose of this set of test is to confirm that FINSIH ME !!!
@@ -22,8 +24,8 @@ public class PreventEventsFromASingleAircraftTest {
      */
     @Test
     public void bug111_riskMetricEventsFromASingleTrack() {
-
-        TrackPair trackPair = makeTrackPairFromNopData(getResourceFile("oneFlightTwoBeaconCodes.txt"));
+        File file = new File("src/test/resources/oneFlightTwoBeaconCodes.txt");
+        TrackPair trackPair = makeTrackPairFromNopData(file);
 
         confirmNoAirborneEventsAreDetected(trackPair);
     }

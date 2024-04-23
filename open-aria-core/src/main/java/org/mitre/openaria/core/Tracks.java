@@ -32,7 +32,7 @@ public class Tracks {
      * @return The most common callsign for the points inside this Track.
      */
     public static String aircraftId(Track track) {
-        return mostCommon(PointField.CALLSIGN, track.points());
+        return track.callsign();
     }
 
     /**
@@ -40,13 +40,6 @@ public class Tracks {
      */
     public static String beaconCodeActual(Track track) {
         return mostCommon(PointField.BEACON_ACTUAL, track.points());
-    }
-
-    /**
-     * @return The most common beacon code (assigned) for the points inside this Track.
-     */
-    public static String beaconCodeAssigned(Track track) {
-        return mostCommon(PointField.BEACON_ASSIGNED, track.points());
     }
 
     /**

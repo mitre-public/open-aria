@@ -40,29 +40,6 @@ public class EventSummarizer implements Consumer<AirborneEvent> {
         this(e -> 0);
     }
 
-//    /**
-//     * Incorporate all the summary information from the other EventSummarizer into this
-//     * EventSummarizer.
-//     *
-//     * @param other Another EventSummarizer (that usually collected data from a completely distinct
-//     *              data stream)
-//     */
-//    public void ingestAll(EventSummarizer<GROUP> other) {
-//        for (Table.Cell<String, GROUP, DailyMetrics> cell : other.summaries.cellSet()) {
-//            String date = cell.getRowKey();
-//            GROUP group = cell.getColumnKey();
-//            DailyMetrics metrics = cell.getValue();
-//
-//            DailyMetrics prior = summaries.get(date, group);
-//
-//            if (prior == null) {
-//                summaries.put(date, group, metrics);
-//            } else {
-//                summaries.put(date, group, combine(prior, metrics));
-//            }
-//        }
-//    }
-
     @Override
     public void accept(AirborneEvent event) {
         eventCounts++;
@@ -78,18 +55,6 @@ public class EventSummarizer implements Consumer<AirborneEvent> {
             summaries.put(date, group, new DailyMetrics(prior, event));
         }
     }
-
-//    public Map<GROUP, DailyMetrics> getSummariesFor(Instant time) {
-//        checkNotNull(time);
-//        return getSummariesFor(utcDateAsString(time));
-//    }
-
-//    public Map<GROUP, DailyMetrics> getSummariesFor(String date) {
-//        checkNotNull(date);
-//        verifyYearMonthDayFormat(date);
-//        return summaries.row(date);
-//    }
-
     public Collection<DailyMetrics> getAllSummaries() {
         return summaries.values();
     }

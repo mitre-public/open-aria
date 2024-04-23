@@ -8,30 +8,30 @@ import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.HasPosition;
 import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.Position;
+import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
+/**
+ * A Point object is a single piece of location data. Since we want to support multiple types of
+ * location data this interface is meant to be decorated.
+ *
+ * @param <T>
+ */
 public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
 
     T rawData();
 
-    public String callsign();
+    String trackId();  //almost always an Integer, but sometime this is a number and letter like "25F"
 
-    public String aircraftType();
+    String beaconActual();
 
-    public String trackId();  //almost always an Integer, but sometime this is a number and letter like "25F"
+    String beaconAssigned();
 
-    public String beaconActual();
+    Distance altitude();
 
-    public String beaconAssigned();
+    Double course();
 
-    public String flightRules();
+    Double speedInKnots();
 
-    public Distance altitude();
-
-    public Double course();
-
-    public Double speedInKnots();
-
-    public Double curvature();
 
     /**
      * @return A String that represent this point as if it were a raw NOP Radar Hit (RH) Message.
@@ -39,12 +39,13 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
      *     contain the raw NOP Message). The default implementation "harvests" the data fields
      *     available as part of the Point interface and builds a "faux RH Message" from that data.
      */
-    public default String asNop() {
+     default String asNop() {
+
         /*
          * If the implementing class cannot provide the raw Nop RH Message itself encode whatever
          * data is available via the Point interface itself.
          */
-        return (new NopEncoder()).asRawNop(this, null);
+        return (new NopEncoder()).asRawNop(this);
     }
 
 //    /** @return a KeyExtractor that generates String keys by concatenating trackId() and facility() */
@@ -92,11 +93,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
             return courseResult;
         }
 
-        int callsignResult = NULLABLE_COMPARATOR.compare(callsign(), other.callsign());
-        if (callsignResult != 0) {
-            return callsignResult;
-        }
-
         int beaconResult = NULLABLE_COMPARATOR.compare(beaconActual(), other.beaconActual());
         if (beaconResult != 0) {
             return beaconResult;
@@ -110,34 +106,45 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
         return 0;
     }
 
-    public default boolean hasVelocity() {
-        Double speedInKnots = speedInKnots();
-        Double course = course();
-        return (speedInKnots != null && course != null);
+
+    /**
+     * Some Point implementations may implement HasAircraftDetails, if so, return callsign
+     * info.
+     */
+    default boolean hasValidCallsign() {
+        if (this instanceof HasAircraftDetails acDetails) {
+            String cs = acDetails.callsign();
+            return !(cs == null || cs.equals(""));
+        }
+        return false;
     }
 
-    public default boolean hasValidCallsign() {
-        return !callsignIsMissing();
-    }
-
-    public default boolean callsignIsMissing() {
-        String callsign = callsign();
-        return (callsign == null || callsign.equals(""));
+    /**
+     * If the concrete Point implementations also implements HasAircraftDetails then return a
+     * boolean telling us if the callsign is available. If the concrete Point implementation does
+     * not also implement HasAircraftDetails the throw an {@link UnsupportedOperationException}
+     */
+    default boolean callsignIsMissing() {
+        if (this instanceof HasAircraftDetails acDetails) {
+            String cs = acDetails.callsign();
+            return (cs == null || cs.equals(""));
+        }
+        throw new UnsupportedOperationException("This Point implementation does not support callsign");
     }
 
     public default boolean altitudeIsMissing() {
         return altitude() == null;
     }
 
-    public default boolean hasFlightRules() {
-        return !flightRulesIsMissing();
-    }
+//    public default boolean hasFlightRules() {
+//        return !flightRulesIsMissing();
+//    }
 
 
-    public default boolean flightRulesIsMissing() {
-        String rules = this.flightRules();
-        return (rules == null || rules.equals(""));
-    }
+//    public default boolean flightRulesIsMissing() {
+//        String rules = this.flightRules();
+//        return (rules == null || rules.equals(""));
+//    }
 
     public default boolean hasTrackId() {
         return !trackIdIsMissing();
@@ -146,10 +153,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
     public default boolean trackIdIsMissing() {
         String trackId = trackId();
         return (trackId == null || trackId.equals(""));
-    }
-
-    public default IfrVfrStatus flightRulesAsEnum() {
-        return IfrVfrStatus.from(flightRules());
     }
 
     public default boolean hasValidBeaconActual() {
