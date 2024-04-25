@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.pointpairing;
 
 import static com.google.common.base.Preconditions.checkArgument;

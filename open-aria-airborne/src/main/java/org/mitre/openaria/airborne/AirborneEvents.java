@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static java.lang.Double.compare;

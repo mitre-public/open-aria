@@ -1,11 +1,7 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.mitre.openaria.trackpairing.TrackPairFilters.formationFilter;
-import static org.mitre.openaria.trackpairing.TrackPairFilters.removeFormationFlights;
-import static org.mitre.openaria.trackpairing.TrackPairFilters.requireSeparation;
+import static org.mitre.openaria.trackpairing.TrackPairFilters.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +10,13 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
-import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.trackpairing.IsFormationFlight;
-import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 import org.mitre.caasd.commons.CompositeCleaner;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.trackpairing.IsFormationFlight;
+import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 
 public class DataCleaning {
 

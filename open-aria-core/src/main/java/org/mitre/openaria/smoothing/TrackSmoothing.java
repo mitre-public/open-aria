@@ -1,16 +1,14 @@
-
-
 package org.mitre.openaria.smoothing;
 
 import java.time.Duration;
 
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.CompositeCleaner;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.ExceptionCatchingCleaner;
 import org.mitre.caasd.commons.Functions.ToStringFunction;
 import org.mitre.caasd.commons.util.ExceptionHandler;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
+import org.mitre.openaria.core.Track;
 
 public class TrackSmoothing {
 

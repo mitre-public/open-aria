@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.airborne.exe;
 
 import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;

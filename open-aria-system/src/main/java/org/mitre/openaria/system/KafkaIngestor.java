@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.system;
 
 import static com.google.common.base.Preconditions.checkState;

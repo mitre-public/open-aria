@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -14,16 +12,16 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
-import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.TrackPairCleaner;
-import org.mitre.openaria.smoothing.TrimSlowMovingPointsWithSimilarAltitudes;
-import org.mitre.openaria.trackpairing.IsFormationFlight;
 import org.mitre.caasd.commons.CachingCleaner;
 import org.mitre.caasd.commons.CompositeCleaner;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.TrackPairCleaner;
+import org.mitre.openaria.smoothing.TrimSlowMovingPointsWithSimilarAltitudes;
+import org.mitre.openaria.trackpairing.IsFormationFlight;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
