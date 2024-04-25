@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.core;
 
 import static org.mitre.openaria.core.Points.NULLABLE_COMPARATOR;
