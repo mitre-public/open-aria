@@ -9,9 +9,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.mitre.openaria.core.temp.Extras;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
@@ -55,6 +55,7 @@ public class NopEncoder {
         SourceDetails sourceDetails = null;
         String flightRules = null;
         String beaconAssigned = null;
+        String beaconActual = null;
         if (p instanceof HasAircraftDetails had) {
             acDetails = had.acDetails();
         }
@@ -67,10 +68,13 @@ public class NopEncoder {
             flightRules = hfr.flightRules();
         }
 
-        if(p instanceof Extras.HasBeaconCodes hbc) {
+        if(p instanceof HasBeaconCodes hbc) {
+            beaconActual = hbc.beaconActual();
             beaconAssigned = format(hbc.beaconAssigned());
         } else {
+            beaconActual = "";
             beaconAssigned = format(null);
+
         }
 
         StringBuilder sb = new StringBuilder();
@@ -89,7 +93,7 @@ public class NopEncoder {
             .append(callsign).append(DELIMITER) //token 5
             .append(acType).append(DELIMITER) //token 6
             .append(DELIMITER) //token 7 (STARS:equipmentTypeSuffix)
-            .append(p.beaconActual()).append(DELIMITER) //token 8
+            .append(beaconActual).append(DELIMITER) //token 8
             .append(formatAltitude(p)).append(DELIMITER) //token 9
             .append(formatSpeed(p)).append(DELIMITER) //token 10
             .append(formatCourse(p)).append(DELIMITER) //token 11

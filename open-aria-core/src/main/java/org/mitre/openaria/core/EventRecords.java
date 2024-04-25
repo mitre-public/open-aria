@@ -8,6 +8,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
+import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
+
 /**
  * Contains that static rules used to format dates and times in EventRecords.
  */
@@ -50,9 +52,17 @@ public class EventRecords {
      *     null.
      */
     public static String safeBeaconCode(Point point) {
-        String beacon = point.beaconActual();
-        return (beacon == null)
-            ? UNKOWN_BEACON_VALUE
-            : beacon;
+
+        System.out.println(point.getClass().getCanonicalName());
+
+        if(point instanceof HasBeaconCodes hbc) {
+
+            String beacon = hbc.beaconActual();
+            return (beacon == null)
+                ? UNKOWN_BEACON_VALUE
+                : beacon;
+        }
+
+        return UNKOWN_BEACON_VALUE;
     }
 }

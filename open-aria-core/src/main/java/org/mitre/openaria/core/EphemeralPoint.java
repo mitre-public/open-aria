@@ -14,7 +14,9 @@ import java.util.HashMap;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
+import org.mitre.openaria.core.temp.Extras.BeaconCodes;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 
 /**
@@ -24,7 +26,7 @@ import org.mitre.openaria.core.temp.Extras.HasFlightRules;
  * during Track smoothing). In this case, repeatedly copying data from Immutable Point to Immutable
  * Point can become costly.
  */
-public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules {
+public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
 
     private final HashMap<PointField, Object> data;
 
@@ -34,12 +36,15 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, Has
 
     private String flightRules;
 
+    private BeaconCodes beaconCodes;
+
     private T rawData;
 
     public static <T> EphemeralPoint<T> from(Point<T> sourcePoint) {
         SourceDetails sourceDetails = null;
         AircraftDetails acDetails = null;
         String flightRules = null;
+        BeaconCodes codes = null;
 
         if(sourcePoint instanceof HasSourceDetails hsd) {
             sourceDetails = hsd.sourceDetails();
@@ -53,14 +58,19 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, Has
             flightRules = hfr.flightRules();
         }
 
-        return new EphemeralPoint<T>(sourcePoint, sourceDetails, acDetails, flightRules);
+        if(sourcePoint instanceof HasBeaconCodes hbc) {
+            codes = hbc.beaconCodes();
+        }
+
+        return new EphemeralPoint<T>(sourcePoint, sourceDetails, acDetails, flightRules, codes);
     }
 
-    private EphemeralPoint(Point<T> sourcePoint, SourceDetails sd, AircraftDetails acDetails, String flightRules) {
+    private EphemeralPoint(Point<T> sourcePoint, SourceDetails sd, AircraftDetails acDetails, String flightRules, BeaconCodes codes) {
         this.data = newHashMap(toMap(sourcePoint));
         this.sourceDetails = sd;
         this.acDetails = acDetails;
         this.flightRules = flightRules;
+        this.beaconCodes = codes;
         this.rawData = sourcePoint.rawData();
     }
 
@@ -104,11 +114,6 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, Has
     }
 
     @Override
-    public String beaconActual() {
-        return (String) data.get(BEACON_ACTUAL);
-    }
-
-    @Override
     public String flightRules() {
         return flightRules;
     }
@@ -146,6 +151,11 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, Has
     @Override
     public AircraftDetails acDetails() {
         return acDetails;
+    }
+
+    @Override
+    public BeaconCodes beaconCodes() {
+        return this.beaconCodes;
     }
 
     @Override

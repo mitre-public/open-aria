@@ -1,8 +1,7 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.mitre.openaria.core.temp.Extras.HasSourceDetails;
-import static org.mitre.openaria.core.temp.Extras.SourceDetails;
+import static org.mitre.openaria.core.temp.Extras.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -13,9 +12,6 @@ import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Spherical;
 import org.mitre.caasd.commons.Time;
-import org.mitre.openaria.core.temp.Extras.AircraftDetails;
-import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
-import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 
 /**
  * The purpose of CommonPoint is to be a "dependency-free data bridge" between important
@@ -25,10 +21,9 @@ import org.mitre.openaria.core.temp.Extras.HasFlightRules;
  * to external APIs. Therefore, trading CommonPoints between processes leaves each process as free
  * as possible to evolve as independent units.
  */
-public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules {
+public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
 
     private final String trackId;
-    private final String beaconActual;
     private final LatLong latLong;
     private final Distance altitude;
     private final Double course;
@@ -38,10 +33,11 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
     private final AircraftDetails acDetails;
     private final SourceDetails sourceDetails;
     private final String flightRules;
+    private final BeaconCodes beacons;
     private final T rawData;
 
 
-    public CommonPoint(Map<PointField, Object> map, SourceDetails sourceDetails, AircraftDetails acDetails, String flightRules, T rawData) {
+    public CommonPoint(Map<PointField, Object> map, SourceDetails sourceDetails, AircraftDetails acDetails, String flightRules, BeaconCodes beacons, T rawData) {
 
         for (Map.Entry<PointField, Object> entry : map.entrySet()) {
             checkArgument(
@@ -51,7 +47,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
         }
 
         this.trackId = (String) map.get(PointField.TRACK_ID);
-        this.beaconActual = (String) map.get(PointField.BEACON_ACTUAL);
         this.latLong = (LatLong) map.get(PointField.LAT_LONG);
         this.altitude = (Distance) map.get(PointField.ALTITUDE);
         this.course = (Double) map.get(PointField.COURSE_IN_DEGREES);
@@ -61,6 +56,7 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
         this.acDetails = acDetails;
         this.sourceDetails = sourceDetails;
         this.flightRules = flightRules;
+        this.beacons = beacons;
         this.rawData = rawData;
 
         confirmNoEmptyStrings();
@@ -148,11 +144,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
     }
 
     @Override
-    public String beaconActual() {
-        return this.beaconActual;
-    }
-
-    @Override
     public Distance altitude() {
         return this.altitude;
     }
@@ -195,5 +186,10 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
     @Override
     public String flightRules() {
         return this.flightRules;
+    }
+
+    @Override
+    public BeaconCodes beaconCodes() {
+        return this.beacons;
     }
 }

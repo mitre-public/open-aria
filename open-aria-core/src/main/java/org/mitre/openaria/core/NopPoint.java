@@ -171,4 +171,17 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
     public BeaconCodes beaconCodes() {
         return new BeaconCodes(rhMessage.reportedBeaconCode(), "");
     }
+
+    public boolean hasValidBeaconActual() {
+        return !beaconActualIsMissing();
+    }
+
+    public boolean beaconActualIsMissing() {
+        String beacon = beaconActual();
+        return (beacon == null || beacon.equals("") || beacon.equals("null"));
+    }
+
+    public int beaconActualAsInt() {
+        return Integer.parseInt(beaconActual());
+    }
 }

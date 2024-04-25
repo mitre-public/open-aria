@@ -1,5 +1,7 @@
 package org.mitre.openaria.core.temp;
 
+import static java.util.Objects.isNull;
+
 /**
  * This is a temporary class to keeping scaffolding needed to slowly "pull apart" the Point
  * interface so that it isn't so NOP specific.
@@ -42,11 +44,13 @@ public class Extras {
         BeaconCodes beaconCodes();
 
         default String beaconActual() {
-            return beaconCodes().actual;
+            BeaconCodes bc = beaconCodes();
+            return isNull(beaconCodes()) ? null : bc.actual;
         }
 
         default String beaconAssigned() {
-            return beaconCodes().assigned;
+            BeaconCodes bc = beaconCodes();
+            return isNull(beaconCodes()) ? null : beaconCodes().assigned;
         }
     }
 

@@ -44,30 +44,6 @@ public class PointBuilderTest {
         assertThat(p2.sourceDetails(), nullValue());
     }
 
-//    @Test
-//    public void testFacility() {
-//
-//        String stringValue = "aString";
-//
-//        Point p1 = (new PointBuilder()).facility(stringValue).build();
-//        Point p2 = (new PointBuilder()).facility(null).build();
-//
-//        assertTrue(p1.facility().equals(stringValue));
-//        assertTrue(isNull(p2.facility()));
-//    }
-
-    @Test
-    public void testBeaconActual() {
-
-        String stringValue = "aString";
-
-        Point p1 = (new PointBuilder()).beaconActual(stringValue).build();
-        Point p2 = (new PointBuilder()).beaconActual(null).build();
-
-        assertTrue(p1.beaconActual().equals(stringValue));
-        assertTrue(isNull(p2.beaconActual()));
-    }
-
     @Test
     public void testLatLong() {
         LatLong latLong = LatLong.of(-5.0, -2.34);
@@ -177,17 +153,6 @@ public class PointBuilderTest {
         }
     }
 
-
-
-//    @Test
-//    public void testButSensor() {
-//
-//        Point testPoint = getTestPoint();
-//
-//        Point p1 = (new PointBuilder(testPoint)).butSensor("newValue").build();
-//
-//        assertTrue(p1.sensor().equals("newValue"));
-//    }
 
     @Test
     public void test_butLatLong() {

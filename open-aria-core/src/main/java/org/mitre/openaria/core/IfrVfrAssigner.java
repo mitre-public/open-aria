@@ -84,7 +84,7 @@ public class IfrVfrAssigner {
 
         NopPoint np = NopPoint.from(point.asNop());
 
-        if (point.hasValidBeaconActual() && beaconIsVfr(np.beaconActualAsInt())) {
+        if (np.hasValidBeaconActual() && beaconIsVfr(np.beaconActualAsInt())) {
             return VFR;
         }
 

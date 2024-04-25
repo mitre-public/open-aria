@@ -20,8 +20,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
 
     String trackId();  //almost always an Integer, but sometime this is a number and letter like "25F"
 
-    String beaconActual();
-
     Distance altitude();
 
     Double course();
@@ -89,11 +87,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
             return courseResult;
         }
 
-        int beaconResult = NULLABLE_COMPARATOR.compare(beaconActual(), other.beaconActual());
-        if (beaconResult != 0) {
-            return beaconResult;
-        }
-
         int trackIdResult = NULLABLE_COMPARATOR.compare(trackId(), other.trackId());
         if (trackIdResult != 0) {
             return trackIdResult;
@@ -132,16 +125,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
         return altitude() == null;
     }
 
-//    public default boolean hasFlightRules() {
-//        return !flightRulesIsMissing();
-//    }
-
-
-//    public default boolean flightRulesIsMissing() {
-//        String rules = this.flightRules();
-//        return (rules == null || rules.equals(""));
-//    }
-
     public default boolean hasTrackId() {
         return !trackIdIsMissing();
     }
@@ -149,19 +132,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
     public default boolean trackIdIsMissing() {
         String trackId = trackId();
         return (trackId == null || trackId.equals(""));
-    }
-
-    public default boolean hasValidBeaconActual() {
-        return !beaconActualIsMissing();
-    }
-
-    public default boolean beaconActualIsMissing() {
-        String beacon = beaconActual();
-        return (beacon == null || beacon.equals("") || beacon.equals("null"));
-    }
-
-    public default int beaconActualAsInt() {
-        return Integer.parseInt(beaconActual());
     }
 
     /**

@@ -31,7 +31,7 @@ public class PointTest {
     @Test
     public void testBeaconAsInt() {
         String rawNop = "[RH],STARS,D21_B,03/24/2018,14:42:00.130,N518SP,C172,,5256,032,110,186,042.92704,-083.70974,3472,5256,-14.5730,42.8527,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
-        Point point = NopPoint.from(rawNop);
+        NopPoint point = NopPoint.from(rawNop);
 
         assertEquals(5256, point.beaconActualAsInt());
     }
@@ -39,7 +39,7 @@ public class PointTest {
     @Test
     public void testHasValidBeacon() {
         String rawNop = "[RH],STARS,D21_B,03/24/2018,14:42:00.130,N518SP,C172,,5256,032,110,186,042.92704,-083.70974,3472,5256,-14.5730,42.8527,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
-        Point point = NopPoint.from(rawNop);
+        NopPoint point = NopPoint.from(rawNop);
 
         assertTrue(point.hasValidBeaconActual());
     }
