@@ -161,9 +161,9 @@ public class PointsTest {
     }
 
     static final Point p1 = newPoint(EPOCH);
-    static final Point p2 = newPoint(EPOCH, "1200"); //adding a beacon code makes it distinct from p1
+    static final Point p2 = newPoint(EPOCH, Distance.ofFeet(1000)); //adding a beacon code makes it distinct from p1
     static final Point p3 = newPoint(EPOCH.plusSeconds(1));
-    static final Point p4 = newPoint(EPOCH.plusSeconds(1), "1200"); //adding a beacon code makes it distinct from p3
+    static final Point p4 = newPoint(EPOCH.plusSeconds(1), Distance.ofFeet(1000)); //adding a beacon code makes it distinct from p3
     static final Point p5 = newPoint(EPOCH.plusSeconds(2));
     static final Point p6 = newPoint(EPOCH.plusSeconds(3));
     static final Point p7 = newPoint(EPOCH.plusSeconds(4));
@@ -259,8 +259,8 @@ public class PointsTest {
         return Point.builder().latLong(0.0, 0.0).time(time).build();
     }
 
-    private static Point newPoint(Instant time, String beaconcode) {
-        return Point.builder().latLong(0.0, 0.0).time(time).beaconActual(beaconcode).build();
+    private static Point newPoint(Instant time, Distance altitude) {
+        return Point.builder().latLong(0.0, 0.0).time(time).altitude(altitude).build();
     }
 
     @Test

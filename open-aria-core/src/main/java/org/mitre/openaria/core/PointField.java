@@ -19,18 +19,6 @@ public enum PointField {
             return aPoint.trackId();
         }
     },
-    BEACON_ACTUAL(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.beaconActual();
-        }
-    },
-    BEACON_ASSIGNED(String.class) {
-        @Override
-        public Object get(Point aPoint) {
-            return aPoint.beaconAssigned();
-        }
-    },
     LAT_LONG(LatLong.class) {
         @Override
         public Object get(Point aPoint) {

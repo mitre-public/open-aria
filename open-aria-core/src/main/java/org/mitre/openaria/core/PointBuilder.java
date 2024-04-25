@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -13,6 +11,7 @@ import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.openaria.core.temp.Extras;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
+import org.mitre.openaria.core.temp.Extras.BeaconCodes;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
@@ -43,6 +42,8 @@ public class PointBuilder<T> {
 
     String flightRules;
 
+    BeaconCodes beacons;
+
     T rawData;
 
     public PointBuilder() {
@@ -50,6 +51,7 @@ public class PointBuilder<T> {
         this.sourceDetails = null;
         this.acDetails = null;
         this.flightRules = null;
+        this.beacons = null;
         this.rawData = null;
     }
 
@@ -73,6 +75,10 @@ public class PointBuilder<T> {
 
         if(p instanceof Extras.HasFlightRules hfr) {
             this.flightRules = hfr.flightRules();
+        }
+
+        if(p instanceof Extras.HasBeaconCodes hbc) {
+            this.beacons = hbc.beaconCodes();
         }
     }
 
@@ -124,14 +130,6 @@ public class PointBuilder<T> {
     public PointBuilder<T> acDetails(AircraftDetails aircraftDetails) {
         this.acDetails = aircraftDetails;
         return this;
-    }
-
-    public PointBuilder<T> beaconActual(String beaconActual) {
-        return set(PointField.BEACON_ACTUAL, beaconActual);
-    }
-
-    public PointBuilder<T> beaconAssigned(String beaconAssigned) {
-        return set(PointField.BEACON_ASSIGNED, beaconAssigned);
     }
 
     public PointBuilder<T> latLong(LatLong latitudeAndLongitude) {
@@ -233,7 +231,7 @@ public class PointBuilder<T> {
     }
 
     public CommonPoint<T> build() {
-        return new CommonPoint<>(data, sourceDetails, acDetails, flightRules, rawData);
+        return new CommonPoint<>(data, sourceDetails, acDetails, flightRules, beacons, rawData);
     }
 
     public EphemeralPoint<T> buildMutable() {

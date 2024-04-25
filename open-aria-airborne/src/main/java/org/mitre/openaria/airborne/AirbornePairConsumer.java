@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static com.google.common.base.Preconditions.checkNotNull;

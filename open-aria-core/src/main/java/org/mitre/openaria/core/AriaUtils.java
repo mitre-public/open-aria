@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.core;
 
 import org.mitre.caasd.commons.parsing.nop.Facility;

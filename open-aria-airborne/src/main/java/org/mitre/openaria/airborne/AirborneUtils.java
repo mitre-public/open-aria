@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static java.util.stream.Collectors.toList;
@@ -11,10 +9,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.NavigableSet;
 
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 public class AirborneUtils {
 

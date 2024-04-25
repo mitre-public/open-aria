@@ -1,13 +1,11 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static org.mitre.openaria.kafka.FacilityPartitionMapping.parseFacilityMappingFile;
 import static org.mitre.caasd.commons.util.PropertyUtils.getString;
+import static org.mitre.openaria.kafka.FacilityPartitionMapping.parseFacilityMappingFile;
 
 import java.io.File;
 import java.time.Duration;
@@ -17,15 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.kafka.FacilityPartitionMapping;
+import org.mitre.openaria.system.FacilitySet;
+
+import com.google.common.collect.Lists;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.mitre.openaria.kafka.FacilityPartitionMapping;
-import org.mitre.openaria.system.FacilitySet;
-import org.mitre.caasd.commons.parsing.nop.Facility;
-
-import com.google.common.collect.Lists;
 
 /**
  * An AirborneEventGrabber extracts data from a Kafka Topic that contains Airborne events (stored as

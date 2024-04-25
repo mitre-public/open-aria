@@ -1,23 +1,21 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.padStart;
 import static org.apache.commons.math3.util.FastMath.pow;
-import static org.mitre.openaria.airborne.AirborneUtils.isEstablishedAtAltitude;
 import static org.mitre.caasd.commons.Time.asZTimeString;
 import static org.mitre.caasd.commons.Time.theDuration;
+import static org.mitre.openaria.airborne.AirborneUtils.isEstablishedAtAltitude;
 
 import java.time.Duration;
 import java.time.Instant;
 
+import org.mitre.caasd.commons.Distance;
+import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.ClosestPointOfApproach;
 import org.mitre.openaria.core.PointPair;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.caasd.commons.Distance;
-import org.mitre.caasd.commons.Speed;
 
 /**
  * A AirborneSeparationPredication takes two instantaneous aircraft trajectories and predicts: (1)

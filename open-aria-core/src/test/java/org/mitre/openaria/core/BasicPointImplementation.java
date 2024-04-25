@@ -23,16 +23,6 @@ public class BasicPointImplementation<T> implements Point<T> {
     }
 
     @Override
-    public String beaconActual() {
-        return null;
-    }
-
-    @Override
-    public String beaconAssigned() {
-        return null;
-    }
-
-    @Override
     public LatLong latLong() {
         return null;
     }

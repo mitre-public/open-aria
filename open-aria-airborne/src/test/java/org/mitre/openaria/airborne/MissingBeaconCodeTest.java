@@ -1,16 +1,17 @@
 
 package org.mitre.openaria.airborne;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.ScoredInstant;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.threading.TrackMaking;
+
+import org.junit.jupiter.api.Test;
 
 public class MissingBeaconCodeTest {
 

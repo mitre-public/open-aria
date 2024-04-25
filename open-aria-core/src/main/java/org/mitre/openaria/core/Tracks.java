@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -7,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Double.max;
 import static org.mitre.openaria.core.Interpolate.interpolate;
-import static org.mitre.openaria.core.Points.mostCommon;
 import static org.mitre.openaria.core.TrackPairs.overlapInTime;
 
 import java.io.File;
@@ -36,13 +33,6 @@ public class Tracks {
     }
 
     /**
-     * @return The most common beacon code (actual) for the points inside this Track.
-     */
-    public static String beaconCodeActual(Track track) {
-        return mostCommon(PointField.BEACON_ACTUAL, track.points());
-    }
-
-    /**
      * @param track A Track
      *
      * @return True when track.aircraftId() returns null or "";
@@ -59,25 +49,6 @@ public class Tracks {
      */
     public static boolean hasAircraftId(Track track) {
         return !missingAircraftId(track);
-    }
-
-    /**
-     * @param track A Track
-     *
-     * @return True when track.beaconCodeActual() returns null or "";
-     */
-    public static boolean missingBeaconCodeActual(Track track) {
-        String beacon = beaconCodeActual(track);
-        return beacon == null || beacon.equals("");
-    }
-
-    /**
-     * @param track A Track
-     *
-     * @return False when track.beaconCodeActual() returns null or "";
-     */
-    public static boolean hasBeaconCodeActual(Track track) {
-        return !missingBeaconCodeActual(track);
     }
 
     /**

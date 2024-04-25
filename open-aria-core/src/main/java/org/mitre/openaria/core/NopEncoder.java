@@ -11,6 +11,7 @@ import java.util.TimeZone;
 
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
+import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
@@ -53,6 +54,8 @@ public class NopEncoder {
         AircraftDetails acDetails = null;
         SourceDetails sourceDetails = null;
         String flightRules = null;
+        String beaconAssigned = null;
+        String beaconActual = null;
         if (p instanceof HasAircraftDetails had) {
             acDetails = had.acDetails();
         }
@@ -63,6 +66,15 @@ public class NopEncoder {
 
         if( p instanceof HasFlightRules hfr) {
             flightRules = hfr.flightRules();
+        }
+
+        if(p instanceof HasBeaconCodes hbc) {
+            beaconActual = hbc.beaconActual();
+            beaconAssigned = format(hbc.beaconAssigned());
+        } else {
+            beaconActual = "";
+            beaconAssigned = format(null);
+
         }
 
         StringBuilder sb = new StringBuilder();
@@ -81,14 +93,14 @@ public class NopEncoder {
             .append(callsign).append(DELIMITER) //token 5
             .append(acType).append(DELIMITER) //token 6
             .append(DELIMITER) //token 7 (STARS:equipmentTypeSuffix)
-            .append(p.beaconActual()).append(DELIMITER) //token 8
+            .append(beaconActual).append(DELIMITER) //token 8
             .append(formatAltitude(p)).append(DELIMITER) //token 9
             .append(formatSpeed(p)).append(DELIMITER) //token 10
             .append(formatCourse(p)).append(DELIMITER) //token 11
             .append(formatLatOrLong(p.latLong().latitude())).append(DELIMITER) //token 12
             .append(formatLatOrLong(p.latLong().longitude())).append(DELIMITER) // token 13
             .append(p.trackId()).append(DELIMITER) //token 14
-            .append(format(p.beaconAssigned())).append(DELIMITER) //token 15
+            .append(beaconAssigned).append(DELIMITER) //token 15
             .append(DELIMITER) //token 16-AGW/STARS:X
             .append(DELIMITER) //token 17-AGW/STARS:Y
             .append(DELIMITER) //token 18-AGW/STARS:keyboard

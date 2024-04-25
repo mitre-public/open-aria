@@ -3,7 +3,8 @@ package org.mitre.openaria.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 
 import org.mitre.caasd.commons.LatLong;
@@ -27,7 +28,6 @@ public class EphemeralPointTest {
 
         //make sure the information from the CenterPoint is forwarded to the EmphemeralPoint
         assertEquals("465", point.trackId());
-        assertNull(point.beaconAssigned());
 
         assertThat("SKW5840", equalTo(point.callsign())); //confirms Hamcrest Matchers are working
 

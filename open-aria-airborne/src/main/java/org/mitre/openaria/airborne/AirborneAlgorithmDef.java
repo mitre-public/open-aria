@@ -1,5 +1,3 @@
-
-
 package org.mitre.openaria.airborne;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -7,11 +5,11 @@ import static java.lang.Boolean.parseBoolean;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
+import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
 import static org.mitre.openaria.airborne.DataCleaning.requireProximity;
 import static org.mitre.openaria.airborne.DataCleaning.requireSeparationFilter;
 import static org.mitre.openaria.smoothing.TrackSmoothing.simpleSmoothing;
 import static org.mitre.openaria.trackpairing.TrackPairFilters.tracksMustOverlapInTime;
-import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
 
 import java.io.File;
 import java.time.Duration;
@@ -19,18 +17,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.TrackPairCleaner;
-import org.mitre.openaria.smoothing.TrimSlowMovingPointsWithSimilarAltitudes;
-import org.mitre.openaria.trackpairing.IsFormationFlight;
-import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 import org.mitre.caasd.commons.CachingCleaner;
 import org.mitre.caasd.commons.CompositeCleaner;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
 import org.mitre.caasd.commons.util.ImmutableConfig;
+import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.TrackPairCleaner;
+import org.mitre.openaria.smoothing.TrimSlowMovingPointsWithSimilarAltitudes;
+import org.mitre.openaria.trackpairing.IsFormationFlight;
+import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 
 public class AirborneAlgorithmDef {
 
