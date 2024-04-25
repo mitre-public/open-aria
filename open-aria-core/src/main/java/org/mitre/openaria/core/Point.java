@@ -22,8 +22,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
 
     String beaconActual();
 
-    String beaconAssigned();
-
     Distance altitude();
 
     Double course();

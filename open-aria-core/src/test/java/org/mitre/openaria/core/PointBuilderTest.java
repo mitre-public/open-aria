@@ -69,18 +69,6 @@ public class PointBuilderTest {
     }
 
     @Test
-    public void testBeaconAssigned() {
-
-        String stringValue = "aString";
-
-        Point p1 = (new PointBuilder()).beaconAssigned(stringValue).build();
-        Point p2 = (new PointBuilder()).beaconAssigned(null).build();
-
-        assertTrue(p1.beaconAssigned().equals(stringValue));
-        assertTrue(isNull(p2.beaconAssigned()));
-    }
-
-    @Test
     public void testLatLong() {
         LatLong latLong = LatLong.of(-5.0, -2.34);
         Point p = Point.builder().latLong(latLong).build();

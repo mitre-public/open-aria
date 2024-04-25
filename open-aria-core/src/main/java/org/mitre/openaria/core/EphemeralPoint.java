@@ -109,11 +109,6 @@ public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, Has
     }
 
     @Override
-    public String beaconAssigned() {
-        return (String) data.get(BEACON_ASSIGNED);
-    }
-
-    @Override
     public String flightRules() {
         return flightRules;
     }

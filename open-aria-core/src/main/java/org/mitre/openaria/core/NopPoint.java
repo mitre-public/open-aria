@@ -2,6 +2,8 @@ package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.mitre.openaria.core.temp.Extras.BeaconCodes;
+import static org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -34,7 +36,7 @@ import org.mitre.openaria.core.temp.Extras.SourceDetails;
  *
  * @param <T> The type of NopRadarHit being wrapped
  */
-public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, HasSourceDetails, HasAircraftDetails, HasFlightRules {
+public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
 
     NopRadarHit rhMessage;
 
@@ -112,9 +114,6 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
     }
 
     @Override
-    public abstract String beaconAssigned();
-
-    @Override
     public String flightRules() {
         return rhMessage.flightRules();
     }
@@ -166,5 +165,10 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
     @Override
     public AircraftDetails acDetails() {
         return new AircraftDetails(rhMessage.callSign(), rhMessage.aircraftType());
+    }
+
+    @Override
+    public BeaconCodes beaconCodes() {
+        return new BeaconCodes(rhMessage.reportedBeaconCode(), "");
     }
 }

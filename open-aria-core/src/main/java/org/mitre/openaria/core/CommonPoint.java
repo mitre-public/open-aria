@@ -29,7 +29,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
 
     private final String trackId;
     private final String beaconActual;
-    private final String beaconAssigned;
     private final LatLong latLong;
     private final Distance altitude;
     private final Double course;
@@ -53,7 +52,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
 
         this.trackId = (String) map.get(PointField.TRACK_ID);
         this.beaconActual = (String) map.get(PointField.BEACON_ACTUAL);
-        this.beaconAssigned = (String) map.get(PointField.BEACON_ASSIGNED);
         this.latLong = (LatLong) map.get(PointField.LAT_LONG);
         this.altitude = (Distance) map.get(PointField.ALTITUDE);
         this.course = (Double) map.get(PointField.COURSE_IN_DEGREES);
@@ -152,11 +150,6 @@ public class CommonPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDe
     @Override
     public String beaconActual() {
         return this.beaconActual;
-    }
-
-    @Override
-    public String beaconAssigned() {
-        return this.beaconAssigned;
     }
 
     @Override

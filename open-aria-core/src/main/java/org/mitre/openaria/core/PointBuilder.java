@@ -128,10 +128,6 @@ public class PointBuilder<T> {
         return set(PointField.BEACON_ACTUAL, beaconActual);
     }
 
-    public PointBuilder<T> beaconAssigned(String beaconAssigned) {
-        return set(PointField.BEACON_ASSIGNED, beaconAssigned);
-    }
-
     public PointBuilder<T> latLong(LatLong latitudeAndLongitude) {
         return set(PointField.LAT_LONG, latitudeAndLongitude);
     }

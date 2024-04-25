@@ -37,6 +37,19 @@ public class Extras {
         String flightRules();
     }
 
+    @FunctionalInterface
+    public interface HasBeaconCodes {
+        BeaconCodes beaconCodes();
+
+        default String beaconActual() {
+            return beaconCodes().actual;
+        }
+
+        default String beaconAssigned() {
+            return beaconCodes().assigned;
+        }
+    }
+
 
     public record SourceDetails(String sensor, String facility) {
     }
@@ -46,23 +59,17 @@ public class Extras {
 
     }
 
+    public record BeaconCodes(String actual, String assigned) {
+
+    }
+
     /*
      * These are all the fields in Point that need to be migrated OUT of the original Point interface
      * and into a data format
      */
-
-//    public String callsign();
-//    public String aircraftType();
-
-//    public String sensor();
-//    public String facility();
-
-//
 //    public String beaconActual();
 //
 //    public String beaconAssigned();
-//
-//    public String flightRules();
 //
 //    public Double course();
 //

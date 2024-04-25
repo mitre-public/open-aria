@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.mitre.openaria.core.temp.Extras;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasFlightRules;
@@ -53,6 +54,7 @@ public class NopEncoder {
         AircraftDetails acDetails = null;
         SourceDetails sourceDetails = null;
         String flightRules = null;
+        String beaconAssigned = null;
         if (p instanceof HasAircraftDetails had) {
             acDetails = had.acDetails();
         }
@@ -63,6 +65,12 @@ public class NopEncoder {
 
         if( p instanceof HasFlightRules hfr) {
             flightRules = hfr.flightRules();
+        }
+
+        if(p instanceof Extras.HasBeaconCodes hbc) {
+            beaconAssigned = format(hbc.beaconAssigned());
+        } else {
+            beaconAssigned = format(null);
         }
 
         StringBuilder sb = new StringBuilder();
@@ -88,7 +96,7 @@ public class NopEncoder {
             .append(formatLatOrLong(p.latLong().latitude())).append(DELIMITER) //token 12
             .append(formatLatOrLong(p.latLong().longitude())).append(DELIMITER) // token 13
             .append(p.trackId()).append(DELIMITER) //token 14
-            .append(format(p.beaconAssigned())).append(DELIMITER) //token 15
+            .append(beaconAssigned).append(DELIMITER) //token 15
             .append(DELIMITER) //token 16-AGW/STARS:X
             .append(DELIMITER) //token 17-AGW/STARS:Y
             .append(DELIMITER) //token 18-AGW/STARS:keyboard
