@@ -13,17 +13,17 @@ import org.mitre.caasd.commons.TimeWindow;
 
 public class MutableTrack {
 
-    private final NavigableSet<MutablePoint> points;
+    private final NavigableSet<Point> points;
 
-    public static MutableTrack of(Collection<MutablePoint> points) {
+    public static MutableTrack of(Collection<Point> points) {
         return new MutableTrack(points);
     }
 
-    public MutableTrack(Collection<MutablePoint> points) {
+    public MutableTrack(Collection<Point> points) {
         this.points = newTreeSet(points);
     }
 
-    public NavigableSet<MutablePoint> points() {
+    public NavigableSet<Point> points() {
         return points;
     }
 
@@ -32,11 +32,11 @@ public class MutableTrack {
      */
     public Track immutableCopy() {
 
-        ArrayList<Point> immutablePoints = this.points().stream()
+        ArrayList<Point> imPoints = this.points().stream()
             .map(p -> Point.builder(p).build()) //copy to an immutable version
             .collect(toCollection(ArrayList::new));
 
-        return Track.of( (ArrayList) immutablePoints);
+        return Track.of( (ArrayList) imPoints);
     }
 
 

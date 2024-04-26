@@ -8,14 +8,14 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
-import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointField;
 import org.mitre.openaria.core.Track;
 
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class MutableSmootherTest {
     public void testCombinedSmoothing() {
 
         DataCleaner<MutableTrack> speedFixer = new FillMissingSpeeds();
-        DataCleaner<MutableTrack> altitudeSetter = new AltitudeSettter();
+        DataCleaner<MutableTrack> altitudeSetter = new AltitudeSetter();
 
         //Get a TRACK cleaner from two MUTABLETRACK cleaners
         DataCleaner<Track> combinedSmoother = MutableSmoother.of(
@@ -45,14 +45,16 @@ public class MutableSmootherTest {
         }
     }
 
-    class AltitudeSettter implements DataCleaner<MutableTrack> {
+    class AltitudeSetter implements DataCleaner<MutableTrack> {
 
         @Override
         public Optional<MutableTrack> clean(MutableTrack data) {
-            for (MutablePoint point : data.points()) {
-                point.set(PointField.ALTITUDE, Distance.ofFeet(1000));
-            }
-            return Optional.of(data);
+
+            TreeSet<Point> fixedPoints = data.points().stream()
+                .map(pt -> Point.builder(pt).butAltitude(Distance.ofFeet(1000)).build())
+                .collect(Collectors.toCollection(TreeSet::new));
+
+            return Optional.of(MutableTrack.of(fixedPoints));
         }
     }
 

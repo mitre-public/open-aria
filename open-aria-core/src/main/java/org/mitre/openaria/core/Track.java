@@ -168,11 +168,11 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      * @return A completely independent, and mutable, copy of this Track
      */
     public MutableTrack mutableCopy() {
-        ArrayList<MutablePoint> mutablePoints = points().stream()
+        ArrayList<Point> Points = points().stream()
             .map(p -> EphemeralPoint.from(p))
             .collect(toCollection(ArrayList::new));
 
-        return MutableTrack.of(mutablePoints);
+        return MutableTrack.of(Points);
     }
 
     /**

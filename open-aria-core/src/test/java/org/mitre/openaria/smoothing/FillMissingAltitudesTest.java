@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.MutablePoint;
+import org.mitre.caasd.commons.Distance;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.caasd.commons.Distance;
+
+import org.junit.jupiter.api.Test;
 
 public class FillMissingAltitudesTest {
 
@@ -29,7 +29,7 @@ public class FillMissingAltitudesTest {
     public void testFillingInitialAltitudes() {
         MutableTrack testTrack = trackWithNoInitialAltitudes();
         MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<MutablePoint> points = new ArrayList<>(cleanedTrack.points());
+        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             points.get(0).altitude().equals(points.get(1).altitude()) &&
@@ -42,7 +42,7 @@ public class FillMissingAltitudesTest {
     public void testFillingFinalAltitudes() {
         MutableTrack testTrack = trackWithNoFinalAltitudes();
         MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<MutablePoint> points = new ArrayList<>(cleanedTrack.points());
+        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             points.get(3).altitude().equals(points.get(1).altitude()) &&
@@ -55,7 +55,7 @@ public class FillMissingAltitudesTest {
     public void testFillingMissingAltitude() {
         MutableTrack testTrack = trackWithSingleMissingAltitude();
         MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<MutablePoint> points = new ArrayList<>(cleanedTrack.points());
+        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             points.get(1).altitude().inFeet() == 130.0,
@@ -67,7 +67,7 @@ public class FillMissingAltitudesTest {
     public void testFillingMultipleMissingAltitudes() {
         MutableTrack testTrack = trackWithMultipleMissingAltitudes();
         MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<MutablePoint> points = new ArrayList<>(cleanedTrack.points());
+        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             (points.get(1).altitude().inFeet() == 0.0) &&
@@ -118,14 +118,14 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private MutablePoint makePoint(int secondsFromStart, double altitudeInFeet) {
+    private Point makePoint(int secondsFromStart, double altitudeInFeet) {
         return Point.builder()
             .time(EPOCH.plusSeconds(secondsFromStart))
             .altitude(Distance.ofFeet(altitudeInFeet))
             .buildMutable();
     }
 
-    private MutablePoint makeNullAltitudePoint(int secondsFromStart) {
+    private Point makeNullAltitudePoint(int secondsFromStart) {
         return Point.builder()
             .time(EPOCH.plusSeconds(secondsFromStart))
             .buildMutable();

@@ -4,15 +4,14 @@ package org.mitre.openaria.smoothing;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Math.abs;
 import static java.util.stream.Collectors.toCollection;
-import static org.mitre.openaria.core.PointField.ALTITUDE;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
-import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 
@@ -60,12 +59,11 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
 
         ArrayList<AnalysisResult> outliers = getOutliers(inputTrack);
 
-        for (AnalysisResult outlier : outliers) {
-            MutablePoint badPoint = (MutablePoint) outlier.originalPoint();
-            badPoint.set(ALTITUDE, outlier.correctedAltitude());
-        }
+        TreeSet<Point> points = new TreeSet<>(inputTrack.points());
+        points.removeAll(outliers.stream().map(ar -> ar.originalPoint).toList());
+        points.addAll(outliers.stream().map(ar -> ar.correctedPoint()).toList());
 
-        return Optional.of(inputTrack);
+        return Optional.of(MutableTrack.of(points));
     }
 
     /**
@@ -159,6 +157,10 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
 
         public Distance correctedAltitude() {
             return correctedAltitude;
+        }
+
+        public Point correctedPoint() {
+            return Point.builder(originalPoint).butAltitude(correctedAltitude).build();
         }
     }
 

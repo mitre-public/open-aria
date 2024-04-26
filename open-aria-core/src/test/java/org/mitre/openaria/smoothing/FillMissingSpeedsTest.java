@@ -3,20 +3,17 @@ package org.mitre.openaria.smoothing;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.EPOCH;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.MutablePoint;
+import org.mitre.caasd.commons.LatLong;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.caasd.commons.LatLong;
+
+import org.junit.jupiter.api.Test;
 
 
 public class FillMissingSpeedsTest {
@@ -26,18 +23,18 @@ public class FillMissingSpeedsTest {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
-        MutablePoint p1 = Point.builder()
+        Point p1 = Point.builder()
             .time(EPOCH)
             .latLong(position)
             .buildMutable();
 
-        MutablePoint p2 = Point.builder()
+        Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .speed(100.0)
             .buildMutable();
 
-        MutablePoint p3 = Point.builder()
+        Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .speed(100.0)
@@ -53,19 +50,19 @@ public class FillMissingSpeedsTest {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
-        MutablePoint p1 = Point.builder()
+        Point p1 = Point.builder()
             .time(EPOCH)
             .speed(100.0)
             .latLong(position)
             .buildMutable();
 
-        MutablePoint p2 = Point.builder()
+        Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .speed(100.0)
             .buildMutable();
 
-        MutablePoint p3 = Point.builder()
+        Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .buildMutable();
@@ -79,18 +76,18 @@ public class FillMissingSpeedsTest {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
-        MutablePoint p1 = Point.builder()
+        Point p1 = Point.builder()
             .time(EPOCH)
             .speed(100.0)
             .latLong(position)
             .buildMutable();
 
-        MutablePoint p2 = Point.builder()
+        Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .buildMutable();
 
-        MutablePoint p3 = Point.builder()
+        Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .speed(100.0)
@@ -105,31 +102,31 @@ public class FillMissingSpeedsTest {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
-        MutablePoint p1 = Point.builder()
+        Point p1 = Point.builder()
             .time(EPOCH)
             .speed(100.0)
             .latLong(position)
             .buildMutable();
 
-        MutablePoint p2 = Point.builder()
+        Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .speed(100.0)
             .buildMutable();
 
         //no speed value
-        MutablePoint p3 = Point.builder()
+        Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .buildMutable();
 
         //no speed value
-        MutablePoint p4 = Point.builder()
+        Point p4 = Point.builder()
             .time(EPOCH.plusSeconds(15))
             .latLong(position.projectOut(0.0, 15.0 * nmPerSec))
             .buildMutable();
 
-        MutablePoint p5 = Point.builder()
+        Point p5 = Point.builder()
             .time(EPOCH.plusSeconds(20))
             .latLong(position.projectOut(0.0, 20.0 * nmPerSec))
             .speed(100.0)
@@ -144,31 +141,31 @@ public class FillMissingSpeedsTest {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
-        MutablePoint p1 = Point.builder()
+        Point p1 = Point.builder()
             .time(EPOCH)
             .latLong(position)
             .buildMutable();
 
         //100 knots from 1 to 2
-        MutablePoint p2 = Point.builder()
+        Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(p1.latLong().projectOut(0.0, 5.0 * nmPerSec * 1.0))
             .buildMutable();
 
         //200 knots from 2 to 3
-        MutablePoint p3 = Point.builder()
+        Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(p2.latLong().projectOut(0.0, 5.0 * nmPerSec * 2.0))
             .buildMutable();
 
         //300 knots from 3 to 4
-        MutablePoint p4 = Point.builder()
+        Point p4 = Point.builder()
             .time(EPOCH.plusSeconds(15))
             .latLong(p3.latLong().projectOut(0.0, 5.0 * nmPerSec * 3.0))
             .buildMutable();
 
         //400 knots from 4 to 5
-        MutablePoint p5 = Point.builder()
+        Point p5 = Point.builder()
             .time(EPOCH.plusSeconds(20))
             .latLong(p4.latLong().projectOut(0.0, 5.0 * nmPerSec * 4.0))
             .buildMutable();
@@ -180,7 +177,7 @@ public class FillMissingSpeedsTest {
 
     private MutableTrack trackWithSinglePoint() {
 
-        MutablePoint p1 = Point.builder()
+        Point p1 = Point.builder()
             .time(EPOCH)
             .latLong(LatLong.of(0.0, 0.0))
             .buildMutable();
@@ -262,15 +259,15 @@ public class FillMissingSpeedsTest {
     @Test
     public void correctAcceleratingSpeeds() {
         MutableTrack testTrack = acceleratingTrackWithNoSpeedData();
-        for (MutablePoint point : testTrack.points()) {
+        for (Point point : testTrack.points()) {
             assertNull(point.speedInKnots(), "No speed data to start");
         }
         MutableTrack fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
-        for (MutablePoint point : fixedTrack.points()) {
+        for (Point point : fixedTrack.points()) {
             assertNotNull(point.speedInKnots(), "The fixed track has speed data");
         }
 
-        List<MutablePoint> points = newArrayList(fixedTrack.points());
+        List<Point> points = newArrayList(fixedTrack.points());
         for (int i = 1; i < points.size(); i++) {
             assertTrue(
                 points.get(i - 1).speedInKnots() < points.get(i).speedInKnots(),

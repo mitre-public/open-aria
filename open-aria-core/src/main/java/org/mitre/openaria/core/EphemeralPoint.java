@@ -20,13 +20,13 @@ import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 import org.mitre.openaria.core.temp.Extras.HasFlightRules;
 
 /**
- * An EphemeralPoint is a MutablePoint that is meant to be <b>repeatedly</b> manipulated.
+ * An EphemeralPoint is a Point that is meant to be <b>repeatedly</b> manipulated.
  * EphemeralPoints should be used with caution because mutable data can leads to bugs. Despite this
  * risk, the EphemeralPoint can be useful when Point data is likely to be repeatedly altered (like
  * during Track smoothing). In this case, repeatedly copying data from Immutable Point to Immutable
  * Point can become costly.
  */
-public class EphemeralPoint<T> implements MutablePoint<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
+public class EphemeralPoint<T> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
 
     private final HashMap<PointField, Object> data;
 

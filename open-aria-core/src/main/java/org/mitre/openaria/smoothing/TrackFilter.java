@@ -2,13 +2,12 @@ package org.mitre.openaria.smoothing;
 
 import static java.lang.Double.max;
 import static java.util.stream.Collectors.toList;
-import static org.mitre.openaria.core.PointField.*;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.KineticPosition;
@@ -17,8 +16,8 @@ import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.PositionRecord;
 import org.mitre.caasd.commons.math.locationfit.LocalPolyInterpolator;
 import org.mitre.caasd.commons.math.locationfit.PositionInterpolator;
-import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 /**
  * This class is a replacement for AlongTrackFilter and CrossTrackFilter.
@@ -49,57 +48,55 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack track) {
 
-        NavigableSet<MutablePoint> points = track.points();
+        TreeSet<Point> points = new TreeSet<>(track.points());
 
         if (points.size() == 1) {
-            MutablePoint pt = points.first();
-            //pt.setAcceleration(0.0);  //if points supported this field here is where we'd add it
-            pt.set(SPEED, 0.0);
-            return Optional.of(track);
+            Point pt = points.first();
+            //if points supported this field here is where we'd add it
+            Point corrected = Point.builder(pt).butSpeed(0.0).build();
+            return Optional.of(MutableTrack.of(List.of(corrected)));
         }
 
         //Extract the potentially noisy physical position of each input point
-        List<PositionRecord<MutablePoint>> originalPositions = points.stream()
+        List<PositionRecord<Point>> originalPositions = points.stream()
             .map(pt -> asPositionRecord(pt))
             .collect(toList());
 
         //Deduce noise-reduced Lat/Long/Speed/Course/etc values
-        List<KineticRecord<MutablePoint>> fitPositions = points.stream()
+        List<KineticRecord<Point>> fitPositions = points.stream()
             .map(pt -> fitter.floorInterpolate(originalPositions, pt.time()))
             .filter(Optional::isPresent)
             .map(Optional::get)
+            .toList();
+
+
+        //Rebuild the "points" NavigableSet from only the valid data
+        List<Point> smoothedPoints = fitPositions.stream()
+            .map(kr -> makeAdjustedPoint(kr))
             .collect(toList());
 
-        //Apply changes to SPEED, ALONG_TRACK_DISTANCE, LAT_LONG, COURSE_IN_DEGREES, CURVATURE
-        for (KineticRecord<MutablePoint> kr : fitPositions) {
-            MutablePoint pt = kr.datum();
-
-            /*
-             * There are a few cases instances when a computed speed will be negative. This can
-             * occur when the speed should be zero but there is a small amount of numeric error
-             * making the speed just barely negative. It can also occur when the aircraft is
-             * accelerating or decelerating extremely quick and the first (takeoff) or last
-             * (landing) point is "over fit" into negative territory.
-             */
-            pt.set(SPEED, max(0.0, kr.kinetics().speed().inKnots()));
-            pt.set(LAT_LONG, kr.kinetics().latLong());
-            pt.set(COURSE_IN_DEGREES, kr.kinetics().course().inDegrees());
-        }
-
-        //The output MutableTrack may have fewer points than the input MutableTrack
-        //This occurs when an input point does not have enough context data to support smoothing
-        //In this event we must rebuild the "points" NavigableSet from only the valid data
-        List<MutablePoint> smoothedPoints = fitPositions.stream()
-            .map(kr -> kr.datum())
-            .collect(toList());
-
-        points.clear();
-        points.addAll(smoothedPoints);
-
-        return points.isEmpty() ? Optional.empty() : Optional.of(track);
+        return smoothedPoints.isEmpty()
+            ? Optional.empty()
+            : Optional.of(MutableTrack.of(smoothedPoints));
     }
 
-    private PositionRecord<MutablePoint> asPositionRecord(MutablePoint point) {
+    private Point makeAdjustedPoint(KineticRecord<Point> kr) {
+
+        /*
+         * There are a few cases instances when a computed speed will be negative. This can
+         * occur when the speed should be zero but there is a small amount of numeric error
+         * making the speed just barely negative. It can also occur when the aircraft is
+         * accelerating or decelerating extremely quick and the first (takeoff) or last
+         * (landing) point is "over fit" into negative territory.
+         */
+        return Point.builder(kr.datum())
+            .butSpeed(max(0.0, kr.kinetics().speed().inKnots()))
+            .butLatLong(kr.kinetics().latLong())
+            .butCourseInDegrees(kr.kinetics().course().inDegrees())
+            .build();
+    }
+
+    private PositionRecord<Point> asPositionRecord(Point point) {
         Position p = new Position(point.time(), point.latLong());
         return new PositionRecord<>(point, p);
     }
