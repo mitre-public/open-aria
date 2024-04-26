@@ -10,12 +10,11 @@ import java.time.Instant;
 import java.util.Iterator;
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutablePoint;
-import org.mitre.openaria.core.MutableTrack;
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Time;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 /**
  * A DistanceDownSampler will "thin out" a Track that contains nearly-duplicate Point data because
@@ -59,7 +58,7 @@ public class DistanceDownSampler implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack track) {
 
-        Iterator<MutablePoint> iter = track.points().iterator();
+        Iterator<Point> iter = track.points().iterator();
 
         LatLong anchor = null;
         Instant anchorTime = null;

@@ -2,15 +2,14 @@
 package org.mitre.openaria.smoothing;
 
 import static java.util.Objects.nonNull;
-import static org.mitre.openaria.core.PointField.SPEED;
 import static org.mitre.openaria.core.Points.speedBetween;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutablePoint;
+import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.caasd.commons.DataCleaner;
 
 import com.google.common.math.Stats;
 
@@ -31,32 +30,25 @@ public class FillMissingSpeeds implements DataCleaner<MutableTrack> {
             return Optional.empty();
         }
 
-        /*
-         * Find sequences of three consecutive points, compute the middle speed when it is missing
-         */
-        MutablePoint first = null;
-        MutablePoint second = null;
-        MutablePoint third = null;
+        ArrayList<Point> ptList = new ArrayList<>(track.points());
 
-        for (MutablePoint point : track.points()) {
-            first = second;
-            second = third;
-            third = point;
+        // Find sequences of three consecutive points, compute the middle speed when it is missing
+        for (int i = 0; i < ptList.size(); i++) {
+            Point cur = ptList.get(i);
 
-            if (nonNull(second) && predicate.test(second)) {
-                setMissingSpeed(first, second, third);
+            if (nonNull(cur) && predicate.test(cur)) {
+                Point left = i >= 1 ? ptList.get(i - 1) : null;
+                Point right = i < ptList.size() - 1 ? ptList.get(i + 1) : null;
+
+                Point fixed = setMissingSpeed(left, cur, right);
+                ptList.set(i, fixed);
             }
         }
 
-        //check the very last point in the track
-        if (nonNull(third) && predicate.test(third)) {
-            setMissingSpeed(second, third, null);
-        }
-
-        return Optional.of(MutableTrack.of(track.points()));
+        return Optional.of(MutableTrack.of(ptList));
     }
 
-    private void setMissingSpeed(Point pointA, MutablePoint pointB, Point pointC) {
+    private Point setMissingSpeed(Point pointA, Point pointB, Point pointC) {
 
         double deducedSpeedInKnots;
 
@@ -76,7 +68,8 @@ public class FillMissingSpeeds implements DataCleaner<MutableTrack> {
         } else {
             throw new AssertionError("Cannot deduce a Speed when no other points are known");
         }
-        pointB.set(SPEED, deducedSpeedInKnots);
+
+        return Point.builder(pointB).butSpeed(deducedSpeedInKnots).build();
     }
 
 }

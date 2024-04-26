@@ -10,11 +10,10 @@ import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.mitre.openaria.core.MutablePoint;
-import org.mitre.openaria.core.MutableTrack;
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.math.Vector;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
     private static final double ACCELERATION_THRESHOLD = 70.0;
@@ -35,7 +34,7 @@ public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack inputTrack) {
 
-        Collection<MutablePoint> outliers = getOutliers(inputTrack);
+        Collection<Point> outliers = getOutliers(inputTrack);
 
         inputTrack.points().removeAll(outliers);
 
@@ -57,9 +56,9 @@ public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
      * @return The set of Points which occur between a data outage and a nearby time of high
      *     acceleration.
      */
-    private NavigableSet<MutablePoint> getOutliers(MutableTrack track) {
+    private NavigableSet<Point> getOutliers(MutableTrack track) {
 
-        TreeSet<MutablePoint> outliers = new TreeSet<>();
+        TreeSet<Point> outliers = new TreeSet<>();
 
         RectangularMapProjection projectionInNm = new RectangularMapProjection(track.points().first());
 
@@ -80,8 +79,8 @@ public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
         dataGaps.add(DataGap.withOnlyFollowingPoints(trackHead(track)));
         dataGaps.add(DataGap.withOnlyPrecedingPoints(trackTail(track)));
 
-        MutablePoint previousPoint = track.points().first();
-        for (MutablePoint point : track.points()) {
+        Point previousPoint = track.points().first();
+        for (Point point : track.points()) {
 
             if (isTimeGap(previousPoint, point)) {
                 dataGaps.add(DataGap.withBookends(
@@ -95,43 +94,43 @@ public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
         return dataGaps;
     }
 
-    private NavigableSet<MutablePoint> pointsPreceding(MutableTrack track, MutablePoint endPoint) {
+    private NavigableSet<Point> pointsPreceding(MutableTrack track, Point endPoint) {
 
-        MutablePoint startPoint = Point.builder()
+        Point startPoint = Point.builder()
             .time(endPoint.time().minus(OUTLIER_INSPECTION_WINDOW))
             .buildMutable();
 
         return track.points().subSet(startPoint, false, endPoint, true);
     }
 
-    private NavigableSet<MutablePoint> pointsFollowing(MutableTrack track, MutablePoint startPoint) {
+    private NavigableSet<Point> pointsFollowing(MutableTrack track, Point startPoint) {
 
-        MutablePoint endPoint = Point.builder()
+        Point endPoint = Point.builder()
             .time(startPoint.time().plus(OUTLIER_INSPECTION_WINDOW))
             .buildMutable();
 
         return track.points().subSet(startPoint, true, endPoint, false);
     }
 
-    private NavigableSet<MutablePoint> trackHead(MutableTrack track) {
+    private NavigableSet<Point> trackHead(MutableTrack track) {
 
         return pointsFollowing(track, track.points().first());
     }
 
-    private NavigableSet<MutablePoint> trackTail(MutableTrack track) {
+    private NavigableSet<Point> trackTail(MutableTrack track) {
 
         return pointsPreceding(track, track.points().last());
     }
 
-    private NavigableSet<MutablePoint> outliersPrecedingDataGap(NavigableSet<MutablePoint> pointsPrecedingDataGap, RectangularMapProjection projectionInNm) {
+    private NavigableSet<Point> outliersPrecedingDataGap(NavigableSet<Point> pointsPrecedingDataGap, RectangularMapProjection projectionInNm) {
 
-        NavigableSet<MutablePoint> outliers = new TreeSet<>();
+        NavigableSet<Point> outliers = new TreeSet<>();
 
-        MutablePoint point1 = null;
-        MutablePoint point2 = null;
-        MutablePoint point3 = null;
+        Point point1 = null;
+        Point point2 = null;
+        Point point3 = null;
 
-        for (MutablePoint point : pointsPrecedingDataGap) {
+        for (Point point : pointsPrecedingDataGap) {
             point1 = point2;
             point2 = point3;
             point3 = point;
@@ -149,15 +148,15 @@ public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
         return outliers;
     }
 
-    private NavigableSet<MutablePoint> outliersFollowingDataGap(NavigableSet<MutablePoint> pointsFollowingDataGap, RectangularMapProjection projectionInNm) {
+    private NavigableSet<Point> outliersFollowingDataGap(NavigableSet<Point> pointsFollowingDataGap, RectangularMapProjection projectionInNm) {
 
-        NavigableSet<MutablePoint> outliers = new TreeSet<>();
+        NavigableSet<Point> outliers = new TreeSet<>();
 
-        MutablePoint point1 = null;
-        MutablePoint point2 = null;
-        MutablePoint point3 = null;
+        Point point1 = null;
+        Point point2 = null;
+        Point point3 = null;
 
-        for (MutablePoint point : pointsFollowingDataGap) {
+        for (Point point : pointsFollowingDataGap) {
             point1 = point2;
             point2 = point3;
             point3 = point;
@@ -207,26 +206,26 @@ public class AccelerationOutlierDetector implements DataCleaner<MutableTrack> {
 
     static class DataGap {
 
-        private final NavigableSet<MutablePoint> pointsPrecedingDataGap;
-        private final NavigableSet<MutablePoint> pointsFollowingDataGap;
+        private final NavigableSet<Point> pointsPrecedingDataGap;
+        private final NavigableSet<Point> pointsFollowingDataGap;
 
-        private DataGap(NavigableSet<MutablePoint> pointsPrecedingDataGap, NavigableSet<MutablePoint> pointsFollowingDataGap) {
+        private DataGap(NavigableSet<Point> pointsPrecedingDataGap, NavigableSet<Point> pointsFollowingDataGap) {
 
             this.pointsPrecedingDataGap = pointsPrecedingDataGap;
             this.pointsFollowingDataGap = pointsFollowingDataGap;
         }
 
-        static DataGap withBookends(NavigableSet<MutablePoint> pointsPrecedingDataGap, NavigableSet<MutablePoint> pointsFollowingDataGap) {
+        static DataGap withBookends(NavigableSet<Point> pointsPrecedingDataGap, NavigableSet<Point> pointsFollowingDataGap) {
 
             return new DataGap(pointsPrecedingDataGap, pointsFollowingDataGap);
         }
 
-        static DataGap withOnlyPrecedingPoints(NavigableSet<MutablePoint> pointsPrecedingDataGap) {
+        static DataGap withOnlyPrecedingPoints(NavigableSet<Point> pointsPrecedingDataGap) {
 
             return new DataGap(pointsPrecedingDataGap, new TreeSet<>());
         }
 
-        static DataGap withOnlyFollowingPoints(NavigableSet<MutablePoint> pointsFollowingDataGap) {
+        static DataGap withOnlyFollowingPoints(NavigableSet<Point> pointsFollowingDataGap) {
 
             return new DataGap(new TreeSet<>(), pointsFollowingDataGap);
         }

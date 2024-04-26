@@ -7,12 +7,11 @@ import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.mitre.openaria.core.MutablePoint;
-import org.mitre.openaria.core.MutableTrack;
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 public class SpeedDiscrepancyRemover implements DataCleaner<MutableTrack> {
 
@@ -31,7 +30,7 @@ public class SpeedDiscrepancyRemover implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack track) {
 
-        Collection<MutablePoint> speedDiscrepancies = findSpeedDiscrepancies(track);
+        Collection<Point> speedDiscrepancies = findSpeedDiscrepancies(track);
 
         track.points().removeAll(speedDiscrepancies);
 
@@ -40,15 +39,15 @@ public class SpeedDiscrepancyRemover implements DataCleaner<MutableTrack> {
             : Optional.of(track);
     }
 
-    private Collection<MutablePoint> findSpeedDiscrepancies(MutableTrack track) {
+    private Collection<Point> findSpeedDiscrepancies(MutableTrack track) {
 
-        NavigableSet<MutablePoint> outliers = new TreeSet<>();
+        NavigableSet<Point> outliers = new TreeSet<>();
 
-        MutablePoint point1 = null;
-        MutablePoint point2 = null;
-        MutablePoint point3 = null;
+        Point point1 = null;
+        Point point2 = null;
+        Point point3 = null;
 
-        for (MutablePoint point : track.points()) {
+        for (Point point : track.points()) {
             point1 = point2;
             point2 = point3;
             point3 = point;

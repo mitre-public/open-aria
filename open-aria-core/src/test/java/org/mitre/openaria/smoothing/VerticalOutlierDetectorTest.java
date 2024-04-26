@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.mitre.openaria.core.EphemeralPoint;
-import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
@@ -56,12 +55,12 @@ public class VerticalOutlierDetectorTest {
 
         MutableTrack postSmoothing = (new VerticalOutlierDetector()).clean(testTrack).get();
 
-        Iterator<MutablePoint> iter1 = testTrack.points().iterator();
-        Iterator<MutablePoint> iter2 = postSmoothing.points().iterator();
+        Iterator<Point> iter1 = testTrack.points().iterator();
+        Iterator<Point> iter2 = postSmoothing.points().iterator();
 
         while (iter1.hasNext() && iter2.hasNext()) {
-            MutablePoint nextFrom1 = iter1.next();
-            MutablePoint nextFrom2 = iter2.next();
+            Point nextFrom1 = iter1.next();
+            Point nextFrom2 = iter2.next();
 
             assertEquals(
                 nextFrom1,
@@ -222,7 +221,7 @@ public class VerticalOutlierDetectorTest {
         Set<String> knownOutliers = Stream.of(expectedOutliters)
             .map(asRawNop -> NopPoint.from(asRawNop)) //convert the raw Nop to Points
             .map(nopPoint -> EphemeralPoint.from(nopPoint)) // convert the NopPoints to Mutable Points (losses info)
-            .map(mutablePoint -> mutablePoint.asNop()) //get the "lossy" Strings
+            .map(Point -> Point.asNop()) //get the "lossy" Strings
             .collect(toCollection(HashSet::new)); //in a HashSet
 
         Collection<Point> outlieingPoints = foundOutliers.stream()

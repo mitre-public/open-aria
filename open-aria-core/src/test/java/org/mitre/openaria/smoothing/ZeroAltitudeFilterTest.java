@@ -6,7 +6,6 @@ import static org.mitre.openaria.smoothing.TrackSmoothing.coreSmoothing;
 
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutablePoint;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
@@ -20,7 +19,7 @@ public class ZeroAltitudeFilterTest {
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "allPointsHaveZeroAltitude.txt").mutableCopy();
 
         MutableTrack cleaned = (new ZeroAltitudeToNull()).clean(track).get();
-        Optional<MutablePoint> any = cleaned.points().stream().filter(mp -> !mp.altitudeIsMissing()).findAny();
+        Optional<Point> any = cleaned.points().stream().filter(mp -> !mp.altitudeIsMissing()).findAny();
 
         assertFalse(any.isPresent());
     }
@@ -30,7 +29,7 @@ public class ZeroAltitudeFilterTest {
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "firstPointsHaveZeroAltitude.txt").mutableCopy();
 
         MutableTrack cleaned = (new ZeroAltitudeToNull()).clean(track).get();
-        MutablePoint first = cleaned.points().first();
+        Point first = cleaned.points().first();
 
         assertTrue(first.altitudeIsMissing());
     }
@@ -40,7 +39,7 @@ public class ZeroAltitudeFilterTest {
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "lastPointsHaveZeroAltitude.txt").mutableCopy();
 
         MutableTrack cleaned = (new ZeroAltitudeToNull()).clean(track).get();
-        MutablePoint last = cleaned.points().last();
+        Point last = cleaned.points().last();
 
         assertTrue(last.altitudeIsMissing());
     }
@@ -50,7 +49,7 @@ public class ZeroAltitudeFilterTest {
         MutableTrack track = createTrackFromResource(ZeroAltitudeToNull.class, "middleOfTrackHasZeroAltitudes.txt").mutableCopy();
 
         MutableTrack cleaned = (new ZeroAltitudeToNull()).clean(track).get();
-        MutablePoint missing = cleaned.points().stream().filter(Point::altitudeIsMissing).findFirst().get();
+        Point missing = cleaned.points().stream().filter(Point::altitudeIsMissing).findFirst().get();
 
         assertTrue(!missing.equals(cleaned.points().first()) && !missing.equals(cleaned.points().last()));
     }

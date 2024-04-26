@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutablePoint;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 /**
  * If neighboring points have the same time value, the {@code DuplicateTimeRemover} will simply
@@ -23,7 +23,7 @@ public class DuplicateTimeRemover implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack track) {
 
-        NavigableSet<MutablePoint> points = track.points();
+        NavigableSet<Point> points = track.points();
 
         if (trackHasEnoughPoints(points)) {
             resolvePointTimes(points);
@@ -32,15 +32,15 @@ public class DuplicateTimeRemover implements DataCleaner<MutableTrack> {
         return points.isEmpty() ? Optional.empty() : Optional.of(track);
     }
 
-    private boolean trackHasEnoughPoints(NavigableSet<MutablePoint> points) {
+    private boolean trackHasEnoughPoints(NavigableSet<Point> points) {
         return points.size() > 2;
     }
 
-    private void resolvePointTimes(NavigableSet<MutablePoint> points) {
+    private void resolvePointTimes(NavigableSet<Point> points) {
 
-        Iterator<MutablePoint> iter = points.iterator();
-        MutablePoint first = iter.next();
-        MutablePoint second;
+        Iterator<Point> iter = points.iterator();
+        Point first = iter.next();
+        Point second;
 
         while (iter.hasNext()) {
             second = iter.next();

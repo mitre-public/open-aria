@@ -2,18 +2,18 @@
 package org.mitre.openaria.smoothing;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.stream.Collectors.toCollection;
 import static org.mitre.openaria.core.Interpolate.interpolate;
-import static org.mitre.openaria.core.PointField.ALTITUDE;
 
 import java.time.Instant;
-import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
-import org.mitre.openaria.core.MutablePoint;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
+import org.mitre.openaria.core.MutableTrack;
+import org.mitre.openaria.core.Point;
 
 /**
  * This DataCleaner adds altitude data to points in a MutableTrack that do not have altitude data.
@@ -31,16 +31,21 @@ public class FillMissingAltitudes implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack track) {
 
-        NavigableSet<MutablePoint> points = track.points();
+        TreeSet<Point> points = new TreeSet<>(track.points());
 
-        Optional<MutablePoint> firstNonNull = firstPointWithAltitude(points);
+        Optional<Point> firstNonNull = firstPointWithAltitude(points);
         if (!firstNonNull.isPresent()) {
             return Optional.empty();
         }
-        extrapolateAltitudes(points.headSet(firstNonNull.get()), firstNonNull.get());
 
-        Optional<MutablePoint> gapStart;
-        Optional<MutablePoint> gapEnd = firstNonNull;
+        SortedSet<Point> pointsMissingAltitude = points.headSet(firstNonNull.get());
+        TreeSet<Point> fixedPoints = extrapolateAltitudes(pointsMissingAltitude, firstNonNull.get());
+        pointsMissingAltitude.clear();
+        points.addAll(fixedPoints);
+
+
+        Optional<Point> gapStart;
+        Optional<Point> gapEnd = firstNonNull;
 
         while (gapEnd.isPresent()) {
 
@@ -52,43 +57,69 @@ public class FillMissingAltitudes implements DataCleaner<MutableTrack> {
             gapEnd = firstPointWithAltitude(points.tailSet(gapStart.get()));
 
             if (!gapEnd.isPresent()) {
-                extrapolateAltitudes(points.tailSet(gapStart.get()), points.lower(gapStart.get()));
+
+                pointsMissingAltitude = points.tailSet(gapStart.get());
+                fixedPoints = extrapolateAltitudes(pointsMissingAltitude, points.lower(gapStart.get()));
+                pointsMissingAltitude.clear();
+                points.addAll(fixedPoints);
+
+//                extrapolateAltitudes(points.tailSet(gapStart.get()), points.lower(gapStart.get()));
             } else {
-                interpolateAltitudes(points.subSet(gapStart.get(), gapEnd.get()), points.lower(gapStart.get()), gapEnd.get());
+                pointsMissingAltitude = points.subSet(gapStart.get(), gapEnd.get());
+                fixedPoints = interpolateAltitudes(pointsMissingAltitude, points.lower(gapStart.get()), gapEnd.get());
+                pointsMissingAltitude.clear();
+                points.addAll(fixedPoints);
+
+//                interpolateAltitudes(points.subSet(gapStart.get(), gapEnd.get()), points.lower(gapStart.get()), gapEnd.get());
             }
         }
 
         return Optional.of(MutableTrack.of(points));
     }
 
-    private Optional<MutablePoint> firstPointWithAltitude(SortedSet<MutablePoint> points) {
+    private Optional<Point> firstPointWithAltitude(SortedSet<Point> points) {
         return points.stream().filter(hasNullAltitude.negate()).findFirst();
     }
 
-    private Optional<MutablePoint> firstPointWithoutAltitude(SortedSet<MutablePoint> points) {
+    private Optional<Point> firstPointWithoutAltitude(SortedSet<Point> points) {
         return points.stream().filter(hasNullAltitude).findFirst();
     }
 
-    private void extrapolateAltitudes(SortedSet<MutablePoint> missingAltitudePoints, MutablePoint referencePoint) {
+    /** For each point that is missing an altitude create a "patched point. */
+    private TreeSet<Point> extrapolateAltitudes(SortedSet<Point> missingAltitudePoints, Point referencePoint) {
 
         Distance referenceAltitude = referencePoint.altitude();
 
-        for (MutablePoint point : missingAltitudePoints) {
-            point.set(ALTITUDE, referenceAltitude);
-        }
+        TreeSet<Point> fixedPoints = missingAltitudePoints.stream()
+            .map(prior -> Point.builder(prior).butAltitude(referenceAltitude).build())
+            .collect(toCollection(TreeSet::new));
+
+        return fixedPoints;
     }
 
-    private void interpolateAltitudes(SortedSet<MutablePoint> missingAltitudePoints, MutablePoint startPoint, MutablePoint endPoint) {
+    private TreeSet<Point> interpolateAltitudes(SortedSet<Point> missingAltitudePoints, Point startPoint, Point endPoint) {
 
-        for (MutablePoint point : missingAltitudePoints) {
+        TreeSet<Point> fixedPoints = missingAltitudePoints.stream()
+            .map(pt -> {
+                Distance altitude = interpolate(
+                    startPoint.altitude(),
+                    endPoint.altitude(),
+                    timeFraction(startPoint.time(), endPoint.time(), pt.time())
+                );
+                return Point.builder(pt).butAltitude(altitude).build();
+            }).collect(toCollection(TreeSet::new));
 
-            Distance altitude = interpolate(
-                startPoint.altitude(),
-                endPoint.altitude(),
-                timeFraction(startPoint.time(), endPoint.time(), point.time())
-            );
-            point.set(ALTITUDE, altitude);
-        }
+        return fixedPoints;
+
+//        for (Point point : missingAltitudePoints) {
+//
+//            Distance altitude = interpolate(
+//                startPoint.altitude(),
+//                endPoint.altitude(),
+//                timeFraction(startPoint.time(), endPoint.time(), point.time())
+//            );
+//            point.set(ALTITUDE, altitude);
+//        }
     }
 
     private double timeFraction(Instant startTime, Instant endTime, Instant testTime) {

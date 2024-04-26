@@ -5,10 +5,9 @@ import java.time.Duration;
 import java.util.Iterator;
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutablePoint;
+import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
-import org.mitre.caasd.commons.DataCleaner;
 
 /**
  * A TimeDownSampler will "thin out" a Track with a high-update rate (ie too many points per
@@ -40,7 +39,7 @@ public class TimeDownSampler implements DataCleaner<MutableTrack> {
     @Override
     public Optional<MutableTrack> clean(MutableTrack track) {
 
-        Iterator<MutablePoint> iter = track.points().iterator();
+        Iterator<Point> iter = track.points().iterator();
 
         Long tau = null;
         while (iter.hasNext()) {
