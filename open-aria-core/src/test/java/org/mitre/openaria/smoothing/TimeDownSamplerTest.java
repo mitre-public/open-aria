@@ -10,7 +10,6 @@ import static org.mitre.caasd.commons.Time.durationBtw;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointBuilder;
 import org.mitre.openaria.core.Track;
@@ -45,7 +44,7 @@ public class TimeDownSamplerTest {
         Duration maxTimeDelta = Duration.ofSeconds(5);
         TimeDownSampler smoother = new TimeDownSampler(maxTimeDelta);
 
-        MutableTrack cleanedTrack = smoother.clean(testTrack().mutableCopy()).get();
+        Track cleanedTrack = smoother.clean(testTrack()).get();
 
         Point last = null;
         for (Point point : cleanedTrack.points()) {

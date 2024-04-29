@@ -9,14 +9,15 @@ import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.mitre.openaria.core.MutableTrack;
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
-public class LateralOutlierDetector implements DataCleaner<MutableTrack> {
+import org.apache.commons.math3.stat.regression.SimpleRegression;
+
+public class LateralOutlierDetector implements DataCleaner<Track> {
 
     private final int REQUIRED_SAMPLE_SIZE = 9;
 
@@ -33,7 +34,7 @@ public class LateralOutlierDetector implements DataCleaner<MutableTrack> {
      *
      * @return The set of Point in this Track with outlying latitude-longitude locations.
      */
-    public NavigableSet<Point> getOutliers(MutableTrack track) {
+    public NavigableSet<Point> getOutliers(Track track) {
 
         TreeSet<Point> outliers = new TreeSet<>();
 
@@ -66,7 +67,7 @@ public class LateralOutlierDetector implements DataCleaner<MutableTrack> {
      * @return A LateralAnalysisResult object that describes whether or not the testPoint is an
      *     outlier.
      */
-    private LateralAnalysisResult analyzePoint(Point testPoint, MutableTrack track) {
+    private LateralAnalysisResult analyzePoint(Point testPoint, Track track) {
 
         Collection<Point> pointsNearby = track.kNearestPoints(
             testPoint.time(),
@@ -121,15 +122,16 @@ public class LateralOutlierDetector implements DataCleaner<MutableTrack> {
      * @return An Optional Track with lateral outliers removed.
      */
     @Override
-    public Optional<MutableTrack> clean(MutableTrack inputTrack) {
+    public Optional<Track> clean(Track inputTrack) {
 
         Collection<Point> outliers = getOutliers(inputTrack);
 
-        inputTrack.points().removeAll(outliers);
+        TreeSet<Point> points = new TreeSet<>(inputTrack.points());
+        points.removeAll(outliers);
 
-        return inputTrack.points().isEmpty()
-                ? Optional.empty()
-                : Optional.of(inputTrack);
+        return points.isEmpty()
+            ? Optional.empty()
+            : Optional.of(Track.of(points));
     }
 
     private static class LateralAnalysisResult {

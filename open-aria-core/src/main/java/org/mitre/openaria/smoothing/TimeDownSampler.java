@@ -4,10 +4,11 @@ package org.mitre.openaria.smoothing;
 import java.time.Duration;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * A TimeDownSampler will "thin out" a Track with a high-update rate (ie too many points per
@@ -20,7 +21,7 @@ import org.mitre.openaria.core.Point;
  * finding two points separated by just 2 seconds is likely to indicate that the "out of step" point
  * is flawed.
  */
-public class TimeDownSampler implements DataCleaner<MutableTrack> {
+public class TimeDownSampler implements DataCleaner<Track> {
 
     private final long minAllowableTimeDelta;
 
@@ -37,9 +38,11 @@ public class TimeDownSampler implements DataCleaner<MutableTrack> {
     }
 
     @Override
-    public Optional<MutableTrack> clean(MutableTrack track) {
+    public Optional<Track> clean(Track track) {
 
-        Iterator<Point> iter = track.points().iterator();
+        TreeSet<Point> points = new TreeSet<>(track.points());
+
+        Iterator<Point> iter = points.iterator();
 
         Long tau = null;
         while (iter.hasNext()) {
@@ -59,6 +62,6 @@ public class TimeDownSampler implements DataCleaner<MutableTrack> {
             }
         }
 
-        return Optional.of(track);
+        return Optional.of(Track.of(points));
     }
 }

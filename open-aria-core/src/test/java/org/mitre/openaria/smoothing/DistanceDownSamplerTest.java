@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.LinkedList;
 
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 
@@ -20,7 +19,7 @@ public class DistanceDownSamplerTest {
 
         Track track = trackWithPause();
 
-        MutableTrack cleanedTrack = (new DistanceDownSampler()).clean(track.mutableCopy()).get();
+        Track cleanedTrack = (new DistanceDownSampler()).clean(track).get();
 
         int numRemovedPoints = track.size() - cleanedTrack.size();
 

@@ -6,8 +6,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.mitre.caasd.commons.Pair;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 import com.google.common.base.Preconditions;
 
@@ -19,7 +19,7 @@ import com.google.common.base.Preconditions;
  * that reflected off a stationary objects (like a radio tower or tall building). This phenomenon
  * produces very long tracks that have very little movement.
  */
-public class HasLowVariability implements Predicate<MutableTrack> {
+public class HasLowVariability implements Predicate<Track> {
 
     private final int trackSizeReq;
     private final double fracUniqueLocations;
@@ -56,7 +56,7 @@ public class HasLowVariability implements Predicate<MutableTrack> {
     }
 
     @Override
-    public boolean test(MutableTrack track) {
+    public boolean test(Track track) {
         if (track.size() < trackSizeReq) {
             return false;
         }

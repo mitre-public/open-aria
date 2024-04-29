@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 import com.google.common.math.Stats;
 
@@ -19,12 +19,12 @@ import com.google.common.math.Stats;
  * The new Speed values are estimated from the position and time data each points immediate
  * neighbors.
  */
-public class FillMissingSpeeds implements DataCleaner<MutableTrack> {
+public class FillMissingSpeeds implements DataCleaner<Track> {
 
     HasNullSpeed predicate = new HasNullSpeed();
 
     @Override
-    public Optional<MutableTrack> clean(MutableTrack track) {
+    public Optional<Track> clean(Track track) {
 
         if (track.size() < 2) {
             return Optional.empty();
@@ -45,7 +45,7 @@ public class FillMissingSpeeds implements DataCleaner<MutableTrack> {
             }
         }
 
-        return Optional.of(MutableTrack.of(ptList));
+        return Optional.of(Track.of(ptList));
     }
 
     private Point setMissingSpeed(Point pointA, Point pointB, Point pointC) {

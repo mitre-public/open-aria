@@ -5,7 +5,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.EPOCH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Optional;
 import java.util.TreeSet;
@@ -26,7 +25,7 @@ public class MutableSmootherTest {
     @Test
     public void testCombinedSmoothing() {
 
-        DataCleaner<MutableTrack> speedFixer = new FillMissingSpeeds();
+        DataCleaner<MutableTrack> speedFixer = new SpeedSetter();
         DataCleaner<MutableTrack> altitudeSetter = new AltitudeSetter();
 
         //Get a TRACK cleaner from two MUTABLETRACK cleaners
@@ -40,7 +39,7 @@ public class MutableSmootherTest {
 
         //verify the speed fixer AND the altitudeSetter were applied
         for (Point point : smoothedTrack.points()) {
-            assertNotNull(point.speedInKnots());
+            assertThat(point.speedInKnots(), is(20.0));
             assertThat(point.altitude(), is(Distance.ofFeet(1000)));
         }
     }
@@ -52,6 +51,20 @@ public class MutableSmootherTest {
 
             TreeSet<Point> fixedPoints = data.points().stream()
                 .map(pt -> Point.builder(pt).butAltitude(Distance.ofFeet(1000)).build())
+                .collect(Collectors.toCollection(TreeSet::new));
+
+            return Optional.of(MutableTrack.of(fixedPoints));
+        }
+    }
+
+
+    class SpeedSetter implements DataCleaner<MutableTrack> {
+
+        @Override
+        public Optional<MutableTrack> clean(MutableTrack data) {
+
+            TreeSet<Point> fixedPoints = data.points().stream()
+                .map(pt -> Point.builder(pt).butSpeed(20.0).build())
                 .collect(Collectors.toCollection(TreeSet::new));
 
             return Optional.of(MutableTrack.of(fixedPoints));

@@ -6,18 +6,18 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
-public class ZeroAltitudeToNull implements DataCleaner<MutableTrack> {
+public class ZeroAltitudeToNull implements DataCleaner<Track> {
     @Override
-    public Optional<MutableTrack> clean(MutableTrack mutableTrack) {
+    public Optional<Track> clean(Track mutableTrack) {
 
         TreeSet<Point> cleanedPoints = mutableTrack.points().stream()
             .map(p -> pointWithNullAltitude(p))
             .collect(toCollection(TreeSet::new));
 
-        return Optional.of(MutableTrack.of(cleanedPoints));
+        return Optional.of(Track.of(cleanedPoints));
     }
 
     private Point pointWithNullAltitude(Point p) {

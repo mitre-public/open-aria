@@ -1,9 +1,7 @@
 
 package org.mitre.openaria.smoothing;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 import static org.mitre.openaria.smoothing.RemoveLowVariabilityTracksTest.erroneousTrackFromRadarMirage;
 import static org.mitre.openaria.smoothing.TrackSmoothing.coreSmoothing;
@@ -11,11 +9,12 @@ import static org.mitre.openaria.smoothing.TrackSmoothing.simpleSmoothing;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.Tracks;
-import org.mitre.caasd.commons.DataCleaner;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TrackSmoothingTest {
 
@@ -81,12 +80,12 @@ public class TrackSmoothingTest {
         VerticalOutlierDetector vod = new VerticalOutlierDetector();
 
         int sizeBeforeSmoothing = unSmoothedTrack.size();
-        int numVerticalOutliersBeforeSmoothing = vod.getOutliers(unSmoothedTrack.mutableCopy()).size();
+        int numVerticalOutliersBeforeSmoothing = vod.getOutliers(unSmoothedTrack).size();
 
         Track smoothedTrack = (simpleSmoothing()).clean(unSmoothedTrack).get();
 
         int sizeAfterSmoothing = smoothedTrack.size();
-        int numVerticalOutliersAfterSmoothing = vod.getOutliers(smoothedTrack.mutableCopy()).size();
+        int numVerticalOutliersAfterSmoothing = vod.getOutliers(smoothedTrack).size();
 
         //accounts for the DownSampler that removes poitns that occur within 3.5 sec
         int pointsDroppedDueToBeingToCloseInTime = 16;

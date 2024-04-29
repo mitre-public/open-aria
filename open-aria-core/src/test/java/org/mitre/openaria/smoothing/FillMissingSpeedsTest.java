@@ -10,15 +10,15 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import org.mitre.caasd.commons.LatLong;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 import org.junit.jupiter.api.Test;
 
 
 public class FillMissingSpeedsTest {
 
-    public MutableTrack trackWithNullAtTheFront() {
+    public Track trackWithNullAtTheFront() {
 
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
@@ -42,10 +42,10 @@ public class FillMissingSpeedsTest {
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3));
-        return MutableTrack.of(set);
+        return Track.of(set);
     }
 
-    public MutableTrack trackWithNullAtTheBack() {
+    public Track trackWithNullAtTheBack() {
 
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
@@ -69,10 +69,10 @@ public class FillMissingSpeedsTest {
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3));
-        return MutableTrack.of(set);
+        return Track.of(set);
     }
 
-    public MutableTrack trackWithNullInTheMiddle() {
+    public Track trackWithNullInTheMiddle() {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
@@ -95,10 +95,10 @@ public class FillMissingSpeedsTest {
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3));
-        return MutableTrack.of(set);
+        return Track.of(set);
     }
 
-    public MutableTrack trackWithMultipleGaps() {
+    public Track trackWithMultipleGaps() {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
@@ -134,10 +134,10 @@ public class FillMissingSpeedsTest {
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3, p4, p5));
-        return MutableTrack.of(set);
+        return Track.of(set);
     }
 
-    public MutableTrack acceleratingTrackWithNoSpeedData() {
+    public Track acceleratingTrackWithNoSpeedData() {
         LatLong position = LatLong.of(0.0, 0.0);
         double nmPerSec = 100.0 / 3600.0; //a speed of 100knots
 
@@ -172,29 +172,29 @@ public class FillMissingSpeedsTest {
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3, p4, p5));
-        return MutableTrack.of(set);
+        return Track.of(set);
     }
 
-    private MutableTrack trackWithSinglePoint() {
+    private Track trackWithSinglePoint() {
 
         Point p1 = Point.builder()
             .time(EPOCH)
             .latLong(LatLong.of(0.0, 0.0))
-            .buildMutable();
+            .build();
 
-        return MutableTrack.of(newArrayList(p1));
+        return Track.of(newArrayList(p1));
     }
 
     @Test
     public void correctNullSpeedAtFrontOfTrack() {
 
-        MutableTrack testTrack = trackWithNullAtTheFront();
+        Track testTrack = trackWithNullAtTheFront();
         assertTrue(
             testTrack.points().first().speedInKnots() == null,
             "We start with a null speed in the first point"
         );
 
-        MutableTrack fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
+        Track fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
 
         assertTrue(
             fixedTrack.points().first().speedInKnots() != null,
@@ -205,13 +205,13 @@ public class FillMissingSpeedsTest {
     @Test
     public void correctNullSpeedAtEndOfTrack() {
 
-        MutableTrack testTrack = trackWithNullAtTheBack();
+        Track testTrack = trackWithNullAtTheBack();
         assertTrue(
             testTrack.points().last().speedInKnots() == null,
             "We start with a null speed in the last point"
         );
 
-        MutableTrack fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
+        Track fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
 
         assertTrue(
             fixedTrack.points().last().speedInKnots() != null,
@@ -222,13 +222,13 @@ public class FillMissingSpeedsTest {
     @Test
     public void correctNullSpeedInTheMiddleOfTrack() {
 
-        MutableTrack testTrack = trackWithMultipleGaps();
+        Track testTrack = trackWithMultipleGaps();
         Point thirdPoint = newArrayList(testTrack.points()).get(2);
         Point fourthPoint = newArrayList(testTrack.points()).get(3);
         assertTrue(thirdPoint.speedInKnots() == null);
         assertTrue(fourthPoint.speedInKnots() == null);
 
-        MutableTrack fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
+        Track fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
         thirdPoint = newArrayList(fixedTrack.points()).get(2);
         fourthPoint = newArrayList(fixedTrack.points()).get(3);
 
@@ -240,14 +240,14 @@ public class FillMissingSpeedsTest {
     @Test
     public void correctMultipleSpeeds() {
 
-        MutableTrack testTrack = trackWithNullInTheMiddle();
+        Track testTrack = trackWithNullInTheMiddle();
         Point middlePoint = newArrayList(testTrack.points()).get(1);
         assertTrue(
             middlePoint.speedInKnots() == null,
             "We start with a null speed in the middle point"
         );
 
-        MutableTrack fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
+        Track fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
         Point fixedMiddle = newArrayList(fixedTrack.points()).get(1);
 
         assertTrue(
@@ -258,11 +258,11 @@ public class FillMissingSpeedsTest {
 
     @Test
     public void correctAcceleratingSpeeds() {
-        MutableTrack testTrack = acceleratingTrackWithNoSpeedData();
+        Track testTrack = acceleratingTrackWithNoSpeedData();
         for (Point point : testTrack.points()) {
             assertNull(point.speedInKnots(), "No speed data to start");
         }
-        MutableTrack fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
+        Track fixedTrack = (new FillMissingSpeeds()).clean(testTrack).get();
         for (Point point : fixedTrack.points()) {
             assertNotNull(point.speedInKnots(), "The fixed track has speed data");
         }
@@ -280,7 +280,7 @@ public class FillMissingSpeedsTest {
     public void returnEmptyResultForShortTrack() {
 
         // this also checks that an exception isn't thrown
-        Optional<MutableTrack> actual = new FillMissingSpeeds().clean(trackWithSinglePoint());
+        Optional<Track> actual = new FillMissingSpeeds().clean(trackWithSinglePoint());
         assertFalse(actual.isPresent());
     }
 }
