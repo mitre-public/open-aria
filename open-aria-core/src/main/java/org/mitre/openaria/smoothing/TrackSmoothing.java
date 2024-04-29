@@ -1,7 +1,6 @@
 package org.mitre.openaria.smoothing;
 
 import java.time.Duration;
-import java.util.Optional;
 
 import org.mitre.caasd.commons.CompositeCleaner;
 import org.mitre.caasd.commons.DataCleaner;
@@ -45,16 +44,6 @@ public class TrackSmoothing {
             new LateralOutlierDetector(),
             //remove radar noise using polynomial fitting
             new TrackFilter()
-        );
-    }
-
-    /*
-     * These smoothing operations are FAR more efficient when they can directly edit the input Track
-     * data. Consequently, these smoothers operate on MutableTracks and not immutable Tracks.
-     */
-    private static DataCleaner<Track> mutableTrackSmoothing() {
-        return MutableSmoother.of(
-            (mt) -> Optional.of(mt)
         );
     }
 

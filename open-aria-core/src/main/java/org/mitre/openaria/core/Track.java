@@ -10,7 +10,6 @@ import static org.mitre.openaria.core.PointField.TRACK_ID;
 import static org.mitre.openaria.core.Points.mostCommon;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NavigableSet;
@@ -162,17 +161,6 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      */
     public Point nearestPoint(Instant time) {
         return kNearestPoints(time, 1).first();
-    }
-
-    /**
-     * @return A completely independent, and mutable, copy of this Track
-     */
-    public MutableTrack mutableCopy() {
-        ArrayList<Point> Points = points().stream()
-            .map(p -> EphemeralPoint.from(p))
-            .collect(toCollection(ArrayList::new));
-
-        return MutableTrack.of(Points);
     }
 
     /**
