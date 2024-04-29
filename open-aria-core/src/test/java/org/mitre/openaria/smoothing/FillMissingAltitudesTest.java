@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import org.mitre.caasd.commons.Distance;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,16 +19,16 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void removeTracksWithNoAltitudes() {
-        MutableTrack testTrack = trackWithNoAltitudes();
-        Optional<MutableTrack> cleanedTrack = (new FillMissingAltitudes()).clean(testTrack);
+        Track testTrack = trackWithNoAltitudes();
+        Optional<Track> cleanedTrack = (new FillMissingAltitudes()).clean(testTrack);
 
         assertTrue(!cleanedTrack.isPresent(), "A track with no altitude data should be removed");
     }
 
     @Test
     public void testFillingInitialAltitudes() {
-        MutableTrack testTrack = trackWithNoInitialAltitudes();
-        MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
+        Track testTrack = trackWithNoInitialAltitudes();
+        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
         ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
@@ -40,8 +40,8 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void testFillingFinalAltitudes() {
-        MutableTrack testTrack = trackWithNoFinalAltitudes();
-        MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
+        Track testTrack = trackWithNoFinalAltitudes();
+        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
         ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
@@ -53,8 +53,8 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void testFillingMissingAltitude() {
-        MutableTrack testTrack = trackWithSingleMissingAltitude();
-        MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
+        Track testTrack = trackWithSingleMissingAltitude();
+        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
         ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
@@ -65,8 +65,8 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void testFillingMultipleMissingAltitudes() {
-        MutableTrack testTrack = trackWithMultipleMissingAltitudes();
-        MutableTrack cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
+        Track testTrack = trackWithMultipleMissingAltitudes();
+        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
         ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
@@ -76,24 +76,24 @@ public class FillMissingAltitudesTest {
         );
     }
 
-    private MutableTrack trackWithNoAltitudes() {
-        return MutableTrack.of(new TreeSet<>(Arrays.asList(
+    private Track trackWithNoAltitudes() {
+        return Track.of(new TreeSet<>(Arrays.asList(
             makeNullAltitudePoint(0),
             makeNullAltitudePoint(1),
             makeNullAltitudePoint(2)
         )));
     }
 
-    private MutableTrack trackWithNoInitialAltitudes() {
-        return MutableTrack.of(new TreeSet<>(Arrays.asList(
+    private Track trackWithNoInitialAltitudes() {
+        return Track.of(new TreeSet<>(Arrays.asList(
             makeNullAltitudePoint(0),
             makeNullAltitudePoint(1),
             makePoint(2, 100.0)
         )));
     }
 
-    private MutableTrack trackWithNoFinalAltitudes() {
-        return MutableTrack.of(new TreeSet<>(Arrays.asList(
+    private Track trackWithNoFinalAltitudes() {
+        return Track.of(new TreeSet<>(Arrays.asList(
             makePoint(0, 100.0),
             makePoint(1, 110.0),
             makeNullAltitudePoint(2),
@@ -101,16 +101,16 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private MutableTrack trackWithSingleMissingAltitude() {
-        return MutableTrack.of(new TreeSet<>(Arrays.asList(
+    private Track trackWithSingleMissingAltitude() {
+        return Track.of(new TreeSet<>(Arrays.asList(
             makePoint(0, 100.0),
             makeNullAltitudePoint(3),
             makePoint(10, 200.0)
         )));
     }
 
-    private MutableTrack trackWithMultipleMissingAltitudes() {
-        return MutableTrack.of(new TreeSet<>(Arrays.asList(
+    private Track trackWithMultipleMissingAltitudes() {
+        return Track.of(new TreeSet<>(Arrays.asList(
             makePoint(0, -100.0),
             makeNullAltitudePoint(25),
             makeNullAltitudePoint(30),

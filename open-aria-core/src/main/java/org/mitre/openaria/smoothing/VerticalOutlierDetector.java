@@ -12,8 +12,8 @@ import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
@@ -22,7 +22,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
  * that adjusts the altitude value of Points in a Track. A VerticalOutlierDetector can also be used
  * to just identify Points with outlying altitude values.
  */
-public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
+public class VerticalOutlierDetector implements DataCleaner<Track> {
 
     private final int REQUIRED_SAMPLE_SIZE = 7;
 
@@ -35,7 +35,7 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
      *
      * @return The set of Point in this Track with outlying altitude values.
      */
-    public ArrayList<AnalysisResult> getOutliers(MutableTrack track) {
+    public ArrayList<AnalysisResult> getOutliers(Track track) {
 
         return track.points().stream()
             .map(point -> analyzePoint(point, track))
@@ -55,7 +55,7 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
      *     implement the DataCleaner interface
      */
     @Override
-    public Optional<MutableTrack> clean(MutableTrack inputTrack) {
+    public Optional<Track> clean(Track inputTrack) {
 
         ArrayList<AnalysisResult> outliers = getOutliers(inputTrack);
 
@@ -63,7 +63,7 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
         points.removeAll(outliers.stream().map(ar -> ar.originalPoint).toList());
         points.addAll(outliers.stream().map(ar -> ar.correctedPoint()).toList());
 
-        return Optional.of(MutableTrack.of(points));
+        return Optional.of(Track.of(points));
     }
 
     /**
@@ -83,7 +83,7 @@ public class VerticalOutlierDetector implements DataCleaner<MutableTrack> {
      *
      * @return An AnalysisResult object that summarizes the altitude analysis.
      */
-    private AnalysisResult analyzePoint(Point testPoint, MutableTrack track) {
+    private AnalysisResult analyzePoint(Point testPoint, Track track) {
 
         Collection<Point> pointsNearby = track.kNearestPoints(
             testPoint.time(),

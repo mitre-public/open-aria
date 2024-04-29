@@ -12,8 +12,8 @@ import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * This DataCleaner adds altitude data to points in a MutableTrack that do not have altitude data.
@@ -24,12 +24,12 @@ import org.mitre.openaria.core.Point;
  * interpolated between the previous point and the following point. If all the points in a track are
  * missing altitudes, then the track is removed.
  */
-public class FillMissingAltitudes implements DataCleaner<MutableTrack> {
+public class FillMissingAltitudes implements DataCleaner<Track> {
 
     private final HasNullAltitude hasNullAltitude = new HasNullAltitude();
 
     @Override
-    public Optional<MutableTrack> clean(MutableTrack track) {
+    public Optional<Track> clean(Track track) {
 
         TreeSet<Point> points = new TreeSet<>(track.points());
 
@@ -74,7 +74,7 @@ public class FillMissingAltitudes implements DataCleaner<MutableTrack> {
             }
         }
 
-        return Optional.of(MutableTrack.of(points));
+        return Optional.of(Track.of(points));
     }
 
     private Optional<Point> firstPointWithAltitude(SortedSet<Point> points) {

@@ -9,12 +9,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Time;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * A DistanceDownSampler will "thin out" a Track that contains nearly-duplicate Point data because
@@ -23,7 +24,7 @@ import org.mitre.openaria.core.Point;
  * <p>
  * (This is ARIA's replacement for StationaryPointFilter which is compute intensive)
  */
-public class DistanceDownSampler implements DataCleaner<MutableTrack> {
+public class DistanceDownSampler implements DataCleaner<Track> {
 
     private final double requiredDistSeparationInNM;
 
@@ -56,9 +57,11 @@ public class DistanceDownSampler implements DataCleaner<MutableTrack> {
     }
 
     @Override
-    public Optional<MutableTrack> clean(MutableTrack track) {
+    public Optional<Track> clean(Track track) {
 
-        Iterator<Point> iter = track.points().iterator();
+        TreeSet<Point> points = new TreeSet<>(track.points());
+
+        Iterator<Point> iter = points.iterator();
 
         LatLong anchor = null;
         Instant anchorTime = null;
@@ -81,7 +84,7 @@ public class DistanceDownSampler implements DataCleaner<MutableTrack> {
             }
         }
 
-        return Optional.of(track);
+        return Optional.of(Track.of(points));
     }
 
     private boolean tooCloseInSpace(LatLong anchor, Point point) {

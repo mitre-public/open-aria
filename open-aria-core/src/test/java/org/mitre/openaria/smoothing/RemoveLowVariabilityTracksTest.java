@@ -9,7 +9,6 @@ import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 
 import java.util.Optional;
 
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 
@@ -24,13 +23,13 @@ public class RemoveLowVariabilityTracksTest {
         HasLowVariability predicate = new HasLowVariability();
 
         assertFalse(
-            predicate.test(trackThatsTooShort().mutableCopy()),
+            predicate.test(trackThatsTooShort()),
             "This track is too short -- so it cant \"HaveLowVariance\""
         );
 
         RemoveLowVariabilityTracks filter = new RemoveLowVariabilityTracks(predicate);
 
-        Optional<MutableTrack> result = filter.clean(trackThatsTooShort().mutableCopy());
+        Optional<Track> result = filter.clean(trackThatsTooShort());
 
         assertTrue(
             result.isPresent(),
@@ -56,11 +55,11 @@ public class RemoveLowVariabilityTracksTest {
 
         HasLowVariability predicate = new HasLowVariability();
 
-        assertTrue(predicate.test(trackFromBadData.mutableCopy()));
+        assertTrue(predicate.test(trackFromBadData));
 
         RemoveLowVariabilityTracks filter = new RemoveLowVariabilityTracks(predicate);
 
-        Optional<MutableTrack> result = filter.clean(trackFromBadData.mutableCopy());
+        Optional<Track> result = filter.clean(trackFromBadData);
 
         assertFalse(result.isPresent(), "This track should not make it through the filter");
     }

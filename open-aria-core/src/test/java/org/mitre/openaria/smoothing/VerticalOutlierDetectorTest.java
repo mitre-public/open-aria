@@ -3,6 +3,8 @@ package org.mitre.openaria.smoothing;
 
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 
@@ -12,8 +14,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.mitre.openaria.core.EphemeralPoint;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
@@ -31,7 +31,7 @@ public class VerticalOutlierDetectorTest {
          */
         Track testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "NoAltitudeOutlier_1.txt");
 
-        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2.mutableCopy());
+        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2);
 
         assertTrue(
             outliers.isEmpty(),
@@ -44,16 +44,16 @@ public class VerticalOutlierDetectorTest {
         /*
          * Confirm that a track with no vertical outliers does not change due to smoothing
          */
-        MutableTrack testTrack = createTrackFromResource(
+        Track testTrack = createTrackFromResource(
             VerticalOutlierDetector.class,
             "NoAltitudeOutlier_1.txt"
-        ).mutableCopy();
+        );
 
         Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack);
 
         assertTrue(outliers.isEmpty());
 
-        MutableTrack postSmoothing = (new VerticalOutlierDetector()).clean(testTrack).get();
+        Track postSmoothing = (new VerticalOutlierDetector()).clean(testTrack).get();
 
         Iterator<Point> iter1 = testTrack.points().iterator();
         Iterator<Point> iter2 = postSmoothing.points().iterator();
@@ -81,7 +81,7 @@ public class VerticalOutlierDetectorTest {
          */
         Track testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "NoAltitudeOutlier_2.txt");
 
-        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2.mutableCopy());
+        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2);
 
         assertTrue(
             outliers.isEmpty(),
@@ -97,7 +97,7 @@ public class VerticalOutlierDetectorTest {
          */
         Track testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "MinimumAltitudeOutlier.txt");
 
-        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2.mutableCopy());
+        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2);
 
         confirmExactlyTheseOutliers(
             outliers,
@@ -111,10 +111,10 @@ public class VerticalOutlierDetectorTest {
          * Confirm that smoothing (1) does not reduce the number of point, (2) produces a track with
          * no vertical outliers
          */
-        MutableTrack testTrack = createTrackFromResource(
+        Track testTrack = createTrackFromResource(
             VerticalOutlierDetector.class,
             "MinimumAltitudeOutlier.txt"
-        ).mutableCopy();
+        );
 
         int sizeBeforeSmoothing = testTrack.size(); //
 
@@ -124,7 +124,7 @@ public class VerticalOutlierDetectorTest {
 
         assertFalse(outliersBeforeSmoothing.isEmpty(), "Outliers should have been detected");
 
-        MutableTrack trackAfterSmoothing = vod.clean(testTrack).get();
+        Track trackAfterSmoothing = vod.clean(testTrack).get();
 
         Collection<AnalysisResult> outliersAfterSmoothing = vod.getOutliers(trackAfterSmoothing);
 
@@ -141,7 +141,7 @@ public class VerticalOutlierDetectorTest {
          */
         Track testTrack1 = createTrackFromResource(VerticalOutlierDetector.class, "AltitudeOutlier_1.txt");
 
-        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack1.mutableCopy());
+        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack1);
 
         confirmExactlyTheseOutliers(
             outliers,
@@ -160,7 +160,7 @@ public class VerticalOutlierDetectorTest {
 
         Track testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "AltitudeOutlier_2.txt");
 
-        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2.mutableCopy());
+        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack2);
 
         confirmExactlyTheseOutliers(
             outliers,
@@ -177,16 +177,16 @@ public class VerticalOutlierDetectorTest {
          * This test contains a much much smaller change (from 1k to 0 instead of from 22k to 0).
          * This test data also has a missing altitude value at the very front of the track.
          */
-        MutableTrack testTrack = createTrackFromResource(
+        Track testTrack = createTrackFromResource(
             VerticalOutlierDetector.class,
             "AltitudeOutlier_2.txt"
-        ).mutableCopy();
+        );
 
         VerticalOutlierDetector vod = new VerticalOutlierDetector();
 
         assertFalse(vod.getOutliers(testTrack).isEmpty(), "There should be outliers before smoothing");
 
-        MutableTrack smoothedTrack = vod.clean(testTrack).get();
+        Track smoothedTrack = vod.clean(testTrack).get();
 
         assertTrue(vod.getOutliers(smoothedTrack).isEmpty(), "There should be no outliers after smoothing");
     }
@@ -207,7 +207,7 @@ public class VerticalOutlierDetectorTest {
          *
          * [RH],STARS,A11,10/18/2016,02:38:16.518,,,,2261,213,217,110,061.36202,-153.26353,0038,0000,-93.3379,13.3411,,,,A11,,,,,,ACT,IFR,,00000,,,,,,,1,,0,{RH}
          */
-        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack.mutableCopy());
+        Collection<AnalysisResult> outliers = (new VerticalOutlierDetector()).getOutliers(testTrack);
 
         confirmExactlyTheseOutliers(
             outliers,
@@ -220,13 +220,14 @@ public class VerticalOutlierDetectorTest {
 
         Set<String> knownOutliers = Stream.of(expectedOutliters)
             .map(asRawNop -> NopPoint.from(asRawNop)) //convert the raw Nop to Points
-            .map(nopPoint -> EphemeralPoint.from(nopPoint)) // convert the NopPoints to Mutable Points (losses info)
             .map(Point -> Point.asNop()) //get the "lossy" Strings
             .collect(toCollection(HashSet::new)); //in a HashSet
 
         Collection<Point> outlieingPoints = foundOutliers.stream()
             .map(analysisResult -> analysisResult.originalPoint())
             .collect(toList());
+
+        assertThat(foundOutliers.size(), is(expectedOutliters.length));
 
         for (Point foundOutlier : outlieingPoints) {
             assertTrue(knownOutliers.contains(foundOutlier.asNop()));

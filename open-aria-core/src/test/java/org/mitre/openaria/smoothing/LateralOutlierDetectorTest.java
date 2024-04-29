@@ -4,10 +4,14 @@ package org.mitre.openaria.smoothing;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.time.Instant.EPOCH;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.Speed.Unit.KNOTS;
+import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.NavigableSet;
@@ -16,8 +20,6 @@ import java.util.Set;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Speed;
-import org.mitre.openaria.core.EphemeralPoint;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
@@ -33,10 +35,10 @@ public class LateralOutlierDetectorTest {
         //this point is the lateral outlier if the test data
         Point theOutlier = NopPoint.from("[RH],STARS,D21_B,03/24/2018,14:57:02.226,N518SP,C172,,5256,031,109,184,042.46462,-083.75121,3472,5256,-16.5222,15.1222,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}");
 
-        MutableTrack testTrack = createTrackFromResource(
+        Track testTrack = createTrackFromResource(
             LateralOutlierDetector.class,
             "oneLateralOutlierTest.txt"
-        ).mutableCopy();
+        );
 
         NavigableSet<Point> outliers = (new LateralOutlierDetector()).getOutliers(testTrack);
 
@@ -44,7 +46,7 @@ public class LateralOutlierDetectorTest {
         assertEquals(outliers.first().time(), theOutlier.time());
 
         int sizeBeforeCleaning = testTrack.size();
-        MutableTrack cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
+        Track cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
 
         assertEquals(sizeBeforeCleaning, cleanedTrack.size() + 1);
         assertNotEquals(cleanedTrack.nearestPoint(theOutlier.time()).time(), theOutlier.time());
@@ -54,16 +56,16 @@ public class LateralOutlierDetectorTest {
     public void testCurvyTrack() {
 
         //this test track is nice and smooth -- it shouldn't flag any outliers (even in the curves)
-        MutableTrack testTrack = createTrackFromResource(
+        Track testTrack = createTrackFromResource(
             LateralOutlierDetector.class,
             "curvyTrack.txt"
-        ).mutableCopy();
+        );
 
         NavigableSet<Point> outliers = (new LateralOutlierDetector()).getOutliers(testTrack);
 
         assertEquals(0, outliers.size());
 
-        MutableTrack cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
+        Track cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
 
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
@@ -71,14 +73,14 @@ public class LateralOutlierDetectorTest {
     @Test
     public void testNearPerfectTrackWithMinorJitter() {
 
-        MutableTrack testTrack = trackWithVeryMinorJitter();
+        Track testTrack = trackWithVeryMinorJitter();
 
         LateralOutlierDetector outlierDetector = new LateralOutlierDetector();
 
         NavigableSet<Point> outliers = outlierDetector.getOutliers(testTrack);
         assertEquals(0, outliers.size());
 
-        MutableTrack cleanedTrack = outlierDetector.clean(testTrack).get();
+        Track cleanedTrack = outlierDetector.clean(testTrack).get();
 
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
@@ -91,7 +93,7 @@ public class LateralOutlierDetectorTest {
      *     should be detected even though the error increased "dramatically" (when compared to zero
      *     error))
      */
-    public static MutableTrack trackWithVeryMinorJitter() {
+    public static Track trackWithVeryMinorJitter() {
 
         LinkedList<Point> points = newLinkedList();
 
@@ -119,7 +121,7 @@ public class LateralOutlierDetectorTest {
         Point adjustedPoint = Point.builder(prior).butLatLong(newPosition).build();
         points.set(14, adjustedPoint);
 
-        return Track.of(points).mutableCopy();
+        return Track.of(points);
     }
 
     @Test
@@ -131,14 +133,12 @@ public class LateralOutlierDetectorTest {
         String outlier2 = "[RH],STARS,ABE_B,03/25/2018,21:45:18.207,N317A,SR22,,0224,033,170,269,040.48656,-075.97119,2326,0224,-24.2925,-9.8784,0,4,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
 
         Set<String> knownOutliers = newHashSet(
-            EphemeralPoint.from(NopPoint.from(outlier1)).asNop(),
-            EphemeralPoint.from(NopPoint.from(outlier2)).asNop()
+            NopPoint.from(outlier1).asNop(),
+            NopPoint.from(outlier2).asNop()
         );
 
-        MutableTrack testTrack = createTrackFromResource(
-            LateralOutlierDetector.class,
-            "trackWithSomeGentalError.txt"
-        ).mutableCopy();
+        Track testTrack = createTrackFromFile(
+            new File("src/test/resources/trackWithSomeGentalError.txt"));
 
         LateralOutlierDetector outlierDetector = new LateralOutlierDetector();
 
@@ -153,13 +153,10 @@ public class LateralOutlierDetectorTest {
         //using the outlierDetector's "clean" method will mutate the input, save the prior state
         int sizeBeforeCleaning = testTrack.size();
 
-        MutableTrack cleanedTrack = outlierDetector.clean(testTrack).get();
+        Track cleanedTrack = outlierDetector.clean(testTrack).get();
 
         assertEquals(sizeBeforeCleaning, cleanedTrack.size() + knownOutliers.size());
 
-        assertTrue(
-            testTrack.size() == sizeBeforeCleaning - knownOutliers.size(),
-            "These original track was mutated"
-        );
+        assertThat(testTrack.size(), is(cleanedTrack.size() + knownOutliers.size()));
     }
 }

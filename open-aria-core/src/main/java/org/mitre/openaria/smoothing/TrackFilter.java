@@ -16,8 +16,8 @@ import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.PositionRecord;
 import org.mitre.caasd.commons.math.locationfit.LocalPolyInterpolator;
 import org.mitre.caasd.commons.math.locationfit.PositionInterpolator;
-import org.mitre.openaria.core.MutableTrack;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * This class is a replacement for AlongTrackFilter and CrossTrackFilter.
@@ -25,7 +25,7 @@ import org.mitre.openaria.core.Point;
  * <p>The replacement was necessary to remove the JBLAS dependency under-the-hood of
  * AlongTrackFilter and CrossTrackFilter
  */
-public class TrackFilter implements DataCleaner<MutableTrack> {
+public class TrackFilter implements DataCleaner<Track> {
 
     /* This fitter doubles its Window Size when the "narrower window" does not contain enough sample data. */
     private final PositionInterpolator fitter;
@@ -46,7 +46,7 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
      * @return
      */
     @Override
-    public Optional<MutableTrack> clean(MutableTrack track) {
+    public Optional<Track> clean(Track track) {
 
         TreeSet<Point> points = new TreeSet<>(track.points());
 
@@ -54,7 +54,7 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
             Point pt = points.first();
             //if points supported this field here is where we'd add it
             Point corrected = Point.builder(pt).butSpeed(0.0).build();
-            return Optional.of(MutableTrack.of(List.of(corrected)));
+            return Optional.of(Track.of(List.of(corrected)));
         }
 
         //Extract the potentially noisy physical position of each input point
@@ -77,7 +77,7 @@ public class TrackFilter implements DataCleaner<MutableTrack> {
 
         return smoothedPoints.isEmpty()
             ? Optional.empty()
-            : Optional.of(MutableTrack.of(smoothedPoints));
+            : Optional.of(Track.of(smoothedPoints));
     }
 
     private Point makeAdjustedPoint(KineticRecord<Point> kr) {
