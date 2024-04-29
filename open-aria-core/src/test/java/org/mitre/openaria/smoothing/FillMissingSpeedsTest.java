@@ -26,19 +26,19 @@ public class FillMissingSpeedsTest {
         Point p1 = Point.builder()
             .time(EPOCH)
             .latLong(position)
-            .buildMutable();
+            .build();
 
         Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .speed(100.0)
-            .buildMutable();
+            .build();
 
         Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .speed(100.0)
-            .buildMutable();
+            .build();
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3));
@@ -54,18 +54,18 @@ public class FillMissingSpeedsTest {
             .time(EPOCH)
             .speed(100.0)
             .latLong(position)
-            .buildMutable();
+            .build();
 
         Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .speed(100.0)
-            .buildMutable();
+            .build();
 
         Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
-            .buildMutable();
+            .build();
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3));
@@ -80,18 +80,18 @@ public class FillMissingSpeedsTest {
             .time(EPOCH)
             .speed(100.0)
             .latLong(position)
-            .buildMutable();
+            .build();
 
         Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
-            .buildMutable();
+            .build();
 
         Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
             .speed(100.0)
-            .buildMutable();
+            .build();
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3));
@@ -106,31 +106,31 @@ public class FillMissingSpeedsTest {
             .time(EPOCH)
             .speed(100.0)
             .latLong(position)
-            .buildMutable();
+            .build();
 
         Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(position.projectOut(0.0, 5.0 * nmPerSec))
             .speed(100.0)
-            .buildMutable();
+            .build();
 
         //no speed value
         Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(position.projectOut(0.0, 10.0 * nmPerSec))
-            .buildMutable();
+            .build();
 
         //no speed value
         Point p4 = Point.builder()
             .time(EPOCH.plusSeconds(15))
             .latLong(position.projectOut(0.0, 15.0 * nmPerSec))
-            .buildMutable();
+            .build();
 
         Point p5 = Point.builder()
             .time(EPOCH.plusSeconds(20))
             .latLong(position.projectOut(0.0, 20.0 * nmPerSec))
             .speed(100.0)
-            .buildMutable();
+            .build();
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3, p4, p5));
@@ -144,31 +144,31 @@ public class FillMissingSpeedsTest {
         Point p1 = Point.builder()
             .time(EPOCH)
             .latLong(position)
-            .buildMutable();
+            .build();
 
         //100 knots from 1 to 2
         Point p2 = Point.builder()
             .time(EPOCH.plusSeconds(5))
             .latLong(p1.latLong().projectOut(0.0, 5.0 * nmPerSec * 1.0))
-            .buildMutable();
+            .build();
 
         //200 knots from 2 to 3
         Point p3 = Point.builder()
             .time(EPOCH.plusSeconds(10))
             .latLong(p2.latLong().projectOut(0.0, 5.0 * nmPerSec * 2.0))
-            .buildMutable();
+            .build();
 
         //300 knots from 3 to 4
         Point p4 = Point.builder()
             .time(EPOCH.plusSeconds(15))
             .latLong(p3.latLong().projectOut(0.0, 5.0 * nmPerSec * 3.0))
-            .buildMutable();
+            .build();
 
         //400 knots from 4 to 5
         Point p5 = Point.builder()
             .time(EPOCH.plusSeconds(20))
             .latLong(p4.latLong().projectOut(0.0, 5.0 * nmPerSec * 4.0))
-            .buildMutable();
+            .build();
 
         TreeSet set = new TreeSet();
         set.addAll(newArrayList(p1, p2, p3, p4, p5));

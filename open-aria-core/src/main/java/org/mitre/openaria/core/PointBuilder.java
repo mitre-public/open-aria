@@ -234,10 +234,6 @@ public class PointBuilder<T> {
         return new CommonPoint<>(data, sourceDetails, acDetails, flightRules, beacons, rawData);
     }
 
-    public EphemeralPoint<T> buildMutable() {
-        return EphemeralPoint.from(build());
-    }
-
     public Map<PointField, Object> toMap() {
         /*
          * Return a defensive copy. We don't have to worry about the client altering the values with
