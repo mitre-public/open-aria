@@ -34,6 +34,7 @@ location data.
 
 # Getting Started
 
+- Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md)
 - Learn about the supported data formats [here](./docs/csv-data-format.md)
     - **Important Caveat:** The initial code commit includes a dependency that is not available in the open source domain.
     - We are working to remove this blocker by:
@@ -59,8 +60,9 @@ location data.
 
 
 - **Architectural Decision Records (ADRs)**
-   - [Why YAML configs are preferable to Properties](docs/ADRs/yamlOverProperties.md)
-   - [Critique of Point and Track interfaces](docs/pointInterfaceCritique.md)
+   - [Supporting New Data Formats](./docs/ADRs/supportingNewFormats.md)
+   - [Critique of Point and Track interfaces](docs/ADRs/pointInterfaceCritique.md)
+  - [Why YAML configs are preferable to Properties](docs/ADRs/yamlOverProperties.md)
    - [How to compute an event's uniqueId](docs/ADRs/computingUniqueId.md)
 
 ---
