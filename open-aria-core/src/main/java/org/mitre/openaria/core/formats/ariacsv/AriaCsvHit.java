@@ -1,4 +1,4 @@
-package org.mitre.openaria.core.data;
+package org.mitre.openaria.core.formats.ariacsv;
 
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -8,16 +8,19 @@ import static org.mitre.caasd.commons.LatLong.checkLongitude;
 import java.time.Instant;
 
 import org.mitre.caasd.commons.Distance;
+import org.mitre.caasd.commons.HasPosition;
+import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.LatLong;
 
+
 /**
- * A CsvPoint embodies the default data format for OpenARIA. The default CSV format provides a
+ * An AriaCsvHit embodies the default data format for OpenARIA. This default CSV format provides a
  * human-readable, human-writeable (or at least writeable by a simple computer program) format for
  * Aircraft position data. The goal of the format is to provide a straight-forward,
- * easily-debuggable, way to (A) archive data for unit-tests, (B) provide a mechanism to port
+ * easily-debuggable, way to (A) archive data for unit-tests, and (B) provide a mechanism to port
  * external data into OpenARIA that does not require Java programming.
  */
-public class CsvPoint implements Point<String> {
+public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit>{
 
     private final String rawCsv;
 
@@ -28,14 +31,14 @@ public class CsvPoint implements Point<String> {
      * drastically slow down processes to manipulate points.
      *
      * Note: This array could be typed as a byte[] but it would require using unsigned bytes. This
-     * is not implemented because it is too small a benefit (save about 20 bytes per NopRadarHit)
+     * is not implemented because it is too small a benefit (save about 20 bytes per AriaCsvHit)
      * for the added complexity.
      */
     private final short[] commaIndices;
 
     /*
-     * Time is stored directly because Points are often sorted by time. Ensuring this value
-     * is only parsed once can significantly improve performance in some cases.
+     * Time is stored directly because hits are often sorted by time. Ensuring this value
+     * is only parsed once significantly improves performance.
      */
     private final Instant time;
 
@@ -63,7 +66,7 @@ public class CsvPoint implements Point<String> {
      *
      * @param rawCsv A String of Comma Separated Values that matches the OpenARIA format.
      */
-    public CsvPoint(String rawCsv) {
+    public AriaCsvHit(String rawCsv) {
 
         requireNonNull(rawCsv);
         this.rawCsv = rawCsv;
@@ -105,6 +108,7 @@ public class CsvPoint implements Point<String> {
         return output;
     }
 
+    /** @return The i_th token in the CSV row. */
     public String token(int index) {
 
         if (index == 0) {
@@ -114,14 +118,10 @@ public class CsvPoint implements Point<String> {
         }
     }
 
-    public static CsvPoint from(String csvText) {
-        return new CsvPoint(csvText);
+    public static AriaCsvHit from(String csvText) {
+        return new AriaCsvHit(csvText);
     }
 
-    @Override
-    public String rawData() {
-        return rawCsv;
-    }
 
     /*
      * @return A String that identifies a particular entity in a stream of position data (e.g., a
@@ -143,19 +143,12 @@ public class CsvPoint implements Point<String> {
         return LatLong.of(latitude, longitude);
     }
 
-    @Override
     public Distance altitude() {
         Double altInFeet = parseDouble(token(6));
         return nonNull(altInFeet) ? Distance.ofFeet(altInFeet) : null;
     }
 
-    /**
-     * @return A String that represents this point as if it were defined via the default CSV data
-     *     format.  Note: this default implementation only harvests fields accessible by the
-     *     SlimPoint interface. Fields added via decoration or composition will be lost.
-     */
-    @Override
-    public String asCsvText() {
+    public String rawCsvText() {
         return this.rawCsv;
     }
 
@@ -165,5 +158,15 @@ public class CsvPoint implements Point<String> {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    @Override
+    public int compareTo(AriaCsvHit o) {
+        int timeResult = time().compareTo(o.time());
+        if (timeResult != 0) {
+            return timeResult;
+        }
+
+        return rawCsv.compareTo(o.rawCsv);
     }
 }
