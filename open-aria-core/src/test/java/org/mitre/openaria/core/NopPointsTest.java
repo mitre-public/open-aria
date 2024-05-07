@@ -5,22 +5,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.core.IfrVfrStatus.IFR;
 import static org.mitre.openaria.core.NopPoint.parseSafely;
+import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
 import java.util.Optional;
 
-import org.mitre.caasd.commons.parsing.nop.AgwRadarHit;
-import org.mitre.caasd.commons.parsing.nop.CenterRadarHit;
-import org.mitre.caasd.commons.parsing.nop.MeartsRadarHit;
-import org.mitre.caasd.commons.parsing.nop.NopMessage;
-import org.mitre.caasd.commons.parsing.nop.NopMessageType;
-import org.mitre.caasd.commons.parsing.nop.StarsRadarHit;
 import org.mitre.openaria.core.NopPoints.AgwPoint;
 import org.mitre.openaria.core.NopPoints.CenterPoint;
 import org.mitre.openaria.core.NopPoints.MeartsPoint;
 import org.mitre.openaria.core.NopPoints.StarsPoint;
+import org.mitre.openaria.core.formats.nop.AgwRadarHit;
+import org.mitre.openaria.core.formats.nop.CenterRadarHit;
+import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
+import org.mitre.openaria.core.formats.nop.NopMessage;
+import org.mitre.openaria.core.formats.nop.NopMessageType;
+import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
 import org.junit.jupiter.api.Test;
 

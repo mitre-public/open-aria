@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.Functions.ALWAYS_FALSE;
 import static org.mitre.caasd.commons.Functions.ALWAYS_TRUE;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
 import static org.mitre.openaria.core.Tracks.createTrackFromFile;
+import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -20,7 +20,6 @@ import java.util.NavigableSet;
 import java.util.Optional;
 
 import org.mitre.caasd.commons.TimeWindow;
-import org.mitre.caasd.commons.parsing.nop.NopParsingUtils;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ public class TrackTest {
 
         Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
-        Instant time = NopParsingUtils.parseNopTime("07/08/2017", "14:11:59.454");
+        Instant time = parseNopTime("07/08/2017", "14:11:59.454");
 
         NavigableSet<Point> knn = t1.kNearestPoints(time, 5);
 
@@ -62,7 +61,7 @@ public class TrackTest {
         NopPoint p5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
         NopPoint p6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
-        Instant t1 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:17.000");
+        Instant t1 = parseNopTime("06/30/2017", "16:40:17.000");
 
         Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
 
@@ -81,9 +80,9 @@ public class TrackTest {
         NopPoint p5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
         NopPoint p6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
-        Instant t1 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:17.000");
-        Instant t2 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:29.000");
-        Instant t3 = NopParsingUtils.parseNopTime("06/30/2017", "16:40:42.000");
+        Instant t1 = parseNopTime("06/30/2017", "16:40:17.000");
+        Instant t2 = parseNopTime("06/30/2017", "16:40:29.000");
+        Instant t3 = parseNopTime("06/30/2017", "16:40:42.000");
 
         Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
         Track firstHalf = Track.of(newArrayList(p1, p2, p3));

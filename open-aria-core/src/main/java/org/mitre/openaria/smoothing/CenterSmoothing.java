@@ -6,7 +6,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import java.util.HashSet;
 
 import org.mitre.openaria.core.NopPoints.CenterPoint;
-import org.mitre.caasd.commons.parsing.nop.CenterRadarHit;
+import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 
 public class CenterSmoothing {
 

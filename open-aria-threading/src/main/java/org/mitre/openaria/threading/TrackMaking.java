@@ -1,9 +1,7 @@
 
 package org.mitre.openaria.threading;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static java.util.Collections.sort;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 
@@ -13,13 +11,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 import org.mitre.openaria.core.ApproximateTimeSorter;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
+import org.mitre.openaria.core.formats.nop.NopParser;
 
 import com.google.common.collect.Lists;
 

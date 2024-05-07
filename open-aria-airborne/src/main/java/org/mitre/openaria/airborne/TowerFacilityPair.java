@@ -3,7 +3,8 @@ package org.mitre.openaria.airborne;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.formats.nop.Facility;
+
 
 /**
  * Mapping of airport towers to facilities designed to manually set the event's isInsideAirspace flag to true if the mapping
@@ -16,7 +17,7 @@ public enum TowerFacilityPair {
     WJF(Facility.SCT),
     VCV(Facility.SCT),
     OXR(Facility.SBA),
-    CMA(Facility.SBA),    
+    CMA(Facility.SBA),
     VGT(Facility.LAS),
     RAP(Facility.ZDV),
     DHN(Facility.A80),

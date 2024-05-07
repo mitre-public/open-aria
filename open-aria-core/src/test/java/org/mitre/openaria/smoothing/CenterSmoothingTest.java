@@ -3,11 +3,12 @@ package org.mitre.openaria.smoothing;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mitre.openaria.core.formats.nop.NopMessageType.parse;
+
+import org.mitre.openaria.core.NopPoints.CenterPoint;
+import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 
 import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.NopPoints.CenterPoint;
-import org.mitre.caasd.commons.parsing.nop.CenterRadarHit;
-import org.mitre.caasd.commons.parsing.nop.NopMessageType;
 
 public class CenterSmoothingTest {
 
@@ -32,8 +33,8 @@ public class CenterSmoothingTest {
     @Test
     public void testIsCoastedRadarHit() {
 
-        CenterRadarHit notCoasted = (CenterRadarHit) NopMessageType.parse(NON_COASTED_RH);
-        CenterRadarHit coasted = (CenterRadarHit) NopMessageType.parse(COASTED_RH);
+        CenterRadarHit notCoasted = (CenterRadarHit) parse(NON_COASTED_RH);
+        CenterRadarHit coasted = (CenterRadarHit) parse(COASTED_RH);
 
         assertFalse(CenterSmoothing.isCoastedRadarHit(notCoasted));
         assertTrue(CenterSmoothing.isCoastedRadarHit(coasted));

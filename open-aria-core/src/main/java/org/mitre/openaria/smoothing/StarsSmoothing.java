@@ -4,7 +4,7 @@ package org.mitre.openaria.smoothing;
 import java.util.HashSet;
 
 import org.mitre.openaria.core.NopPoints.StarsPoint;
-import org.mitre.caasd.commons.parsing.nop.StarsRadarHit;
+import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
 import com.google.common.collect.Sets;
 

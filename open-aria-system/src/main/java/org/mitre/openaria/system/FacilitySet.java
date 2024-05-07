@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.formats.nop.Facility;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.UnmodifiableIterator;

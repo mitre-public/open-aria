@@ -16,7 +16,6 @@ import org.mitre.openaria.core.IfrVfrStatus;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.metadata.Direction;
-import org.mitre.openaria.core.metadata.SimplifiedAircraftTypeMapping;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +30,6 @@ public class SingleAircraftRecord implements JsonWritable {
     /* The converter is static so that it can be reused. Relection is expensive. */
     private static final Gson GSON_CONVERTER = new GsonBuilder().setPrettyPrinting().create();
 
-    private static final SimplifiedAircraftTypeMapping META_DATA = new SimplifiedAircraftTypeMapping();
 
     final String callsign;
     private final String uniqueId;
@@ -47,10 +45,6 @@ public class SingleAircraftRecord implements JsonWritable {
     private final double longitude;
     private final IfrVfrStatus ifrVfrStatus;
     final int climbRateInFeetPerMin;
-    private final String aircraftClass;
-    private final String engineType;
-    private final String pilotSystem;
-    private final String isMilitary;
 
     public SingleAircraftRecord(Track track, Instant eventTime, String trackHash) {
         Point p = track.interpolatedPoint(eventTime).get();
@@ -69,10 +63,6 @@ public class SingleAircraftRecord implements JsonWritable {
         Speed climbRate = computeClimbRate(track, eventTime);
         this.climbRateInFeetPerMin = (int) Math.round(climbRate.inFeetPerMinutes());
         this.climbStatus = climbStatus(climbRate);
-        this.aircraftClass = META_DATA.bucketedAircraftClass(aircraftType);
-        this.engineType = META_DATA.bucketedEngineType(aircraftType);
-        this.pilotSystem = META_DATA.bucketedPilotSystem(aircraftType);
-        this.isMilitary = META_DATA.isMilitary(aircraftType);
     }
 
     public String trackId() {
@@ -101,22 +91,6 @@ public class SingleAircraftRecord implements JsonWritable {
 
     public Course course() {
         return Course.ofDegrees(this.course);
-    }
-
-    public String aircraftClass() {
-        return aircraftClass;
-    }
-
-    public String engineType() {
-        return engineType;
-    }
-
-    public String pilotSystem() {
-        return pilotSystem;
-    }
-
-    public String isMilitary() {
-        return isMilitary;
     }
 
     @Override

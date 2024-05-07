@@ -5,12 +5,12 @@ import static org.mitre.openaria.pointpairing.PairingConfig.standardPairingPrope
 
 import java.io.File;
 
+import org.mitre.caasd.commons.CountingConsumer;
+import org.mitre.caasd.commons.util.SingleUseTimer;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.trackpairing.TrackPairer;
-import org.mitre.caasd.commons.CountingConsumer;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
-import org.mitre.caasd.commons.util.SingleUseTimer;
 
 /**
  * The purpose of this program is to Benchmark the TrackPairing code.

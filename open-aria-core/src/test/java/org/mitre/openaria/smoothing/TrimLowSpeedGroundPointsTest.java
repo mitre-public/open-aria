@@ -12,10 +12,10 @@ import java.util.stream.Stream;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
-import org.mitre.caasd.commons.parsing.nop.NopParsingUtils;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.nop.NopParsingUtils;
 
 import org.junit.jupiter.api.Test;
 

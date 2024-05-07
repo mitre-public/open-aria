@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.kafka.FacilityPartitionMapping;
 import org.mitre.openaria.system.FacilitySet;
 

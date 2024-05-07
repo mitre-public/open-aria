@@ -1,16 +1,16 @@
 
 package org.mitre.openaria.system;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.formats.nop.Facility;
+
+import org.junit.jupiter.api.Test;
+
 
 public class FacilitySetTest {
 

@@ -258,22 +258,6 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         return aircraft(index).course();
     }
 
-    public String aircraftClass(int index) {
-        return aircraft(index).aircraftClass();
-    }
-
-    public String engineType(int index) {
-        return aircraft(index).engineType();
-    }
-
-    public String pilotSystem(int index) {
-        return aircraft(index).pilotSystem();
-    }
-
-    public String isMilitary(int index) {
-        return aircraft(index).isMilitary();
-    }
-
     public Duration timeToCpa() {
         return Duration.ofMillis(timeToCpaInMilliSec);
     }

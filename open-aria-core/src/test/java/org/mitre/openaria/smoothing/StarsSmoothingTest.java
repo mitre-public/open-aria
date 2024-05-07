@@ -4,10 +4,11 @@ package org.mitre.openaria.smoothing;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.NopPoints.StarsPoint;
-import org.mitre.caasd.commons.parsing.nop.NopMessageType;
-import org.mitre.caasd.commons.parsing.nop.StarsRadarHit;
+import org.mitre.openaria.core.formats.nop.NopMessageType;
+import org.mitre.openaria.core.formats.nop.StarsRadarHit;
+
+import org.junit.jupiter.api.Test;
 
 public class StarsSmoothingTest {
 

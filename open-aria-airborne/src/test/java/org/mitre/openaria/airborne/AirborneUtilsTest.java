@@ -4,16 +4,17 @@ package org.mitre.openaria.airborne;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mitre.openaria.airborne.AirborneUtils.isEstablishedAtAltitude;
-import static org.mitre.openaria.threading.TrackMaking.makeTrackFromNopData;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
+import static org.mitre.openaria.airborne.AirborneUtils.isEstablishedAtAltitude;
+import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
+import static org.mitre.openaria.threading.TrackMaking.makeTrackFromNopData;
 
 import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class AirborneUtilsTest {
 

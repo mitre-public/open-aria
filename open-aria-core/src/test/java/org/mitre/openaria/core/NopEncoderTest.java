@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.mitre.caasd.commons.parsing.nop.NopMessage;
-import org.mitre.caasd.commons.parsing.nop.NopMessageType;
-import org.mitre.caasd.commons.parsing.nop.NopParsingUtils;
-import org.mitre.caasd.commons.parsing.nop.NopRadarHit;
+import org.mitre.openaria.core.formats.nop.NopMessage;
+import org.mitre.openaria.core.formats.nop.NopMessageType;
+import org.mitre.openaria.core.formats.nop.NopParsingUtils;
+import org.mitre.openaria.core.formats.nop.NopRadarHit;
 
 import org.junit.jupiter.api.Test;
 

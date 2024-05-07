@@ -3,8 +3,8 @@ package org.mitre.openaria.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.core.Tracks.*;
+import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
 import java.time.Duration;
 import java.time.Instant;

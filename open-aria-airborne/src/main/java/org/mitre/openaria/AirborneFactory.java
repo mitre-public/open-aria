@@ -13,10 +13,10 @@ import org.mitre.openaria.airborne.AirborneAlgorithmDef;
 import org.mitre.openaria.airborne.AirborneEvent;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.airborne.OutputConfig;
+import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.pointpairing.PairingConfig;
 import org.mitre.openaria.system.KpiFactory;
 import org.mitre.openaria.system.StreamingKpi;
-import org.mitre.caasd.commons.parsing.nop.Facility;
 
 /**
  * An AirborneFactory creates AirbornePairConsumers -- its role is to ensure (1) all KPI's deployed

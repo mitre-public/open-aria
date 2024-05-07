@@ -1,5 +1,5 @@
 {
-  "uniqueId": "48d97732570107da3a3a2037df21300f",
+  "uniqueId": "60b539d0929a32821a182f3e369884c5",
   "eventScore": 1.36204,
   "eventDate": "2018-03-24",
   "eventTime": "15:03:00.107",
@@ -87,11 +87,7 @@
     "latitude": 42.28255,
     "longitude": -83.75895,
     "ifrVfrStatus": "VFR",
-    "climbRateInFeetPerMin": -1131,
-    "aircraftClass": "FIXED_WING",
-    "engineType": "PISTON",
-    "pilotSystem": "MANNED",
-    "isMilitary": "FALSE"
+    "climbRateInFeetPerMin": -1131
   },
   "aircraft_1": {
     "callsign": "UNKNOWN",
@@ -107,11 +103,7 @@
     "latitude": 42.28352,
     "longitude": -83.75901,
     "ifrVfrStatus": "VFR",
-    "climbRateInFeetPerMin": 0,
-    "aircraftClass": "UNKNOWN",
-    "engineType": "UNKNOWN",
-    "pilotSystem": "UNKNOWN",
-    "isMilitary": "UNKNOWN"
+    "climbRateInFeetPerMin": 0
   },
   "schemaVersion": "3",
   "airborneDynamics": {
