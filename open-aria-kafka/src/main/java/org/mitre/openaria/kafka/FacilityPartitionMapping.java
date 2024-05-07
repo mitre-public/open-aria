@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.mitre.caasd.commons.parsing.nop.Facility;
+import org.mitre.openaria.core.formats.nop.Facility;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

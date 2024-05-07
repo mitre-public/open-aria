@@ -23,11 +23,11 @@ import java.util.function.Predicate;
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 import org.mitre.caasd.commons.Pair;
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.threading.TrackMaker;
 
 import org.junit.jupiter.api.Test;

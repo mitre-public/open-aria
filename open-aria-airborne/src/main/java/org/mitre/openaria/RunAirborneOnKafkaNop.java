@@ -14,9 +14,9 @@ import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.mitre.caasd.commons.parsing.nop.Facility;
 import org.mitre.openaria.airborne.metrics.KpiLogger;
 import org.mitre.openaria.core.config.PluginFactory;
+import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.kafka.FacilityPartitionMapping;
 import org.mitre.openaria.system.KafkaIngestor;
 import org.mitre.openaria.system.tools.DataLatencySummarizer;

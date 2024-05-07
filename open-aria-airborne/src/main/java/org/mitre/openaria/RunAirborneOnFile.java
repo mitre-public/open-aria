@@ -7,10 +7,10 @@ import static org.mitre.openaria.core.config.YamlUtils.parseYaml;
 import java.io.File;
 import java.util.Iterator;
 
-import org.mitre.caasd.commons.parsing.nop.NopParser;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
+import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.system.StreamingKpi;
 
 import com.beust.jcommander.JCommander;

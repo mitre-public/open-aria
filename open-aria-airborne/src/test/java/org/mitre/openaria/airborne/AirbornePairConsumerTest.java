@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
 import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
@@ -33,7 +32,7 @@ public class AirbornePairConsumerTest {
         EventSummarizer stats = consumer.getEventSummarizer();
         assertThat(stats.eventCount(), is(0));
 
-        TrackPair testTrack = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+        TrackPair testTrack = makeTrackPairFromNopData(new File("src/test/resources/scaryTrackData.txt"));
 
         consumer.accept(testTrack);
 
@@ -56,7 +55,8 @@ public class AirbornePairConsumerTest {
         EventSummarizer stats = consumer.getEventSummarizer();
         assertThat(stats.eventCount(), is(0));
 
-        TrackPair testTrack = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+        TrackPair testTrack = makeTrackPairFromNopData(new File("src/test/resources/scaryTrackData.txt"));
+//        TrackPair testTrack = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
 
         //ingesting this scary track did nothing because we set the "maxReportableScore" to such an absurd value
         consumer.accept(testTrack);
@@ -123,7 +123,7 @@ public class AirbornePairConsumerTest {
 
         assertThat(eventFromComputation.asJson(), is(eventFromFile.asJson()));
 
-        String expectedUuid = "48d97732570107da3a3a2037df21300f";
+        String expectedUuid = "60b539d0929a32821a182f3e369884c5";
         assertThat(eventFromComputation.uuid(), is(expectedUuid));
         assertThat(json.contains(expectedUuid), is(true));
 

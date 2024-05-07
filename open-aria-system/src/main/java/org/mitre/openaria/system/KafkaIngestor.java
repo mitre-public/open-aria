@@ -4,10 +4,10 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.requireNonNull;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG;
-import static org.mitre.caasd.commons.parsing.nop.Facility.toFacility;
-import static org.mitre.caasd.commons.parsing.nop.NopMessageType.isNopRadarHit;
 import static org.mitre.caasd.commons.util.PropertyUtils.*;
 import static org.mitre.openaria.core.NopPoint.parseSafely;
+import static org.mitre.openaria.core.formats.nop.Facility.toFacility;
+import static org.mitre.openaria.core.formats.nop.NopMessageType.isNopRadarHit;
 import static org.mitre.openaria.kafka.KafkaPropertyUtils.verifyKafkaBrokers;
 
 import java.io.File;
@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.mitre.caasd.commons.parsing.nop.Facility;
 import org.mitre.caasd.commons.util.ErrorCatchingTask;
 import org.mitre.caasd.commons.util.ExceptionHandler;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.core.temp.Extras;
 import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.kafka.PartitionMapping;

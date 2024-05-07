@@ -6,9 +6,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.airborne.AirborneEvent.newBuilder;
 import static org.mitre.openaria.airborne.AirborneEvent.parseJson;
+import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
 
 import java.time.Duration;

@@ -2,17 +2,16 @@ package org.mitre.openaria.kafka;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
 
 import java.io.File;
 import java.util.Optional;
 
+import org.mitre.openaria.core.formats.nop.Facility;
+
 import org.junit.jupiter.api.Test;
-import org.mitre.caasd.commons.parsing.nop.Facility;
 
 public class FacilityPartitionMappingTest {
 

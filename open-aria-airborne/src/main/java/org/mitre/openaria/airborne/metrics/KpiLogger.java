@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.mitre.caasd.commons.out.JsonWritable;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.StreamingTimeSorter.StreamIntegritySummarizer;
+import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.system.StreamingKpi;
-import org.mitre.caasd.commons.out.JsonWritable;
-import org.mitre.caasd.commons.parsing.nop.Facility;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

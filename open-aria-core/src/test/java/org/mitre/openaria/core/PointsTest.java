@@ -11,10 +11,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
-import static org.mitre.caasd.commons.parsing.nop.NopParsingUtils.parseNopTime;
 import static org.mitre.openaria.core.Points.*;
 import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
 import static org.mitre.openaria.core.Tracks.createTrackFromFile;
+import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
 import java.io.File;
 import java.nio.file.Files;

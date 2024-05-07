@@ -7,14 +7,14 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.caasd.commons.util.SingleUseTimer;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.StreamingTimeSorter;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.threading.TrackMaker;
-import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
-import org.mitre.caasd.commons.util.SingleUseTimer;
 
 import com.google.common.math.StatsAccumulator;
 

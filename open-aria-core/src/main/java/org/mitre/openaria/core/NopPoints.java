@@ -3,10 +3,11 @@ package org.mitre.openaria.core;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import org.mitre.caasd.commons.parsing.nop.AgwRadarHit;
-import org.mitre.caasd.commons.parsing.nop.CenterRadarHit;
-import org.mitre.caasd.commons.parsing.nop.MeartsRadarHit;
-import org.mitre.caasd.commons.parsing.nop.StarsRadarHit;
+import org.mitre.openaria.core.formats.nop.AgwRadarHit;
+import org.mitre.openaria.core.formats.nop.CenterRadarHit;
+import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
+import org.mitre.openaria.core.formats.nop.StarsRadarHit;
+
 
 public class NopPoints {
 

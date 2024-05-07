@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.mitre.caasd.commons.parsing.nop.NopParsingUtils;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.nop.NopParsingUtils;
 
 import org.junit.jupiter.api.Test;
 

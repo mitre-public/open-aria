@@ -7,9 +7,9 @@ import java.io.File;
 
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.caasd.commons.parsing.nop.NopMessage;
-import org.mitre.caasd.commons.parsing.nop.NopMessageType;
-import org.mitre.caasd.commons.parsing.nop.NopParser;
+import org.mitre.openaria.core.formats.nop.NopMessage;
+import org.mitre.openaria.core.formats.nop.NopMessageType;
+import org.mitre.openaria.core.formats.nop.NopParser;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
