@@ -10,10 +10,6 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
-import org.mitre.openaria.core.NopPoints.AgwPoint;
-import org.mitre.openaria.core.NopPoints.CenterPoint;
-import org.mitre.openaria.core.NopPoints.MeartsPoint;
-import org.mitre.openaria.core.NopPoints.StarsPoint;
 import org.mitre.openaria.core.formats.nop.AgwRadarHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
@@ -36,11 +32,11 @@ import org.mitre.openaria.core.temp.Extras.SourceDetails;
  *
  * @param <T> The type of NopRadarHit being wrapped
  */
-public abstract class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
+public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
 
     final NopRadarHit rhMessage;
 
-    NopPoint(String rawNopText) {
+    public NopPoint(String rawNopText) {
         checkNotNull(rawNopText, "The input String cannot be null");
 
         NopMessage m = NopMessageType.parse(rawNopText);
@@ -54,21 +50,21 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<T>, HasSo
         this.rhMessage = (NopRadarHit) NopMessageType.parse(rawNopText);
     }
 
-    NopPoint(T rhMessage) {
+    public NopPoint(T rhMessage) {
         this.rhMessage = checkNotNull(rhMessage);
     }
 
     public static NopPoint from(NopMessage message) {
         checkNotNull(message, "Cannot create a NopPoint from a null NopMessage");
 
-        if (message instanceof CenterRadarHit) {
-            return new CenterPoint((CenterRadarHit) message);
-        } else if (message instanceof StarsRadarHit) {
-            return new StarsPoint((StarsRadarHit) message);
-        } else if (message instanceof AgwRadarHit) {
-            return new AgwPoint((AgwRadarHit) message);
-        } else if (message instanceof MeartsRadarHit) {
-            return new MeartsPoint((MeartsRadarHit) message);
+        if (message instanceof CenterRadarHit center) {
+            return new NopPoint(center);
+        } else if (message instanceof StarsRadarHit stars) {
+            return new NopPoint(stars);
+        } else if (message instanceof AgwRadarHit agw) {
+            return new NopPoint(agw);
+        } else if (message instanceof MeartsRadarHit mearts) {
+            return new NopPoint(mearts);
         } else {
             throw new IllegalArgumentException("Cannot create a NopPoint from a " + message.getNopType());
         }

@@ -11,10 +11,6 @@ import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
 import java.util.Optional;
 
-import org.mitre.openaria.core.NopPoints.AgwPoint;
-import org.mitre.openaria.core.NopPoints.CenterPoint;
-import org.mitre.openaria.core.NopPoints.MeartsPoint;
-import org.mitre.openaria.core.NopPoints.StarsPoint;
 import org.mitre.openaria.core.formats.nop.AgwRadarHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
@@ -35,15 +31,15 @@ public class NopPointsTest {
     public void testConstructors() {
 
         assertDoesNotThrow(() -> {
-            CenterPoint cp1 = new CenterPoint(CENTER_RH_MESSAGE);
-            StarsPoint sp1 = new StarsPoint(STARS_RH_MESSAGE);
-            AgwPoint ap1 = new AgwPoint(AGW_RH_MESSAGE);
-            MeartsPoint mp1 = new MeartsPoint(MEARTS_RH_MESSAGE);
+            NopPoint cp1 = new NopPoint(CENTER_RH_MESSAGE);
+            NopPoint sp1 = new NopPoint(STARS_RH_MESSAGE);
+            NopPoint ap1 = new NopPoint(AGW_RH_MESSAGE);
+            NopPoint mp1 = new NopPoint(MEARTS_RH_MESSAGE);
 
-            CenterPoint cp2 = new CenterPoint((CenterRadarHit) NopMessageType.parse(CENTER_RH_MESSAGE));
-            StarsPoint sp2 = new StarsPoint((StarsRadarHit) NopMessageType.parse(STARS_RH_MESSAGE));
-            AgwPoint ap2 = new AgwPoint((AgwRadarHit) NopMessageType.parse(AGW_RH_MESSAGE));
-            MeartsPoint mp2 = new MeartsPoint((MeartsRadarHit) NopMessageType.parse(MEARTS_RH_MESSAGE));
+            NopPoint cp2 = new NopPoint((CenterRadarHit) NopMessageType.parse(CENTER_RH_MESSAGE));
+            NopPoint sp2 = new NopPoint((StarsRadarHit) NopMessageType.parse(STARS_RH_MESSAGE));
+            NopPoint ap2 = new NopPoint((AgwRadarHit) NopMessageType.parse(AGW_RH_MESSAGE));
+            NopPoint mp2 = new NopPoint((MeartsRadarHit) NopMessageType.parse(MEARTS_RH_MESSAGE));
         });
     }
 
@@ -53,78 +49,57 @@ public class NopPointsTest {
         String s = null;
 
         try {
-            CenterPoint cp1 = new CenterPoint(s);
-            fail("Should not work because input is null");
-        } catch (NullPointerException npe) {
-            assertTrue(npe.getMessage().contains("The input String cannot be null"));
-        }
-
-        try {
-            StarsPoint sp1 = new StarsPoint(s);
-            fail("Should not work because input is null");
-        } catch (NullPointerException npe) {
-            assertTrue(npe.getMessage().contains("The input String cannot be null"));
-        }
-
-        try {
-            AgwPoint ap1 = new AgwPoint(s);
-            fail("Should not work because input is null");
-        } catch (NullPointerException npe) {
-            assertTrue(npe.getMessage().contains("The input String cannot be null"));
-        }
-
-        try {
-            MeartsPoint mp1 = new MeartsPoint(s);
+            NopPoint cp1 = new NopPoint(s);
             fail("Should not work because input is null");
         } catch (NullPointerException npe) {
             assertTrue(npe.getMessage().contains("The input String cannot be null"));
         }
     }
 
-    @Test
-    public void testConstructor_mismatchedRhMessageInput() {
+//    @Test
+//    public void testConstructor_mismatchedRhMessageInput() {
+//
+//        try {
+//            CenterPoint cp1 = new CenterPoint(AGW_RH_MESSAGE);
+//            fail("Should not work, building CenterPoint with AGW data");
+//        } catch (IllegalArgumentException iae) {
+//            assertTrue(iae.getMessage().contains("Cannot create a CenterPoint from a AgwRadarHit"));
+//        }
+//
+//        try {
+//            StarsPoint sp1 = new StarsPoint(CENTER_RH_MESSAGE);
+//            fail("Should not work, building StarsPoint with CENTER data");
+//        } catch (IllegalArgumentException iae) {
+//            assertTrue(iae.getMessage().contains("Cannot create a StarsPoint from a CenterRadarHit"));
+//        }
+//
+//        try {
+//            AgwPoint ap1 = new AgwPoint(STARS_RH_MESSAGE);
+//            fail("Should not work, building AgwPoint with STARS data");
+//        } catch (IllegalArgumentException iae) {
+//            assertTrue(iae.getMessage().contains("Cannot create a AgwPoint from a StarsRadarHit"));
+//        }
+//
+//        try {
+//            MeartsPoint mp1 = new MeartsPoint(STARS_RH_MESSAGE);
+//            fail("Should not work, building MeartsPoint with STARS data");
+//        } catch (IllegalArgumentException iae) {
+//            assertTrue(iae.getMessage().contains("Cannot create a MeartsPoint from a StarsRadarHit"));
+//        }
+//    }
 
-        try {
-            CenterPoint cp1 = new CenterPoint(AGW_RH_MESSAGE);
-            fail("Should not work, building CenterPoint with AGW data");
-        } catch (IllegalArgumentException iae) {
-            assertTrue(iae.getMessage().contains("Cannot create a CenterPoint from a AgwRadarHit"));
-        }
-
-        try {
-            StarsPoint sp1 = new StarsPoint(CENTER_RH_MESSAGE);
-            fail("Should not work, building StarsPoint with CENTER data");
-        } catch (IllegalArgumentException iae) {
-            assertTrue(iae.getMessage().contains("Cannot create a StarsPoint from a CenterRadarHit"));
-        }
-
-        try {
-            AgwPoint ap1 = new AgwPoint(STARS_RH_MESSAGE);
-            fail("Should not work, building AgwPoint with STARS data");
-        } catch (IllegalArgumentException iae) {
-            assertTrue(iae.getMessage().contains("Cannot create a AgwPoint from a StarsRadarHit"));
-        }
-
-        try {
-            MeartsPoint mp1 = new MeartsPoint(STARS_RH_MESSAGE);
-            fail("Should not work, building MeartsPoint with STARS data");
-        } catch (IllegalArgumentException iae) {
-            assertTrue(iae.getMessage().contains("Cannot create a MeartsPoint from a StarsRadarHit"));
-        }
-    }
-
-    @Test
-    public void testFactoryMethod() {
-        NopPoint agwPoint = NopPoint.from(AGW_RH_MESSAGE);
-        NopPoint centerPoint = NopPoint.from(CENTER_RH_MESSAGE);
-        NopPoint starsPoint = NopPoint.from(STARS_RH_MESSAGE);
-        NopPoint meartsPoint = NopPoint.from(MEARTS_RH_MESSAGE);
-
-        assertTrue(agwPoint instanceof AgwPoint);
-        assertTrue(centerPoint instanceof CenterPoint);
-        assertTrue(starsPoint instanceof StarsPoint);
-        assertTrue(meartsPoint instanceof MeartsPoint);
-    }
+//    @Test
+//    public void testFactoryMethod() {
+//        NopPoint agwPoint = NopPoint.from(AGW_RH_MESSAGE);
+//        NopPoint centerPoint = NopPoint.from(CENTER_RH_MESSAGE);
+//        NopPoint starsPoint = NopPoint.from(STARS_RH_MESSAGE);
+//        NopPoint meartsPoint = NopPoint.from(MEARTS_RH_MESSAGE);
+//
+//        assertTrue(agwPoint instanceof AgwPoint);
+//        assertTrue(centerPoint instanceof CenterPoint);
+//        assertTrue(starsPoint instanceof StarsPoint);
+//        assertTrue(meartsPoint instanceof MeartsPoint);
+//    }
 
     @Test
     public void testFactorMethod_nullInput() {
@@ -163,10 +138,10 @@ public class NopPointsTest {
     @Test
     public void testUsage() {
 
-        CenterPoint center = new CenterPoint(CENTER_RH_MESSAGE);
-        StarsPoint stars = new StarsPoint(STARS_RH_MESSAGE);
-        AgwPoint agw = new AgwPoint(AGW_RH_MESSAGE);
-        MeartsPoint mearts = new MeartsPoint(MEARTS_RH_MESSAGE);
+        NopPoint center = new NopPoint(CENTER_RH_MESSAGE);
+        NopPoint stars = new NopPoint(STARS_RH_MESSAGE);
+        NopPoint agw = new NopPoint(AGW_RH_MESSAGE);
+        NopPoint mearts = new NopPoint(MEARTS_RH_MESSAGE);
 
         assertEquals("465", center.trackId());
         assertEquals("1519", stars.trackId());
@@ -213,10 +188,10 @@ public class NopPointsTest {
          * Test test verifies that each NopPoint can provide access to the correct type of
          * NopRadarHit
          */
-        CenterPoint center = new CenterPoint(CENTER_RH_MESSAGE);
-        StarsPoint stars = new StarsPoint(STARS_RH_MESSAGE);
-        AgwPoint agw = new AgwPoint(AGW_RH_MESSAGE);
-        MeartsPoint mearts = new MeartsPoint(MEARTS_RH_MESSAGE);
+        NopPoint center = new NopPoint(CENTER_RH_MESSAGE);
+        NopPoint stars = new NopPoint(STARS_RH_MESSAGE);
+        NopPoint agw = new NopPoint(AGW_RH_MESSAGE);
+        NopPoint mearts = new NopPoint(MEARTS_RH_MESSAGE);
 
         assertTrue(center.rhMessage instanceof CenterRadarHit);
         assertTrue(stars.rhMessage instanceof StarsRadarHit);
@@ -230,10 +205,10 @@ public class NopPointsTest {
          * This test verifies that the "asNop" method returns the original String that was used to
          * produce the NopPoint in the first place.
          */
-        CenterPoint center = new CenterPoint(CENTER_RH_MESSAGE);
-        StarsPoint stars = new StarsPoint(STARS_RH_MESSAGE);
-        AgwPoint agw = new AgwPoint(AGW_RH_MESSAGE);
-        MeartsPoint mearts = new MeartsPoint(MEARTS_RH_MESSAGE);
+        NopPoint center = new NopPoint(CENTER_RH_MESSAGE);
+        NopPoint stars = new NopPoint(STARS_RH_MESSAGE);
+        NopPoint agw = new NopPoint(AGW_RH_MESSAGE);
+        NopPoint mearts = new NopPoint(MEARTS_RH_MESSAGE);
 
         assertEquals(CENTER_RH_MESSAGE, center.asNop());
         assertEquals(STARS_RH_MESSAGE, stars.asNop());
@@ -250,10 +225,10 @@ public class NopPointsTest {
          * String.equals(String). This is because we want to ensure that Points built using
          * NopPoints as inputs use the flyweight pattern for all repeat Strings.
          */
-        CenterPoint cp1 = new CenterPoint(CENTER_RH_MESSAGE);
-        StarsPoint sp1 = new StarsPoint(STARS_RH_MESSAGE);
-        AgwPoint ap1 = new AgwPoint(AGW_RH_MESSAGE);
-        MeartsPoint mp1 = new MeartsPoint(MEARTS_RH_MESSAGE);
+        NopPoint cp1 = new NopPoint(CENTER_RH_MESSAGE);
+        NopPoint sp1 = new NopPoint(STARS_RH_MESSAGE);
+        NopPoint ap1 = new NopPoint(AGW_RH_MESSAGE);
+        NopPoint mp1 = new NopPoint(MEARTS_RH_MESSAGE);
 
         //these assertions can be false if the beaconAssigned is lazily parsed out of a larger String
         assertTrue(cp1.beaconAssigned() == cp1.beaconAssigned());
@@ -270,7 +245,7 @@ public class NopPointsTest {
 
     @Test
     public void centerPointWhereFlightRulesEqualOtp() {
-        CenterPoint point = new CenterPoint(CENTER_RH_WITH_OTP);
+        NopPoint point = new NopPoint(CENTER_RH_WITH_OTP);
         assertThat(point.flightRules(), is("OTP"));
 
         assertThat(IfrVfrStatus.from(point.flightRules()), is(IFR));
@@ -291,19 +266,19 @@ public class NopPointsTest {
     public void parseSafely_goodResultFromGoodInput() {
         Optional<NopPoint> starsOpt = parseSafely(STARS_RH_MESSAGE);
         assertThat(starsOpt.isPresent(), is(true));
-        assertTrue(starsOpt.get() instanceof StarsPoint);
+//        assertTrue(starsOpt.get() instanceof StarsPoint);
 
         Optional<NopPoint> centerOpt = parseSafely(CENTER_RH_MESSAGE);
         assertThat(centerOpt.isPresent(), is(true));
-        assertTrue(centerOpt.get() instanceof CenterPoint);
+//        assertTrue(centerOpt.get() instanceof CenterPoint);
 
         Optional<NopPoint> agwOpt = parseSafely(AGW_RH_MESSAGE);
         assertThat(agwOpt.isPresent(), is(true));
-        assertTrue(agwOpt.get() instanceof AgwPoint);
+//        assertTrue(agwOpt.get() instanceof AgwPoint);
 
         Optional<NopPoint> meartOpt = parseSafely(MEARTS_RH_MESSAGE);
         assertThat(meartOpt.isPresent(), is(true));
-        assertTrue(meartOpt.get() instanceof MeartsPoint);
+//        assertTrue(meartOpt.get() instanceof MeartsPoint);
     }
 
     @Test
