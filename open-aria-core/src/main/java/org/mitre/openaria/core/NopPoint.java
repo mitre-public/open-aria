@@ -36,9 +36,9 @@ import org.mitre.openaria.core.temp.Extras.SourceDetails;
  *
  * @param <T> The type of NopRadarHit being wrapped
  */
-public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
+public abstract class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
 
-    NopRadarHit rhMessage;
+    final NopRadarHit rhMessage;
 
     NopPoint(String rawNopText) {
         checkNotNull(rawNopText, "The input String cannot be null");
@@ -51,9 +51,7 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
                 + "\" resulted in a " + m.getClass().getName() + " but a NopRadarHit is required"
         );
 
-        NopRadarHit message = (NopRadarHit) NopMessageType.parse(rawNopText);
-
-        this.rhMessage = message;
+        this.rhMessage = (NopRadarHit) NopMessageType.parse(rawNopText);
     }
 
     NopPoint(T rhMessage) {
@@ -80,8 +78,8 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<String>, 
         return from(NopMessageType.parse(rhMessage));
     }
     
-    public String rawData() {
-        return this.rhMessage.rawMessage();
+    public T rawData() {
+        return (T) this.rhMessage;
     }
 
     /**
