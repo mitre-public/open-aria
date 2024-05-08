@@ -34,7 +34,7 @@ location data.
 
 # Getting Started
 
-- Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md)
+- Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md) and [here](./docs/ADRs/pointInterfaceCritique2.md)
 - Learn about the supported data formats [here](./docs/csv-data-format.md)
     - **Important Caveat:** The initial code commit includes a dependency that is not available in the open source domain.
     - We are working to remove this blocker by:

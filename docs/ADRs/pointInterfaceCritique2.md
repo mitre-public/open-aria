@@ -1,4 +1,8 @@
-~~# Updated Critique of Point and Track
+# Architectural Decision Record
+
+## Title: Updated Critique of Point and Track
+
+**Date:** May 7th, 2024
 
 This is an update to [this ADR](./pointInterfaceCritique.md) where the TL;DR is:
 > The Point and Track interfaces have design flaws (from pre-ARIA days) that should only be fixed when the effort can be
@@ -13,30 +17,35 @@ This is an update to [this ADR](./pointInterfaceCritique.md) where the TL;DR is:
 
 ## Design Flaw 1:  `Point` was designed to mimic ONE data format
 
-- In pre-ARIA legacy code the `Point` interface was built to Mimic exactly one format, with all its quirks,
+- In pre-ARIA legacy code the `Point` interface was built to Mimic exactly one format, with all its specific details.
 - The original design was not intended to support other formats.
 - Nor, was there a plan or strategy to support alternative data formats.
-- Thus, the `Point` interface got implemented by many different classes that each decorated the interface with
-  a different set of additional methods (depending on the _new_ data format). The additional methods
-  split into two main groups, physical related (e.g. `climbRate()`, `acceleration()`) and metadata related (
+- Consequently, the `Point` interface got implemented by many different classes that each decorated the interface with
+  a different set of additional methods (depending on the _new_ data format). Broadly speaking, the additional methods
+  split into two groups: physical related methods (e.g. `climbRate()`, `acceleration()`) and metadata related methods (
   e.g. `wakeCategory()` or `aircraftType()`)
+- **Bottom line:** Failing to provide proper support for additional data formats lead to code bloat, type coercion, and
+  decreased maintainability.
 
 ## Design Flaw 2: Poor separation btw _"Raw Data"_ and its _"Smoothed View"_
 
 - Raw location data is imprecise. Location data has noise that needs to be corrected.
 - In pre-ARIA legacy code `Point` and `Track` implementations were mutable objects that were **corrected in place**.
+    - When this pre-ARIA legacy code was migrated the "mutate in-place" was removed but the broader structure remained.
 - This led to imperfect separation between the _"raw location data"_, the _"smoothed view of the raw data"_, and the _"
   track smoothers that manipulated the location data"_
-- These intertwining concerns are very reminiscent of a GUI interface design that does not use an MVC pattern
+- These intertwining concerns are somewhat reminiscent of a GUI interface design that does not use an MVC pattern
     - Model = Raw Data
     - View = Smoothed View of Data
     - Controller = Track Smoothing Functions
-- A better design make it easier to simultaneously support "leaving the raw location data alone" and "getting a
+- A better design makes it easier to simultaneously support "leaving the raw location data alone" and "getting a
   corrected view of the raw location data"
 
 ## Design Flaw 3: Tracks are not generic
+
 - `Track` objects are awkward to work this because the "type of point metadata" is not easily accessible.
--  In other words, `Track` should be a generic class.  But, this doesn't work out correctly because the underlying Points aren't generic.
+- In other words, `Track` should be a generic class. But, this doesn't work out correctly because the underlying Points
+  aren't generic.
 
 ## Design Flaw 4: Track Smoothers have unnatural access to Fields from Raw data
 
