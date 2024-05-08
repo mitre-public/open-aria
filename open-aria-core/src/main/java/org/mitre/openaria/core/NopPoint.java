@@ -77,7 +77,7 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<T>, HasSo
     public static NopPoint from(String rhMessage) {
         return from(NopMessageType.parse(rhMessage));
     }
-    
+
     public T rawData() {
         return (T) this.rhMessage;
     }
@@ -104,11 +104,71 @@ public abstract class NopPoint<T extends NopRadarHit> implements Point<T>, HasSo
     }
 
     @Override
-    public abstract String trackId();
+    public String trackId() {
+
+        if (rawMessage() instanceof AgwRadarHit agw) {
+            return agw.trackNumber();
+        }
+
+        if (rawMessage() instanceof StarsRadarHit stars) {
+            return stars.trackNumber();
+        }
+
+        if (rawMessage() instanceof CenterRadarHit center) {
+            return center.computerId();
+        }
+
+        if (rawMessage() instanceof MeartsRadarHit mearts) {
+            return mearts.computerId();
+        }
+
+        throw new AssertionError("Illegal case");
+    }
 
     @Override
     public String beaconActual() {
         return rhMessage.reportedBeaconCode();
+    }
+
+
+    @Override
+    public String beaconAssigned() {
+
+        if (rawMessage() instanceof AgwRadarHit agw) {
+
+            return (agw.assignedBeaconCode() == null)
+                ? null
+                /*
+                 * when converting the Integer to a String be sure to intern the resulting String so
+                 * that you don't generate hundreds of separate copies of the beacon code
+                 */
+                : agw.assignedBeaconCode().toString().intern();
+        }
+
+        if (rawMessage() instanceof StarsRadarHit stars) {
+
+            return (stars.assignedBeaconCode() == null)
+                ? null
+                /*
+                 * when converting the Integer to a String be sure to intern the resulting String so
+                 * that you don't generate hundreds of separate copies of the beacon code
+                 */
+                : stars.assignedBeaconCode().toString().intern();
+        }
+
+        if (rawMessage() instanceof CenterRadarHit center) {
+
+            //these Center format does not contain this information
+            return null;
+        }
+
+        if (rawMessage() instanceof MeartsRadarHit mearts) {
+
+            //these Mearts format does not contain this information
+            return null;
+        }
+
+        throw new AssertionError("Illegal case");
     }
 
     @Override
