@@ -3,7 +3,7 @@ package org.mitre.openaria.smoothing;
 
 import java.util.HashSet;
 
-import org.mitre.openaria.core.NopPoints.StarsPoint;
+import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
 import com.google.common.collect.Sets;
@@ -30,7 +30,8 @@ public class StarsSmoothing {
             : STARS_COASTED_FLAGS.contains(statusFieldValue);
     }
 
-    public static boolean isCoastedPoint(StarsPoint starsPoint) {
-        return isCoastedRadarHit(starsPoint.rawMessage());
+    public static boolean isCoastedPoint(NopPoint starsPoint) {
+        StarsRadarHit srh = (StarsRadarHit) starsPoint.rawMessage();
+        return isCoastedRadarHit(srh);
     }
 }

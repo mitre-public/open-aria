@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mitre.openaria.core.formats.nop.NopMessageType.parse;
 
-import org.mitre.openaria.core.NopPoints.CenterPoint;
+import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 
 import org.junit.jupiter.api.Test;
@@ -23,8 +23,8 @@ public class CenterSmoothingTest {
 
     @Test
     public void testIsCoastedPoint() {
-        CenterPoint notCoasted = new CenterPoint(NON_COASTED_RH);
-        CenterPoint coasted = new CenterPoint(COASTED_RH);
+        NopPoint notCoasted = new NopPoint(NON_COASTED_RH);
+        NopPoint coasted = new NopPoint(COASTED_RH);
 
         assertFalse(CenterSmoothing.isCoastedPoint(notCoasted));
         assertTrue(CenterSmoothing.isCoastedPoint(coasted));
