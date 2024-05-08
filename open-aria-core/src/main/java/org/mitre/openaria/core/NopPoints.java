@@ -25,23 +25,6 @@ public class NopPoints {
                 "Cannot create a AgwPoint from a " + rhMessage.getClass().getSimpleName()
             );
         }
-
-        @Override
-        public String trackId() {
-            return rawMessage().trackNumber();
-        }
-
-        @Override
-        public String beaconAssigned() {
-
-            return (rawMessage().assignedBeaconCode() == null)
-                ? null
-                /*
-                 * when converting the Integer to a String be sure to intern the resulting String so
-                 * that you don't generate hundreds of separate copies of the beacon code
-                 */
-                : rawMessage().assignedBeaconCode().toString().intern();
-        }
     }
 
     public static class StarsPoint extends NopPoint<StarsRadarHit> {
@@ -57,22 +40,6 @@ public class NopPoints {
                 this.rhMessage instanceof StarsRadarHit,
                 "Cannot create a StarsPoint from a " + rhMessage.getClass().getSimpleName()
             );
-        }
-
-        @Override
-        public String trackId() {
-            return rawMessage().trackNumber();
-        }
-
-        @Override
-        public String beaconAssigned() {
-            return (rawMessage().assignedBeaconCode() == null)
-                ? null
-                /*
-                 * when converting the Integer to a String be sure to intern the resulting String so
-                 * that you don't generate hundreds of separate copies of the beacon code
-                 */
-                : rawMessage().assignedBeaconCode().toString().intern();
         }
     }
 
@@ -90,17 +57,6 @@ public class NopPoints {
                 "Cannot create a CenterPoint from a " + rhMessage.getClass().getSimpleName()
             );
         }
-
-        @Override
-        public String trackId() {
-            return rawMessage().computerId();
-        }
-
-        @Override
-        public String beaconAssigned() {
-            //these Center format does not contain this information
-            return null;
-        }
     }
 
     public static class MeartsPoint extends NopPoint<MeartsRadarHit> {
@@ -116,18 +72,6 @@ public class NopPoints {
                 this.rhMessage instanceof MeartsRadarHit,
                 "Cannot create a MeartsPoint from a " + rhMessage.getClass().getSimpleName()
             );
-        }
-
-        @Override
-        public String trackId() {
-            //in somewhat rare cases this will return null
-            return rawMessage().computerId();
-        }
-
-        @Override
-        public String beaconAssigned() {
-            //these Mearts format does not contain this information
-            return null;
         }
     }
 }
