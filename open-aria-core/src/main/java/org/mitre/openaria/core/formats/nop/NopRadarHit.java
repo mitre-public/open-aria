@@ -15,7 +15,7 @@ import java.time.Instant;
  * <p>
  * NopRadarHit is package-private because it does not correspond to a real NopMessageType.
  */
-public abstract class NopRadarHit implements NopMessage{
+public abstract class NopRadarHit implements NopMessage {
 
     private final String rawTextInput;
 

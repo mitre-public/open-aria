@@ -56,57 +56,12 @@ public class NopPointsTest {
         }
     }
 
-//    @Test
-//    public void testConstructor_mismatchedRhMessageInput() {
-//
-//        try {
-//            CenterPoint cp1 = new CenterPoint(AGW_RH_MESSAGE);
-//            fail("Should not work, building CenterPoint with AGW data");
-//        } catch (IllegalArgumentException iae) {
-//            assertTrue(iae.getMessage().contains("Cannot create a CenterPoint from a AgwRadarHit"));
-//        }
-//
-//        try {
-//            StarsPoint sp1 = new StarsPoint(CENTER_RH_MESSAGE);
-//            fail("Should not work, building StarsPoint with CENTER data");
-//        } catch (IllegalArgumentException iae) {
-//            assertTrue(iae.getMessage().contains("Cannot create a StarsPoint from a CenterRadarHit"));
-//        }
-//
-//        try {
-//            AgwPoint ap1 = new AgwPoint(STARS_RH_MESSAGE);
-//            fail("Should not work, building AgwPoint with STARS data");
-//        } catch (IllegalArgumentException iae) {
-//            assertTrue(iae.getMessage().contains("Cannot create a AgwPoint from a StarsRadarHit"));
-//        }
-//
-//        try {
-//            MeartsPoint mp1 = new MeartsPoint(STARS_RH_MESSAGE);
-//            fail("Should not work, building MeartsPoint with STARS data");
-//        } catch (IllegalArgumentException iae) {
-//            assertTrue(iae.getMessage().contains("Cannot create a MeartsPoint from a StarsRadarHit"));
-//        }
-//    }
-
-//    @Test
-//    public void testFactoryMethod() {
-//        NopPoint agwPoint = NopPoint.from(AGW_RH_MESSAGE);
-//        NopPoint centerPoint = NopPoint.from(CENTER_RH_MESSAGE);
-//        NopPoint starsPoint = NopPoint.from(STARS_RH_MESSAGE);
-//        NopPoint meartsPoint = NopPoint.from(MEARTS_RH_MESSAGE);
-//
-//        assertTrue(agwPoint instanceof AgwPoint);
-//        assertTrue(centerPoint instanceof CenterPoint);
-//        assertTrue(starsPoint instanceof StarsPoint);
-//        assertTrue(meartsPoint instanceof MeartsPoint);
-//    }
-
     @Test
     public void testFactorMethod_nullInput() {
         String nullString = null;
 
         try {
-            NopPoint p = NopPoint.from(nullString);
+            Point<NopPoint> p = NopPoint.from(nullString);
             fail("Should not work because input is null");
         } catch (NullPointerException npe) {
             assertTrue(npe.getMessage().contains("Cannot parse"));
@@ -115,7 +70,7 @@ public class NopPointsTest {
         NopMessage nullMessage = null;
 
         try {
-            NopPoint p = NopPoint.from(nullMessage);
+            Point<NopPoint> p = NopPoint.from(nullMessage);
             fail("Should not work because input is null");
         } catch (NullPointerException npe) {
             assertTrue(npe.getMessage().contains("Cannot create a NopPoint from a null NopMessage"));
@@ -128,7 +83,7 @@ public class NopPointsTest {
         String flightPlanMessage = "[FP],Center,ZLA_B,07-10-2016,06:16:24.000,UAL455,A320,L,3356,330,E,0621,KSFO,CZQ084060,460,KLAS,,065,KSFO./.MOD148032..FUZZY.SUNST3.KLAS/0703,131667051,{FP}";
 
         try {
-            NopPoint p = NopPoint.from(flightPlanMessage);
+            Point<NopPoint> p = NopPoint.from(flightPlanMessage);
             fail("Should not work because the flightPlanMessage is not an RH message");
         } catch (IllegalArgumentException iae) {
             assertTrue(iae.getMessage().contains("Cannot create a NopPoint from a FLIGHT_PLAN"));
@@ -176,7 +131,7 @@ public class NopPointsTest {
             agw.rawMessage().rawMessage()
         );
 
-        NopPoint nopPoint = NopPoint.from(
+        Point<NopPoint> nopPoint = NopPoint.from(
             "[RH],AGW,RDG,09/20/2017,17:28:02.096,,,,2525,000,425,252,040.49450,-075.76505,110,,10.66,5.09,,,,RDG,,,,,???,,,,,4221,???,,00,,,1,,0,,90.31,88.64,{RH}"
         );
         assertTrue(nopPoint.time().equals(parseNopTime("09/20/2017", "17:28:02.096")));
@@ -205,10 +160,10 @@ public class NopPointsTest {
          * This test verifies that the "asNop" method returns the original String that was used to
          * produce the NopPoint in the first place.
          */
-        NopPoint center = new NopPoint(CENTER_RH_MESSAGE);
-        NopPoint stars = new NopPoint(STARS_RH_MESSAGE);
-        NopPoint agw = new NopPoint(AGW_RH_MESSAGE);
-        NopPoint mearts = new NopPoint(MEARTS_RH_MESSAGE);
+        Point<NopPoint> center = NopPoint.from(CENTER_RH_MESSAGE);
+        Point<NopPoint> stars = NopPoint.from(STARS_RH_MESSAGE);
+        Point<NopPoint> agw = NopPoint.from(AGW_RH_MESSAGE);
+        Point<NopPoint> mearts = NopPoint.from(MEARTS_RH_MESSAGE);
 
         assertEquals(CENTER_RH_MESSAGE, center.asNop());
         assertEquals(STARS_RH_MESSAGE, stars.asNop());
@@ -264,36 +219,32 @@ public class NopPointsTest {
 
     @Test
     public void parseSafely_goodResultFromGoodInput() {
-        Optional<NopPoint> starsOpt = parseSafely(STARS_RH_MESSAGE);
+        Optional<Point<NopPoint>> starsOpt = parseSafely(STARS_RH_MESSAGE);
         assertThat(starsOpt.isPresent(), is(true));
-//        assertTrue(starsOpt.get() instanceof StarsPoint);
 
-        Optional<NopPoint> centerOpt = parseSafely(CENTER_RH_MESSAGE);
+        Optional<Point<NopPoint>> centerOpt = parseSafely(CENTER_RH_MESSAGE);
         assertThat(centerOpt.isPresent(), is(true));
-//        assertTrue(centerOpt.get() instanceof CenterPoint);
 
-        Optional<NopPoint> agwOpt = parseSafely(AGW_RH_MESSAGE);
+        Optional<Point<NopPoint>> agwOpt = parseSafely(AGW_RH_MESSAGE);
         assertThat(agwOpt.isPresent(), is(true));
-//        assertTrue(agwOpt.get() instanceof AgwPoint);
 
-        Optional<NopPoint> meartOpt = parseSafely(MEARTS_RH_MESSAGE);
+        Optional<Point<NopPoint>> meartOpt = parseSafely(MEARTS_RH_MESSAGE);
         assertThat(meartOpt.isPresent(), is(true));
-//        assertTrue(meartOpt.get() instanceof MeartsPoint);
     }
 
     @Test
     public void parseSafely_returnEmptyOptionalFromBadInput() {
-        Optional<NopPoint> optFromNull = parseSafely(null);
+        Optional<Point<NopPoint>> optFromNull = parseSafely(null);
         assertThat(optFromNull.isPresent(), is(false));
 
         //longitude of -183 is illegal
         String badLongitude = "[RH],STARS,A80_B,07/10/2016,20:03:53.856,DAL200,MD88,D,1311,159,339,221,034.27719,-183.63591,1519,1311,57.2078,66.6181,1,L,A,A80,,DRE,ATL,2006,ATL,ACT,IFR,,01465,,,,,27L,L,1,,0,{RH}";
-        Optional<NopPoint> optFromBadLong = parseSafely(badLongitude);
+        Optional<Point<NopPoint>> optFromBadLong = parseSafely(badLongitude);
         assertThat(optFromBadLong.isPresent(), is(false));
 
         //latitude of -91.27 is illegal
         String badLatitude = "[RH],STARS,A80_B,07/10/2016,20:03:53.856,DAL200,MD88,D,1311,159,339,221,091.27719,-83.63591,1519,1311,57.2078,66.6181,1,L,A,A80,,DRE,ATL,2006,ATL,ACT,IFR,,01465,,,,,27L,L,1,,0,{RH}";
-        Optional<NopPoint> optFromBadLat = parseSafely(badLatitude);
+        Optional<Point<NopPoint>> optFromBadLat = parseSafely(badLatitude);
         assertThat(optFromBadLat.isPresent(), is(false));
 
         //NOTICE -- NONE OF THESE THROW EXCEPTION -- THEY PROVIDE EMPTY OPTIONALS..

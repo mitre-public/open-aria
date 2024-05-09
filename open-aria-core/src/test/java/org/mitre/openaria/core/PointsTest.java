@@ -27,23 +27,22 @@ import java.util.stream.Collectors;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
-import org.mitre.openaria.core.temp.Extras;
 
 import org.junit.jupiter.api.Test;
 
 public class PointsTest {
 
-    /**
-     * @return A Point that has a "String field", a "Double field", and an "Instant field"
-     */
-    Point createTestPoint(Instant time) {
-        return (new PointBuilder())
-            .sourceDetails(new Extras.SourceDetails("sen", "XYZ"))
-            .latLong(75.0, 1.0)
-            .altitude(Distance.ofFeet(15.0))
-            .time(time)
-            .build();
-    }
+//    /**
+//     * @return A Point that has a "String field", a "Double field", and an "Instant field"
+//     */
+//    Point createTestPoint(Instant time) {
+//        return (new PointBuilder())
+//            .sourceDetails(new Extras.SourceDetails("sen", "XYZ"))
+//            .latLong(75.0, 1.0)
+//            .altitude(Distance.ofFeet(15.0))
+//            .time(time)
+//            .build();
+//    }
 
     @Test
     public void testLatLongOf() {
@@ -51,8 +50,9 @@ public class PointsTest {
         double LATITUDE = 12.0;
         double LONGITUDE = -10.0;
 
-        Point testPoint = (new PointBuilder())
+        Point testPoint = Point.builder()
             .latLong(LATITUDE, LONGITUDE)
+            .time(EPOCH)
             .build();
 
         assertEquals(testPoint.latLong(), LatLong.of(LATITUDE, LONGITUDE));
@@ -150,7 +150,7 @@ public class PointsTest {
          * This test confirms that the signature of kNearestPoints will accept any Collection<T>
          * where T is some arbitrary class that implements Point
          */
-        List<BasicPointImplementation> listOfPoints = newArrayList();
+        List<Point> listOfPoints = newArrayList();
 
         NavigableSet<Point> neighbors = slowKNearestPoints(listOfPoints, Instant.EPOCH, 2);
 
@@ -312,7 +312,7 @@ public class PointsTest {
     @Test
     public void subset_reflectsStartAndEndTimes() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
 
         Instant startTime = parseNopTime("07/08/2017", "14:10:45.534");
         Instant endTime = parseNopTime("07/08/2017", "14:11:17.854");

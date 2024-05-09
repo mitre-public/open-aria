@@ -17,12 +17,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.NavigableSet;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 import org.mitre.caasd.commons.Pair;
-import org.mitre.caasd.commons.fileutil.FileUtils;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
@@ -41,12 +39,13 @@ public class TrackPairerTest {
     private static String TEST_FILE = "twoTracks.txt";
 
     private static File getTestFile() {
-        Optional<File> file = FileUtils.getResourceAsFile(TrackPairer.class, TEST_FILE);
+        File file = new File("src/test/resources/twoTracks.txt");
+//        Optional<File> file = FileUtils.getResourceAsFile(TrackPairer.class, TEST_FILE);
 
-        if (!file.isPresent()) {
+        if (!file.exists()) {
             fail("could not find test file: " + TEST_FILE);
         }
-        return file.get();
+        return file;
     }
 
     private static ArrayList<Point> getTestPoints() {
@@ -210,7 +209,7 @@ public class TrackPairerTest {
 
     private static ArrayList<Point> getOverwrittenTrackPairPoints() {
 
-        File testFile = FileUtils.getResourceFile("overwrittenTrackPair.txt");
+        File testFile = new File("src/test/resources/overwrittenTrackPair.txt");
 
         if (!testFile.exists()) {
             fail("could not find test file: " + TEST_FILE);
@@ -309,20 +308,32 @@ public class TrackPairerTest {
         Instant t0 = Instant.ofEpochSecond(123456);
 
         // this track has a 46 second gap (which exceeds the default 45 sec threshold)
-        Point p1 = builder().trackId("1234").latLong(38.897226, -77.063974).build();
 
         for (int i = 0; i < 20; i++) {
-            allPoints.add(builder(p1).butTime(t0.plusSeconds(i)).build());
+
+            Point<?> aPoint = builder()
+                .time(t0.plusSeconds(i))
+                .trackId("1234").latLong(38.897226, -77.063974).build();
+
+            allPoints.add(aPoint);
         }
         for (int i = 65; i < 100; i++) {
-            allPoints.add(builder(p1).butTime(t0.plusSeconds(i)).build());
+            Point<?> aPoint = builder()
+                .time(t0.plusSeconds(i))
+                .trackId("1234").latLong(38.897226, -77.063974).build();
+
+            allPoints.add(aPoint);
         }
 
         // this track exists at the same time as previous one, but has no gaps
-        Point p2 = builder().trackId("9876").latLong(38.856834, -77.022491).build();
 
         for (int i = 0; i < 100; i++) {
-            allPoints.add(builder(p2).butTime(t0.plusSeconds(i)).build());
+
+            Point<?> aPoint = builder()
+                .time(t0.plusSeconds(i))
+                .trackId("9876").latLong(38.856834, -77.022491).build();
+
+            allPoints.add(aPoint);
         }
 
         return allPoints;

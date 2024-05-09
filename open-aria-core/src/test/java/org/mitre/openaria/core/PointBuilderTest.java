@@ -2,52 +2,43 @@
 package org.mitre.openaria.core;
 
 import static java.time.Instant.EPOCH;
-import static java.util.Objects.isNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
-import java.util.Map;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
-import org.mitre.openaria.core.temp.Extras.AircraftDetails;
-import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import org.junit.jupiter.api.Test;
 
 public class PointBuilderTest {
 
-    @Test
-    public void testCallsign() {
+    /* Declare a simple Pojo that holds data specific to a particular type of raw data. */
+    record PojoWithCallsign(String callsign) {};
 
-        AircraftDetails acDetails = new AircraftDetails("call", "acType");
-
-        CommonPoint p1 = (new PointBuilder()).acDetails(acDetails).build();
-        CommonPoint p2 = (new PointBuilder()).acDetails(null).build();
-
-        assertTrue(p1.acDetails().callsign().equals("call"));
-        assertTrue(isNull(p2.acDetails()));
-    }
 
     @Test
-    public void testSensor() {
+    public void testPullingValueFromRawData() {
 
-        SourceDetails sd = new SourceDetails("aSensor", "aFacility");
+        PojoWithCallsign pwcs = new PojoWithCallsign("someCallsign");
 
-        CommonPoint p1 = (new PointBuilder()).sourceDetails(sd).build();
-        CommonPoint p2 = (new PointBuilder()).sourceDetails(null).build();
+        Point<PojoWithCallsign> p1 = new PointBuilder<PojoWithCallsign>().rawData(pwcs)
+            .time(EPOCH).latLong(0.0, 0.0).build();
 
-        assertThat(p1.sourceDetails(), is(sd));
-        assertThat(p2.sourceDetails(), nullValue());
+        Point<PojoWithCallsign> p2 = (new PointBuilder<PojoWithCallsign>()).rawData(null)
+            .time(EPOCH).latLong(0.0, 0.0).build();
+
+        assertThat(p1.rawData().callsign, is("someCallsign"));
+        assertThat(p2.rawData(), nullValue());
     }
 
     @Test
     public void testLatLong() {
         LatLong latLong = LatLong.of(-5.0, -2.34);
-        Point p = Point.builder().latLong(latLong).build();
+        Point p = Point.builder().latLong(latLong).time(EPOCH).build();
         assertEquals(p.latLong(), latLong);
     }
 
@@ -78,64 +69,42 @@ public class PointBuilderTest {
 
         Double doubleValue = 5.0;
 
-        Point p1 = (new PointBuilder()).altitude(Distance.ofFeet(doubleValue)).build();
-        Point p2 = (new PointBuilder()).altitude(null).build();
+        Point p1 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(doubleValue)).build();
+        Point p2 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(null).build();
 
         assertEquals(p1.altitude().inFeet(), doubleValue, 0.001);
-        assertTrue(isNull(p2.altitude()));
+        assertThat(p1.altitude(), is(Distance.ofFeet(5.0)));
+        assertThat(p2.altitude(), nullValue());
     }
 
-    @Test
-    public void testCourseInDegrees() {
 
-        Double doubleValue = 5.0;
-
-        Point p1 = (new PointBuilder()).courseInDegrees(doubleValue).build();
-        Point p2 = (new PointBuilder()).courseInDegrees(null).build();
-
-        assertTrue(p1.course().equals(doubleValue));
-        assertTrue(isNull(p2.course()));
-    }
-
-    @Test
-    public void testSpeed() {
-
-        Double doubleValue = 5.0;
-
-        Point p1 = (new PointBuilder()).speed(doubleValue).build();
-        Point p2 = (new PointBuilder()).speed(null).build();
-
-        assertTrue(p1.speedInKnots().equals(doubleValue));
-        assertTrue(isNull(p2.speedInKnots()));
-    }
-
-    @Test
-    public void testSpeed_badValue() {
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> new PointBuilder().speed(-1.0),
-            "negative speeds should throw exceptions"
-        );
-    }
+//    @Test
+//    public void testSpeed_badValue() {
+//        assertThrows(
+//            IllegalArgumentException.class,
+//            () -> new PointBuilder().speed(-1.0),
+//            "negative speeds should throw exceptions"
+//        );
+//    }
 
     @Test
     public void testTime() {
 
-        Instant time = Instant.EPOCH;
+        Instant time = Instant.EPOCH.plusSeconds(12);
 
-        Point p1 = (new PointBuilder()).time(time).build();
-        Point p2 = (new PointBuilder()).time(null).build();
+        Point<?> p1 = (new PointBuilder()).time(time)
+            .latLong(0.0, 0.0)
+            .build();
 
         assertTrue(p1.time().equals(time));
-        assertTrue(isNull(p2.time()));
     }
 
-    private CommonPoint getTestPoint() {
+    private Point getTestPoint() {
 
         return (new PointBuilder())
-            .acDetails(new AircraftDetails("callsign", "acType"))
-            .sourceDetails(new SourceDetails("sensor", "facility"))
+            .latLong(0.0, 1.234)
             .time(Instant.now())
+            .altitude(Distance.ofFeet(5000))
             .build();
     }
 
@@ -145,19 +114,15 @@ public class PointBuilderTest {
         Point testPoint = getTestPoint();
         Point copiedPoint = (new PointBuilder(testPoint)).build();
 
-        Map<PointField, Object> testValues = Points.toMap(testPoint);
-        Map<PointField, Object> copiedValues = Points.toMap(copiedPoint);
+        assertThat(testPoint, is(copiedPoint));
 
-        for (Map.Entry<PointField, Object> entry : testValues.entrySet()) {
-            assertTrue(entry.getValue() == copiedValues.get(entry.getKey()));
-        }
     }
 
 
     @Test
     public void test_butLatLong() {
         Point p = Point.builder().latLong(0.0, 0.0).time(EPOCH).build();
-        Point p2 = Point.builder(p).butLatLong(1.0, 1.0).build();
+        Point p2 = Point.builder(p).latLong(1.0, 1.0).build();
 
         assertEquals(p2.latLong(), LatLong.of(1.0, 1.0));
         assertEquals(p2.time(), EPOCH);

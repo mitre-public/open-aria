@@ -56,25 +56,24 @@ public class NopEncoder {
         String flightRules = null;
         String beaconAssigned = null;
         String beaconActual = null;
-        if (p instanceof HasAircraftDetails had) {
+        if (p.rawData() instanceof HasAircraftDetails had) {
             acDetails = had.acDetails();
         }
 
-        if (p instanceof HasSourceDetails hsd) {
+        if (p.rawData() instanceof HasSourceDetails hsd) {
             sourceDetails = hsd.sourceDetails();
         }
 
-        if( p instanceof HasFlightRules hfr) {
+        if (p.rawData() instanceof HasFlightRules hfr) {
             flightRules = hfr.flightRules();
         }
 
-        if(p instanceof HasBeaconCodes hbc) {
+        if (p.rawData() instanceof HasBeaconCodes hbc) {
             beaconActual = hbc.beaconActual();
             beaconAssigned = format(hbc.beaconAssigned());
         } else {
             beaconActual = "";
             beaconAssigned = format(null);
-
         }
 
         StringBuilder sb = new StringBuilder();
@@ -147,15 +146,15 @@ public class NopEncoder {
     }
 
     private String formatSpeed(Point p) {
-        return (p.speedInKnots() == null)
+        return (p.speed() == null)
             ? ""
-            : Integer.toString(p.speedInKnots().intValue());
+            : Integer.toString( (int) p.speed().inKnots());
     }
 
     private String formatCourse(Point p) {
         return (p.course()) == null
             ? ""
-            : Integer.toString(p.course().intValue());
+            : Integer.toString( (int) p.course().inDegrees());
     }
 
     private String formatAltitude(Point p) {

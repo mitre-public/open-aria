@@ -29,7 +29,7 @@ public class CoastedPointRemover implements DataCleaner<Track> {
 
     public static boolean isCoasted(Point p) {
 
-        if (p instanceof NopPoint nop) {
+        if (p.rawData() instanceof NopPoint nop) {
             if (nop.rawMessage() instanceof CenterRadarHit crh) {
                 return CenterSmoothing.isCoastedRadarHit(crh);
             }

@@ -8,6 +8,12 @@ import static java.util.Objects.isNull;
  */
 public class Extras {
 
+    /** A Mixin (i.e., Trait) interface for declaring that a TrackId is available. */
+    @FunctionalInterface
+    public interface HasTrackId {
+        String trackId();
+    }
+
     @FunctionalInterface
     public interface HasSourceDetails {
         SourceDetails sourceDetails();

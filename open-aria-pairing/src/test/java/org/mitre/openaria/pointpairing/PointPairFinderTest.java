@@ -1,21 +1,19 @@
 
 package org.mitre.openaria.pointpairing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.CommonPoint;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointBuilder;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Pair;
 import org.mitre.caasd.commons.collect.DistanceMetric;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointBuilder;
+
+import org.junit.jupiter.api.Test;
 
 public class PointPairFinderTest {
 
@@ -52,16 +50,16 @@ public class PointPairFinderTest {
         Instant time2 = time1.plusSeconds(1);
         Instant time3 = time2.plusSeconds(1);
 
-        CommonPoint p1 = (new PointBuilder())
+        Point p1 = (new PointBuilder())
             .time(time1).latLong(0.0, 0.0).altitude(Distance.ofFeet(0.0)).build();
 
-        CommonPoint p1_plusAltitude = (new PointBuilder())
+        Point p1_plusAltitude = (new PointBuilder())
             .time(time1).latLong(0.0, 0.0).altitude(Distance.ofFeet(10.0)).build();
 
-        CommonPoint p2 = (new PointBuilder())
+        Point p2 = (new PointBuilder())
             .time(time2).latLong(0.0, 0.0).altitude(Distance.ofFeet(0.0)).build();
 
-        CommonPoint p3 = (new PointBuilder())
+        Point p3 = (new PointBuilder())
             .time(time3).latLong(0.0, 0.0).altitude(Distance.ofFeet(0.0)).build();
 
         pairer.accept(p1);
@@ -116,10 +114,10 @@ public class PointPairFinderTest {
         Instant time1 = Instant.EPOCH;
         Instant time2 = Instant.EPOCH.minusSeconds(1);
 
-        CommonPoint p1 = (new PointBuilder())
+        Point p1 = (new PointBuilder())
             .time(time1).latLong(0.0, 0.0).altitude(Distance.ofFeet(0.0)).build();
 
-        CommonPoint p2 = (new PointBuilder())
+        Point p2 = (new PointBuilder())
             .time(time2).latLong(0.0, 0.0).altitude(Distance.ofFeet(0.0)).build();
 
         pairer.accept(p1);

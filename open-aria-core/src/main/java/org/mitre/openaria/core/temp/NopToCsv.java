@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.mitre.openaria.core.NopPoint;
+import org.mitre.openaria.core.Point;
 
 /**
  * This is a "temporary class that we'll use to convert NOP data to CsvPoint data.
@@ -16,14 +17,14 @@ public class NopToCsv {
 
     private static final Base64.Encoder BASE64_ENCODER = Base64.getUrlEncoder().withoutPadding();
 
-    static String toAriaCsvFormat(NopPoint nop) {
+    static String toAriaCsvFormat(Point<NopPoint> nop) {
 
-        String linkId = nop.sourceDetails().facility() + "-" + nop.trackId();
+        String linkId = nop.rawData().rawMessage().facility() + "-" + nop.trackId();
         String lat = String.format("%.4f", nop.latitude());
         String lng = String.format("%.4f", nop.longitude());
         String alt = String.format("%.0f", nop.altitude().inFeet());
 
-        String rawSourceNop = nop.rawMessage().rawMessage();
+        String rawSourceNop = nop.rawData().rawMessage().rawMessage();
         String nopAsBase64 = BASE64_ENCODER.encodeToString(rawSourceNop.getBytes());
 
         return ",," + nop.time().toString() + "," + linkId + ","+lat + "," + lng + "," + alt + "," + nopAsBase64;
@@ -37,7 +38,7 @@ public class NopToCsv {
      */
     public static String nopToAriaCsvFormat(String nopString) {
 
-        NopPoint asPoint = NopPoint.from(nopString);
+        Point<NopPoint> asPoint = NopPoint.from(nopString);
 
         return toAriaCsvFormat(asPoint);
     }
@@ -47,7 +48,7 @@ public class NopToCsv {
     public static void convertFileOfNop(File f) throws IOException {
 
         //read a File, convert each Line to a Point and collect the results in a list
-        List<NopPoint> points = Files.lines(f.toPath())
+        List<Point<NopPoint>> points = Files.lines(f.toPath())
             .map((String s) -> NopPoint.from(s))
             .collect(Collectors.toList());
 

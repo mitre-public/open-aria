@@ -53,7 +53,7 @@ public class TrackFilter implements DataCleaner<Track> {
         if (points.size() == 1) {
             Point pt = points.first();
             //if points supported this field here is where we'd add it
-            Point corrected = Point.builder(pt).butSpeed(0.0).build();
+            Point corrected = Point.builder(pt).speedInKnots(0.0).build();
             return Optional.of(Track.of(List.of(corrected)));
         }
 
@@ -90,9 +90,9 @@ public class TrackFilter implements DataCleaner<Track> {
          * (landing) point is "over fit" into negative territory.
          */
         return Point.builder(kr.datum())
-            .butSpeed(max(0.0, kr.kinetics().speed().inKnots()))
-            .butLatLong(kr.kinetics().latLong())
-            .butCourseInDegrees(kr.kinetics().course().inDegrees())
+            .speedInKnots(max(0.0, kr.kinetics().speed().inKnots()))
+            .latLong(kr.kinetics().latLong())
+            .courseInDegrees(kr.kinetics().course().inDegrees())
             .build();
     }
 

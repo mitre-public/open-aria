@@ -1,17 +1,16 @@
 
 package org.mitre.openaria.pointpairing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointBuilder;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointBuilder;
+
+import org.junit.jupiter.api.Test;
 
 public class DistancesTest {
 
@@ -23,7 +22,7 @@ public class DistancesTest {
             .time(Instant.EPOCH)
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
-            .speed(1.0)
+            .speedInKnots(1.0)
             .courseInDegrees(90.0)
             .build();
 
@@ -32,7 +31,7 @@ public class DistancesTest {
             .time(Instant.EPOCH.plusSeconds(1L))
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(77.0)) //I am higher
-            .speed(1.0)
+            .speedInKnots(1.0)
             .courseInDegrees(270.0)
             .build();
 
@@ -55,7 +54,7 @@ public class DistancesTest {
             .time(Instant.EPOCH)
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
-            .speed(1.0)
+            .speedInKnots(1.0)
             .courseInDegrees(90.0)
             .build();
 
@@ -64,7 +63,7 @@ public class DistancesTest {
             .time(Instant.EPOCH.plusSeconds(60L))
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
-            .speed(1.0)
+            .speedInKnots(1.0)
             .courseInDegrees(270.0)
             .build();
 
@@ -105,7 +104,7 @@ public class DistancesTest {
             .time(Instant.EPOCH)
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
-            .speed(1.0)
+            .speedInKnots(1.0)
             .courseInDegrees(90.0)
             .build();
 
@@ -136,7 +135,7 @@ public class DistancesTest {
             .time(Instant.EPOCH)
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
-            .speed(1.0)
+            .speedInKnots(1.0)
             .courseInDegrees(90.0)
             .build();
 

@@ -11,5 +11,12 @@ public class TempUtils {
     /** @return a KeyExtractor that generates String keys by concatenating trackId() and facility() */
     public static KeyExtractor<Point> keyExtractor() {
         return (Point p) -> p.trackId();
+//        return (Point p) -> {
+//            if(p instanceof Extras.HasTrackId hasId) {
+//                return hasId.trackId();
+//            } else {
+//                throw new UnsupportedOperationException("This point doesn't have a trackId");
+//            }
+//        }
     }
 }

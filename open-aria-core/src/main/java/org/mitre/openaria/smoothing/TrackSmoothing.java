@@ -29,7 +29,7 @@ public class TrackSmoothing {
              */
             new TimeDownSampler(Duration.ofMillis(4_000)),
             //correct missing speed values
-            new FillMissingSpeeds(),
+//            new FillMissingSpeeds(),
             //removes near-stationary Tracks produces by "radar mirages" off of skyscrapers and such
             new RemoveLowVariabilityTracks(),
             //removes near-duplicate points when a track is stationary.

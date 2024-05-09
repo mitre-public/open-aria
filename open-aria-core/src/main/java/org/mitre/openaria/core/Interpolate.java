@@ -5,12 +5,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Double.max;
 import static java.lang.Double.min;
+import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 import java.time.Instant;
 
+import org.mitre.caasd.commons.Course;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Distance.Unit;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.caasd.commons.Speed;
 import org.mitre.caasd.commons.Spherical;
 import org.mitre.caasd.commons.TimeWindow;
 
@@ -57,18 +61,19 @@ public class Interpolate {
             //build an interpolated point
             LatLong interpolatedLatLong = interpolateLatLong(p1.latLong(), p2.latLong(), fraction);
 
-            Double interpolatedCourseInDegrees = interpolateCourse(p1.course(), p2.course(), fraction);
+            Double interpolatedCourseInDegrees = interpolateCourse(
+                isNull(p1.course()) ? null : p1.course().inDegrees(),
+                isNull(p2.course()) ? null : p2.course().inDegrees(),
+                fraction
+            );
 
             //correct the interpolated course when one of the input values was null
             if (interpolatedCourseInDegrees == null) {
                 interpolatedCourseInDegrees = Spherical.courseInDegrees(p1.latLong(), p2.latLong());
             }
 
-            double interpolatedSpeed = interpolate(
-                p1.speedInKnots(),
-                p2.speedInKnots(),
-                fraction
-            );
+            double interpolatedSpeed = interpolateSpeed(p1, p2, fraction);
+
             Distance interpolatedAltitude = interpolate(
                 p1.altitude(),
                 p2.altitude(),
@@ -77,11 +82,11 @@ public class Interpolate {
 
             //return a copy of the 1st input point but with corrected trajectory data
             return (new PointBuilder(p1))
-                .butLatLong(interpolatedLatLong)
-                .butCourseInDegrees(interpolatedCourseInDegrees)
-                .butSpeed(interpolatedSpeed)
-                .butAltitude(interpolatedAltitude)
-                .butTime(targetTime)
+                .latLong(interpolatedLatLong)
+                .course(Course.ofDegrees(interpolatedCourseInDegrees))
+                .speed(Speed.ofKnots(interpolatedSpeed))
+                .altitude(interpolatedAltitude)
+                .time(targetTime)
                 .build();
         }
     }
@@ -101,6 +106,39 @@ public class Interpolate {
             interpolate(p1.longitude(), p2.longitude(), fraction)
         );
     }
+
+    /**
+     * Compute a course that occurs some fraction of the way between a starting course and an ending
+     * course. Note: this method accepts Object Doubles and not primitive doubles so that it is
+     * easier to use with other code (like RH messages) that usually have course data but not
+     * always
+     *
+     * @param p1       The starting Point
+     * @param p2       The ending Point
+     * @param fraction The fraction of the way to move from the starting point to the ending point
+     *                 (must be between 0 and 1).
+     *
+     * @return A speed in knots.
+     */
+    private static Double interpolateSpeed(Point p1, Point p2, double fraction) {
+        requireNonNull(p1);
+        requireNonNull(p2);
+
+        if (isNull(p1.speed()) || isNull(p2.speed())) {
+            // We don't know the Initial and Terminal Speeds -- Fall back on travel time instead
+            return Speed.between(p1.latLong(), p1.time(), p2.latLong(), p2.time()).inKnots();
+        } else {
+            return interpolate(
+                p1.speed().inKnots(),
+                p2.speed().inKnots(),
+                fraction
+            );
+        }
+    }
+
+
+
+
 
     private static final Range VALID_COURSE_RANGE = Range.closed(0.0, 360.0);
     private static final Range VALID_FRACTION_RANGE = Range.closed(0.0, 1.0);

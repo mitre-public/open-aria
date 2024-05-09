@@ -1,18 +1,17 @@
 package org.mitre.openaria.core;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static org.mitre.caasd.commons.LatLong.checkLatitude;
+import static org.mitre.caasd.commons.LatLong.checkLongitude;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.mitre.caasd.commons.Course;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
-import org.mitre.openaria.core.temp.Extras;
-import org.mitre.openaria.core.temp.Extras.AircraftDetails;
-import org.mitre.openaria.core.temp.Extras.BeaconCodes;
-import org.mitre.openaria.core.temp.Extras.SourceDetails;
+import org.mitre.caasd.commons.Position;
+import org.mitre.caasd.commons.Speed;
 
 /**
  * A PointBuilder provides a literate method to assemble Point data. For example, a PointBuilder
@@ -34,25 +33,25 @@ import org.mitre.openaria.core.temp.Extras.SourceDetails;
  */
 public class PointBuilder<T> {
 
-    HashMap<PointField, Object> data;
+    // Using Boxed types (not primitives) to help detect & reject unset values fields
 
-    SourceDetails sourceDetails;
+    Long epochTime;
 
-    AircraftDetails acDetails;
+    Double latitude;
 
-    String flightRules;
+    Double longitude;
 
-    BeaconCodes beacons;
+    Distance altitude;
+
+    Speed speed;
+
+    Course course;
+
+    String trackId;
 
     T rawData;
 
     public PointBuilder() {
-        this.data = new HashMap<>();
-        this.sourceDetails = null;
-        this.acDetails = null;
-        this.flightRules = null;
-        this.beacons = null;
-        this.rawData = null;
     }
 
     /**
@@ -62,185 +61,84 @@ public class PointBuilder<T> {
      */
     public PointBuilder(Point<T> p) {
         this();
-        this.addAll(Points.toMap(p));
+        this.epochTime = p.timeAsEpochMs();
+        this.latitude = p.latitude();
+        this.longitude = p.longitude();
+        this.altitude = p.altitude();
+        this.speed = p.speed();
+        this.course = p.course();
+        this.trackId = p.trackId();
         this.rawData = p.rawData();
-
-        if(p instanceof Extras.HasSourceDetails hsd) {
-            this.sourceDetails = hsd.sourceDetails();
-        }
-
-        if(p instanceof Extras.HasAircraftDetails had) {
-            this.acDetails = had.acDetails();
-        }
-
-        if(p instanceof Extras.HasFlightRules hfr) {
-            this.flightRules = hfr.flightRules();
-        }
-
-        if(p instanceof Extras.HasBeaconCodes hbc) {
-            this.beacons = hbc.beaconCodes();
-        }
     }
-
-    /**
-     * Set a single field of a Point under construction. The same field cannot be set twice.
-     *
-     * @param field The Field to set
-     * @param value The value to set
-     *
-     * @return This PointBuilder (to allow method chaining)
-     */
-    private PointBuilder<T> set(PointField field, Object value) {
-
-        checkArgument(field.accepts(value), field + " does not accept this value type");
-
-        if (data.containsKey(field)) {
-            throw new IllegalStateException("The field: " + field + " was already set");
-        }
-
-        if (field.expectedType == String.class) {
-            if ("".equals(value)) {
-                throw new IllegalArgumentException(
-                    "Cannot assign the empty String to the field: " + field + ".  "
-                        + "Null is prefered in this case for clarity.");
-            }
-        }
-
-        data.put(field, value);
-        return this;
-    }
-
-    public PointBuilder<T> addAll(Map<PointField, Object> map) {
-        for (Map.Entry<PointField, Object> entry : map.entrySet()) {
-            set(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
-
 
     public PointBuilder<T> trackId(String trackId) {
-        return set(PointField.TRACK_ID, trackId);
-    }
-
-    public PointBuilder<T> sourceDetails(SourceDetails sd) {
-        this.sourceDetails = sd;
-        return this;
-    }
-
-    public PointBuilder<T> acDetails(AircraftDetails aircraftDetails) {
-        this.acDetails = aircraftDetails;
+        this.trackId = trackId;
         return this;
     }
 
     public PointBuilder<T> latLong(LatLong latitudeAndLongitude) {
-        return set(PointField.LAT_LONG, latitudeAndLongitude);
+        this.latitude = latitudeAndLongitude.latitude();
+        this.longitude = latitudeAndLongitude.longitude();
+        return this;
     }
 
     public PointBuilder<T> latLong(Double latitude, Double longitude) {
-        return set(PointField.LAT_LONG, LatLong.of(latitude, longitude));
-    }
-
-    public PointBuilder<T> altitude(Distance altitude) {
-        return set(PointField.ALTITUDE, altitude);
-    }
-
-    public PointBuilder<T> courseInDegrees(Double courseInDegrees) {
-        return set(PointField.COURSE_IN_DEGREES, courseInDegrees);
-    }
-
-    public static void checkSpeed(Double speed) {
-        if (nonNull(speed)) {
-            checkArgument(speed >= 0.0, "Illegal Negative speed: " + speed);
-        }
-    }
-
-    public PointBuilder<T> speed(Double speed) {
-        checkSpeed(speed);
-        return set(PointField.SPEED, speed);
+        checkLatitude(latitude);
+        checkLongitude(longitude);
+        this.latitude = latitude;
+        this.longitude = longitude;
+        return this;
     }
 
     public PointBuilder<T> time(Instant time) {
-        return set(PointField.TIME, time);
+        requireNonNull(time);
+        this.epochTime = time.toEpochMilli();
+        return this;
     }
 
-    /**
-     * REPLACE a single field of a Point under construction. This field must already exist.
-     *
-     * @param field The Field to set
-     * @param value The value to set
-     *
-     * @return This PointBuilder (to allow method chaining)
-     */
-    private PointBuilder<T> override(PointField field, Object value) {
+    public PointBuilder<T> altitude(Distance altitude) {
+        this.altitude = altitude;
+        return this;
+    }
 
-        checkArgument(field.accepts(value), field + " does not accept this value type");
+    public PointBuilder<T> speed(Speed speed) {
+        this.speed = speed;
+        return this;
+    }
 
-        if (!data.containsKey(field)) {
-            throw new IllegalStateException("The field: " + field + " has not been set");
-        }
+    public PointBuilder<T> speedInKnots(double knots) {
+        this.speed = Speed.ofKnots(knots);
+        return this;
+    }
 
-        if (field.expectedType == String.class && "".equals(value)) {
-            throw new IllegalArgumentException(
-                "Cannot assign the empty String to the field: " + field
-                    + ".  " + "Null is preferred in this case for clarity.");
+    public PointBuilder<T> course(Course course) {
+        this.course = course;
+        return this;
+    }
 
-        }
+    public PointBuilder<T> courseInDegrees(double degrees) {
+        this.course = Course.ofDegrees(degrees);
+        return this;
+    }
 
-        data.put(field, value);
+    public PointBuilder<T> rawData(T rawData) {
+        this.rawData = rawData;
         return this;
     }
 
 
-    public PointBuilder<T> butTrackId(String trackId) {
-        return override(PointField.TRACK_ID, trackId);
+    public Point<T> build() {
+        requireNonNull(epochTime, "Points must have a time");
+        requireNonNull(latitude, "Points must have a latitude");
+        requireNonNull(longitude, "Points must have a longitude");
+
+        Position pos = new Position(
+            Instant.ofEpochMilli(epochTime), LatLong.of(latitude, longitude), altitude);
+
+        Velocity vel = (nonNull(speed) && nonNull(course))
+            ? new Velocity(speed, course)
+            : null;
+
+        return new Point<>(pos, vel, trackId, rawData);
     }
-
-    public PointBuilder<T> butLatLong(LatLong latitudeAndLongitude) {
-        return override(PointField.LAT_LONG, latitudeAndLongitude);
-    }
-
-    public PointBuilder<T> butLatLong(Double latitude, Double longitude) {
-        return butLatLong(LatLong.of(latitude, longitude));
-    }
-
-    public PointBuilder<T> butAltitude(Distance altitude) {
-        return override(PointField.ALTITUDE, altitude);
-    }
-
-    public PointBuilder<T> butCourseInDegrees(Double courseInDegrees) {
-        return override(PointField.COURSE_IN_DEGREES, courseInDegrees);
-    }
-
-    public PointBuilder<T> butSpeed(Double speed) {
-        checkSpeed(speed);
-        return override(PointField.SPEED, speed);
-    }
-
-    public PointBuilder<T> butTime(Instant time) {
-        return override(PointField.TIME, time);
-    }
-
-    public PointBuilder<T> butNo(PointField field) {
-
-        if (!data.containsKey(field)) {
-            throw new IllegalStateException("The field: " + field + " has not been set");
-        }
-        data.remove(field);
-
-        return this;
-    }
-
-    public CommonPoint<T> build() {
-        return new CommonPoint<>(data, sourceDetails, acDetails, flightRules, beacons, rawData);
-    }
-
-    public Map<PointField, Object> toMap() {
-        /*
-         * Return a defensive copy. We don't have to worry about the client altering the values with
-         * the returned map (which are still in use here) because the "data" map only contains
-         * Immutable objects as values.
-         */
-        return new HashMap(data);
-    }
-
 }

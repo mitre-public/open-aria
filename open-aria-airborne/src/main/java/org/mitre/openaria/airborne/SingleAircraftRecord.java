@@ -50,7 +50,7 @@ public class SingleAircraftRecord implements JsonWritable {
         Point p = track.interpolatedPoint(eventTime).get();
         this.callsign = track.callsign();
         this.uniqueId = trackHash;
-        this.speedInKnots = (int) p.speedInKnots().doubleValue();
+        this.speedInKnots = (int) p.speed().inKnots();
         this.trackId = track.trackId();
         this.aircraftType = track.aircraftType();
         this.latitude = p.latLong().latitude();
@@ -58,8 +58,8 @@ public class SingleAircraftRecord implements JsonWritable {
         this.beaconcode = safeBeaconCode(p);
         this.ifrVfrStatus = (new IfrVfrAssigner()).statusOf(track, eventTime);
         this.altitudeInFeet = (int) p.altitude().inFeet();
-        this.course = (int) round(p.course());
-        this.direction = Direction.approxDirectionOf(p.course());
+        this.course = (int) round(p.course().inDegrees());
+        this.direction = Direction.approxDirectionOf(p.course().inDegrees());
         Speed climbRate = computeClimbRate(track, eventTime);
         this.climbRateInFeetPerMin = (int) Math.round(climbRate.inFeetPerMinutes());
         this.climbStatus = climbStatus(climbRate);

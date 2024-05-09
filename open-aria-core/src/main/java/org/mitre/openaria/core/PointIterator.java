@@ -14,11 +14,11 @@ import org.mitre.openaria.core.formats.nop.NopRadarHit;
  * A PointIterator wraps a NopParser or a SWIMParser. The Iterator ensure
  * <p>
  */
-public class PointIterator implements Iterator<Point> {
+public class PointIterator implements Iterator<Point<NopPoint>> {
 
     private final Iterator<NopMessage> nopMessageIter;
 
-    Point<String> nextPoint;
+    Point<NopPoint> nextPoint;
 
     public PointIterator(NopParser parser) {
         this.nopMessageIter = checkNotNull(parser, "The NopParser cannot be null");
@@ -31,13 +31,13 @@ public class PointIterator implements Iterator<Point> {
     }
 
     @Override
-    public Point<String> next() {
-        Point<String> returnMe = nextPoint;
+    public Point<NopPoint> next() {
+        Point<NopPoint> returnMe = nextPoint;
         this.nextPoint = getNext();
         return returnMe;
     }
 
-    private Point<String> getNext() {
+    private Point<NopPoint> getNext() {
 
         if (usingNop()) {
             return getNextPointFromNop();
@@ -50,7 +50,7 @@ public class PointIterator implements Iterator<Point> {
         return this.nopMessageIter != null;
     }
 
-    private Point<String> getNextPointFromNop() {
+    private Point<NopPoint> getNextPointFromNop() {
 
         while (nopMessageIter.hasNext()) {
             NopMessage message = nopMessageIter.next();

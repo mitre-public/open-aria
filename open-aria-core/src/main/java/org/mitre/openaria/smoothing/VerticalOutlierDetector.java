@@ -160,7 +160,7 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
         }
 
         public Point correctedPoint() {
-            return Point.builder(originalPoint).butAltitude(correctedAltitude).build();
+            return Point.builder(originalPoint).altitude(correctedAltitude).build();
         }
     }
 

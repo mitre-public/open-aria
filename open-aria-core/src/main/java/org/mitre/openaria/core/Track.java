@@ -6,8 +6,7 @@ import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
-import static org.mitre.openaria.core.PointField.TRACK_ID;
-import static org.mitre.openaria.core.Points.mostCommon;
+import static org.mitre.openaria.core.utils.Misc.mostCommon;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -20,7 +19,6 @@ import java.util.function.Predicate;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.out.JsonWritable;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
-import org.mitre.openaria.core.utils.Misc;
 
 /**
  * A Track is a NavigableSet of Points backed by the same type of raw location data.
@@ -54,28 +52,30 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
     }
 
     public String trackId() {
-        return mostCommon(TRACK_ID, points());
+        Collection<String> trackIds = points().stream().map(p -> p.trackId()).toList();
+
+        return mostCommon(trackIds);
     }
 
     public String aircraftType() {
 
         List<String> aircraftTypes = points().stream()
-            .filter(p -> p instanceof HasAircraftDetails)
-            .map(p -> ((HasAircraftDetails)p).acDetails().aircraftType())
+            .filter(p -> p.rawData() instanceof HasAircraftDetails)
+            .map(p -> ((HasAircraftDetails) p.rawData()).acDetails().aircraftType())
             .filter(acType -> nonNull(acType))
             .toList();
 
-        return aircraftTypes.isEmpty() ? "UNKNOWN" : Misc.mostCommon(aircraftTypes);
+        return aircraftTypes.isEmpty() ? "UNKNOWN" : mostCommon(aircraftTypes);
     }
 
     public String callsign() {
         List<String> callsigns = points().stream()
-            .filter(p -> p instanceof HasAircraftDetails)
-            .map(p -> ((HasAircraftDetails)p).acDetails().callsign())
+            .filter(p -> p.rawData() instanceof HasAircraftDetails)
+            .map(p -> ((HasAircraftDetails) p.rawData()).acDetails().callsign())
             .filter(callsign -> nonNull(callsign))
             .toList();
 
-        return callsigns.isEmpty() ? "UNKNOWN" : Misc.mostCommon(callsigns);
+        return callsigns.isEmpty() ? "UNKNOWN" : mostCommon(callsigns);
     }
 
     /**
@@ -126,7 +126,7 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
             return Optional.empty();
         }
 
-        Point pointWithTime = Point.builder().time(time).build();
+        Point pointWithTime = Point.builder().time(time).latLong(0.0, 0.0).build();
 
         Point ceiling = points.ceiling(pointWithTime);
         Point floor = points.floor(pointWithTime);

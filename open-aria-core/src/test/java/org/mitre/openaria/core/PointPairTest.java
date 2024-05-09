@@ -2,14 +2,12 @@
 package org.mitre.openaria.core;
 
 import static java.time.Instant.EPOCH;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+
+import org.junit.jupiter.api.Test;
 
 
 public class PointPairTest {
@@ -93,8 +91,8 @@ public class PointPairTest {
     @Test
     public void testAvgLatLong() {
 
-        Point p1 = Point.builder().latLong(33.63143, -84.33913).build();
-        Point p2 = Point.builder().latLong(33.64143, -84.43913).build();
+        Point p1 = Point.builder().latLong(33.63143, -84.33913).time(EPOCH).build();
+        Point p2 = Point.builder().latLong(33.64143, -84.43913).time(EPOCH).build();
 
         PointPair pair = PointPair.of(p1, p2);
 
@@ -107,8 +105,8 @@ public class PointPairTest {
     @Test
     public void testAvgAltitude() {
 
-        Point p1 = Point.builder().altitude(Distance.ofFeet(1000.0)).build();
-        Point p2 = Point.builder().altitude(Distance.ofFeet(1500.0)).build();
+        Point p1 = Point.builder().altitude(Distance.ofFeet(1000.0)).time(EPOCH).latLong(0.0, 0.0).build();
+        Point p2 = Point.builder().altitude(Distance.ofFeet(1500.0)).time(EPOCH).latLong(0.0, 0.0).build();
 
         PointPair pair = PointPair.of(p1, p2);
 
@@ -119,10 +117,10 @@ public class PointPairTest {
     }
 
     @Test
-    public void testMagnitudeOfVelocityDelta_bothMoving() throws Exception {
+    public void testMagnitudeOfVelocityDelta_bothMoving() {
         // points are driving at each other
-        Point p1 = Point.builder().speed(20.0).courseInDegrees(60.0).build();
-        Point p2 = Point.builder().speed(35.0).courseInDegrees(240.0).build();
+        Point p1 = Point.builder().speedInKnots(20.0).courseInDegrees(60.0).time(EPOCH).latLong(0.0, 0.0).build();
+        Point p2 = Point.builder().speedInKnots(35.0).courseInDegrees(240.0).time(EPOCH).latLong(0.0, 0.0).build();
 
         PointPair pair = PointPair.of(p1, p2);
 
@@ -134,8 +132,14 @@ public class PointPairTest {
 
     @Test
     public void testMagnitudeOfVelocityDelta_oneStationary() throws Exception {
-        Point p1 = Point.builder().speed(0.0).courseInDegrees(100.0).build();
-        Point p2 = Point.builder().speed(50.0).courseInDegrees(240.0).build();
+        Point p1 = Point.builder().speedInKnots(0.0).courseInDegrees(100.0)
+            .latLong(0.0, 0.0)
+            .time(EPOCH)
+            .build();
+        Point p2 = Point.builder().speedInKnots(50.0).courseInDegrees(240.0)
+            .latLong(0.0, 0.0)
+            .time(EPOCH)
+            .build();
 
         PointPair pair = PointPair.of(p1, p2);
         assertEquals(
@@ -150,14 +154,14 @@ public class PointPairTest {
             .latLong(LatLong.of(0.0, 0.0))
             .time(EPOCH)
             .courseInDegrees(90.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(90.0, 10.0)) //move 10 NM East
             .time(EPOCH)
             .courseInDegrees(270.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         PointPair pair = new PointPair(p1, p2);
@@ -174,14 +178,14 @@ public class PointPairTest {
             .latLong(LatLong.of(0.0, 0.0))
             .time(EPOCH)
             .courseInDegrees(0.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(0.0, 10.0)) //move 10 NM East
             .time(EPOCH)
             .courseInDegrees(180.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         PointPair pair = new PointPair(p1, p2);
@@ -202,14 +206,14 @@ public class PointPairTest {
             .latLong(LatLong.of(0.0, 0.0))
             .time(EPOCH)
             .courseInDegrees(0.0)
-            .speed(2.0)
+            .speedInKnots(2.0)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(0.0, 10.0)) //move 10 NM East
             .time(EPOCH)
             .courseInDegrees(0.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         PointPair pair = new PointPair(p1, p2);
@@ -226,14 +230,14 @@ public class PointPairTest {
             .latLong(LatLong.of(0.0, 0.0))
             .time(EPOCH)
             .courseInDegrees(45.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(45.0, 10.0)) //move 10 NM East
             .time(EPOCH)
             .courseInDegrees(225.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         PointPair pair = new PointPair(p1, p2);
@@ -250,7 +254,7 @@ public class PointPairTest {
             .latLong(LatLong.of(0.0, 0.0))
             .time(EPOCH)
             .courseInDegrees(45.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         LatLong p2latLong = p1.latLong()
@@ -261,7 +265,7 @@ public class PointPairTest {
             .latLong(p2latLong)
             .time(EPOCH)
             .courseInDegrees(225.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         PointPair pair = new PointPair(p1, p2);
@@ -282,13 +286,15 @@ public class PointPairTest {
         Point p1 = Point.builder()
             .latLong(LatLong.of(38.851110, -77.033495))
             .courseInDegrees(330.0)
-            .speed(30.0)
+            .speedInKnots(30.0)
+            .time(EPOCH)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(330.0, 0.1))
             .courseInDegrees(150.0)
-            .speed(45.0)
+            .speedInKnots(45.0)
+            .time(EPOCH)
             .build();
 
         assertEquals(30.0 + 45.0, PointPair.of(p1, p2).horizontalClosure().inKnots(), 1E-3);
@@ -300,13 +306,15 @@ public class PointPairTest {
         Point p1 = Point.builder()
             .latLong(LatLong.of(38.851110, -77.033495))
             .courseInDegrees(150.0)
-            .speed(30.0)
+            .speedInKnots(30.0)
+            .time(EPOCH)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(330.0, 0.1))
             .courseInDegrees(330.0)
-            .speed(45.0)
+            .speedInKnots(45.0)
+            .time(EPOCH)
             .build();
 
         assertEquals(-(30.0 + 45.0), PointPair.of(p1, p2).horizontalClosure().inKnots(), 1E-3);
@@ -318,13 +326,15 @@ public class PointPairTest {
         Point p1 = Point.builder()
             .latLong(LatLong.of(38.851110, -77.033495))
             .courseInDegrees(330.0)
-            .speed(30.0)
+            .speedInKnots(30.0)
+            .time(EPOCH)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(330.0, 0.1))
             .courseInDegrees(330.0)
-            .speed(30.0)
+            .speedInKnots(30.0)
+            .time(EPOCH)
             .build();
 
         assertEquals(0.0, PointPair.of(p1, p2).horizontalClosure().inKnots(), 1E-3);
@@ -336,13 +346,15 @@ public class PointPairTest {
         Point p1 = Point.builder()
             .latLong(LatLong.of(38.851110, -77.033495))
             .courseInDegrees(330.0)
-            .speed(30.0)
+            .speedInKnots(30.0)
+            .time(EPOCH)
             .build();
 
         Point p2 = Point.builder()
             .latLong(LatLong.of(38.851104, -77.033498))
             .courseInDegrees(300.0)
-            .speed(33.0)
+            .speedInKnots(33.0)
+            .time(EPOCH)
             .build();
 
         assertEquals(0.0, PointPair.of(p1, p2).horizontalClosure().inKnots(), 1E-3);
@@ -354,13 +366,15 @@ public class PointPairTest {
         Point p1 = Point.builder()
             .latLong(LatLong.of(38.851110, -77.033495))
             .courseInDegrees(330.0)
-            .speed(37.0)
+            .speedInKnots(37.0)
+            .time(EPOCH)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(330.0, 0.2))
             .courseInDegrees(100.0)
-            .speed(0.0)
+            .speedInKnots(0.0)
+            .time(EPOCH)
             .build();
 
         assertEquals(37.0, PointPair.of(p1, p2).horizontalClosure().inKnots(), 1E-3);
@@ -372,13 +386,15 @@ public class PointPairTest {
         Point p1 = Point.builder()
             .latLong(LatLong.of(38.851110, -77.033495))
             .courseInDegrees(330.0)
-            .speed(0.0)
+            .speedInKnots(0.0)
+            .time(EPOCH)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(330.0, 0.2))
             .courseInDegrees(150.0)
-            .speed(0.0)
+            .speedInKnots(0.0)
+            .time(EPOCH)
             .build();
 
         assertEquals(0.0, PointPair.of(p1, p2).horizontalClosure().inKnots(), 1E-3);
@@ -386,8 +402,8 @@ public class PointPairTest {
 
     @Test
     public void closestPointOfApproachRequiresPointsFromTheSameTime() {
-        Point p1 = Point.builder().time(EPOCH).build();
-        Point p2 = Point.builder().time(EPOCH.plusSeconds(1)).build();
+        Point p1 = Point.builder().latLong(0.0, 0.0).time(EPOCH).build();
+        Point p2 = Point.builder().latLong(0.0, 0.0).time(EPOCH.plusSeconds(1)).build();
 
         PointPair points = new PointPair(p1, p2);
 
@@ -404,14 +420,14 @@ public class PointPairTest {
             .latLong(LatLong.of(0.0, 0.0))
             .time(EPOCH)
             .courseInDegrees(45.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         Point p2 = Point.builder()
             .latLong(p1.latLong().projectOut(270.0, 2.0))
             .time(EPOCH)
             .courseInDegrees(270.0)
-            .speed(1.0)
+            .speedInKnots(1.0)
             .build();
 
         PointPair points = new PointPair(p1, p2);

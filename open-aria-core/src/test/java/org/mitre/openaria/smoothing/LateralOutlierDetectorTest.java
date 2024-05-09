@@ -9,7 +9,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.Speed.Unit.KNOTS;
 import static org.mitre.openaria.core.Tracks.createTrackFromFile;
-import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 
 import java.io.File;
 import java.time.Duration;
@@ -35,9 +34,8 @@ public class LateralOutlierDetectorTest {
         //this point is the lateral outlier if the test data
         Point theOutlier = NopPoint.from("[RH],STARS,D21_B,03/24/2018,14:57:02.226,N518SP,C172,,5256,031,109,184,042.46462,-083.75121,3472,5256,-16.5222,15.1222,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}");
 
-        Track testTrack = createTrackFromResource(
-            LateralOutlierDetector.class,
-            "oneLateralOutlierTest.txt"
+        Track testTrack = createTrackFromFile(
+            new File("src/test/resources/oneLateralOutlierTest.txt")
         );
 
         NavigableSet<Point> outliers = (new LateralOutlierDetector()).getOutliers(testTrack);
@@ -56,10 +54,7 @@ public class LateralOutlierDetectorTest {
     public void testCurvyTrack() {
 
         //this test track is nice and smooth -- it shouldn't flag any outliers (even in the curves)
-        Track testTrack = createTrackFromResource(
-            LateralOutlierDetector.class,
-            "curvyTrack.txt"
-        );
+        Track testTrack = createTrackFromFile(new File("src/test/resources/curvyTrack.txt"));
 
         NavigableSet<Point> outliers = (new LateralOutlierDetector()).getOutliers(testTrack);
 
@@ -118,7 +113,7 @@ public class LateralOutlierDetectorTest {
         //manipulate the 15th point very slightly
         Point prior = points.get(14);
         LatLong newPosition = prior.latLong().projectOut(NORTH_WEST, 0.1); //adjust location 0.01 NM
-        Point adjustedPoint = Point.builder(prior).butLatLong(newPosition).build();
+        Point adjustedPoint = Point.builder(prior).latLong(newPosition).build();
         points.set(14, adjustedPoint);
 
         return Track.of(points);

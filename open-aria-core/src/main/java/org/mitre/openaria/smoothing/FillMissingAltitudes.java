@@ -91,7 +91,7 @@ public class FillMissingAltitudes implements DataCleaner<Track> {
         Distance referenceAltitude = referencePoint.altitude();
 
         TreeSet<Point> fixedPoints = missingAltitudePoints.stream()
-            .map(prior -> Point.builder(prior).butAltitude(referenceAltitude).build())
+            .map(prior -> Point.builder(prior).altitude(referenceAltitude).build())
             .collect(toCollection(TreeSet::new));
 
         return fixedPoints;
@@ -106,20 +106,10 @@ public class FillMissingAltitudes implements DataCleaner<Track> {
                     endPoint.altitude(),
                     timeFraction(startPoint.time(), endPoint.time(), pt.time())
                 );
-                return Point.builder(pt).butAltitude(altitude).build();
+                return Point.builder(pt).altitude(altitude).build();
             }).collect(toCollection(TreeSet::new));
 
         return fixedPoints;
-
-//        for (Point point : missingAltitudePoints) {
-//
-//            Distance altitude = interpolate(
-//                startPoint.altitude(),
-//                endPoint.altitude(),
-//                timeFraction(startPoint.time(), endPoint.time(), point.time())
-//            );
-//            point.set(ALTITUDE, altitude);
-//        }
     }
 
     private double timeFraction(Instant startTime, Instant endTime, Instant testTime) {

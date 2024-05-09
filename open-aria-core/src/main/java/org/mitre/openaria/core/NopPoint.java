@@ -6,10 +6,15 @@ import static org.mitre.openaria.core.temp.Extras.BeaconCodes;
 import static org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
+import org.mitre.caasd.commons.Course;
 import org.mitre.caasd.commons.Distance;
+import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.caasd.commons.Position;
+import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.formats.nop.AgwRadarHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
@@ -24,15 +29,14 @@ import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
- * A NopPoint is a Point implementation that wraps a NopRadarHit.
+ * A NopPoint is wraps a raw NopRadarHit and declares which fields it contains using Mix-in/Trait
+ * interfaces.
  * <p>
  * A NopPoint provides direct access to the underlying NopRadarHit. Having access to the NopRadarHit
  * permits creating custom logic (like point filtering and track smoothing) that relies on the
  * specific quirk of AGW, STARS, or CENTER data.
- *
- * @param <T> The type of NopRadarHit being wrapped
  */
-public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes {
+public class NopPoint implements HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes, HasTime {
 
     final NopRadarHit rhMessage;
 
@@ -50,39 +54,39 @@ public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetai
         this.rhMessage = (NopRadarHit) NopMessageType.parse(rawNopText);
     }
 
-    public NopPoint(T rhMessage) {
+    public NopPoint(NopRadarHit rhMessage) {
         this.rhMessage = checkNotNull(rhMessage);
     }
 
-    public static NopPoint from(NopMessage message) {
+    public static Point<NopPoint> from(NopMessage message) {
         checkNotNull(message, "Cannot create a NopPoint from a null NopMessage");
 
+        NopPoint wrapped = null;
+
         if (message instanceof CenterRadarHit center) {
-            return new NopPoint(center);
+            wrapped = new NopPoint(center);
         } else if (message instanceof StarsRadarHit stars) {
-            return new NopPoint(stars);
+            wrapped = new NopPoint(stars);
         } else if (message instanceof AgwRadarHit agw) {
-            return new NopPoint(agw);
+            wrapped = new NopPoint(agw);
         } else if (message instanceof MeartsRadarHit mearts) {
-            return new NopPoint(mearts);
+            wrapped = new NopPoint(mearts);
         } else {
             throw new IllegalArgumentException("Cannot create a NopPoint from a " + message.getNopType());
         }
+
+        return new Point<>(wrapped.position(), wrapped.velocity(), wrapped.trackId(), wrapped);
     }
 
-    public static NopPoint from(String rhMessage) {
+    public static Point<NopPoint> from(String rhMessage) {
         return from(NopMessageType.parse(rhMessage));
-    }
-
-    public T rawData() {
-        return (T) this.rhMessage;
     }
 
     /**
      * This is a wrapped version of the other static factory methods. This factory method catches
      * any parsing exceptions and returns an empty Optional rather than throwing a Exception.
      */
-    public static Optional<NopPoint> parseSafely(String rhMessage) {
+    public static Optional<Point<NopPoint>> parseSafely(String rhMessage) {
         try {
             return Optional.of(from(rhMessage));
         } catch (Exception ex) {
@@ -93,13 +97,6 @@ public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetai
         }
     }
 
-
-    @Override
-    public String asNop() {
-        return rhMessage.rawMessage();
-    }
-
-    @Override
     public String trackId() {
 
         if (rawMessage() instanceof AgwRadarHit agw) {
@@ -181,20 +178,28 @@ public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetai
         return (rules == null || rules.equals(""));
     }
 
-    @Override
     public Distance altitude() {
         //NopRadarHit list altitude in increments of 100.  Thus 300 = 30,000ft
         return Distance.ofFeet(rhMessage.altitudeInHundredsOfFeet() * 100.0);
     }
 
-    @Override
     public Double course() {
         return rhMessage.heading();
     }
 
-    @Override
     public Double speedInKnots() {
         return rhMessage.speed();
+    }
+
+    public Velocity velocity() {
+        try {
+            return new Velocity(
+                Speed.ofKnots(speedInKnots()),
+                Course.ofDegrees(course())
+            );
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override
@@ -202,13 +207,16 @@ public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetai
         return rhMessage.time();
     }
 
-    public T rawMessage() {
-        return (T) this.rhMessage;
+    public NopRadarHit rawMessage() {
+        return this.rhMessage;
     }
 
-    @Override
     public LatLong latLong() {
         return LatLong.of(rhMessage.latitude(), rhMessage.longitude());
+    }
+
+    public Position position() {
+        return new Position(time(), latLong(), altitude());
     }
 
     @Override
@@ -237,5 +245,23 @@ public class NopPoint<T extends NopRadarHit> implements Point<T>, HasSourceDetai
 
     public int beaconActualAsInt() {
         return Integer.parseInt(beaconActual());
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        NopPoint nopPoint = (NopPoint) o;
+
+        return Objects.equals(rhMessage, nopPoint.rhMessage);
+    }
+
+    @Override
+    public int hashCode() {
+        return rhMessage != null ? rhMessage.hashCode() : 0;
     }
 }
