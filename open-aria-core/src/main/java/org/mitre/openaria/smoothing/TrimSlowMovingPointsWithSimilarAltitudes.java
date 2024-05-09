@@ -85,7 +85,7 @@ public class TrimSlowMovingPointsWithSimilarAltitudes implements DataCleaner<Tra
     }
 
     private boolean isSlowAndInRange(Point p, Distance estimatedGroundAlt) {
-        boolean isSlow = p.speedInKnots() < speedLimitInKnots;
+        boolean isSlow = p.speed().inKnots() < speedLimitInKnots;
         boolean hasSimilarAlt = p.altitude().minus(estimatedGroundAlt).abs().isLessThan(groundAltitudeTolerance);
 
         return isSlow && hasSimilarAlt;

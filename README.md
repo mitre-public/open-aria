@@ -20,12 +20,12 @@ location data.
 2. Provide a publicly available solution for detecting **and then aggregating** aviation risks for bulk
    analysis.
     - Someone operating `OpenARIA` for a day will have one day's worth of output
-    - Someone operating `OpenARIA` for a year will have a year's worth of output. 
+    - Someone operating `OpenARIA` for a year will have a year's worth of output.
     - We must facilitate capturing and utilizing large amounts of output data.
 
 
 3. Provide a publicly available solution for **archiving and replaying** aircraft location data
-   - E.g., when `OpenARIA` detects _an event_, we will want to be able to replay the event to understand what happened.
+    - E.g., when `OpenARIA` detects _an event_, we will want to be able to replay the event to understand what happened.
 
 
 4. Provide solutions that work with near-real time data streams as well as archival data.
@@ -34,18 +34,35 @@ location data.
 
 # Getting Started
 
-- Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md) and [here](./docs/ADRs/pointInterfaceCritique2.md)
+- Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md)
+  and [here](./docs/ADRs/pointInterfaceCritique2.md)
 - Learn about the supported data formats [here](./docs/csv-data-format.md)
-    - **Important Caveat:** The initial code commit includes a dependency that is not available in the open source domain.
+    - **Important Caveat:** The initial code commit includes a dependency that is not available in the open source
+      domain.
     - We are working to remove this blocker by:
-      1. Proposing [this](./docs/csv-data-format.md) data format (which will replace the legacy format)
-      2. Adding support for this new data format
-      3. Refactoring the code so the closed-source dependency is no longer used or required.
-      4. Building the project using **only** GitHub Actions and publicly available dependencies   
+        1. Proposing [this](./docs/csv-data-format.md) data format (which will replace the legacy format)
+        2. Adding support for this new data format
+        3. Refactoring the code so the closed-source dependency is no longer used or required.
+        4. Building the project using **only** GitHub Actions and publicly available dependencies
     - You can view the progress of this work by browsing the branches of the project.
 - To begin **detecting aviation events** see [here](./docs/how-to/detect-encounters.md)
 - To begin **archiving and replaying** aircraft location data see [here](./docs/how-to/replay-encounters.md)
 - To begin detecting **and then aggregating** aviation data see [here](./docs/how-to/aggregate-encounters.md)_
+
+## Building from Source
+
+- First clone the project: `git clone git@github.com:mitre-public/open-aria.git`
+- Navigate to project directory `cd {PATH_TO_REPOSITORY}/open-aria`
+- Run: `./gradlew shadowJar`
+    - This command launches a build plugin that collects all the compiled code and software dependencies into a single
+      jar file
+- Find the resulting jar in the `open-aria-deploy` module's `build` directory
+    - e.g., `PATH_TO_REPOSITORY/open-aria/open-aria-deploy/build/libs/open-aria-0.1.0-SNAPSHOT-uber.jar`
+
+## Downloading Compiled Artifact
+- **Coming Soon!** 
+- A closed-source software dependency (e.g. missing software dependency) was just removed from the build.
+- CI/CD is on the way (finally).  
 
 ---
 
@@ -60,10 +77,10 @@ location data.
 
 
 - **Architectural Decision Records (ADRs)**
-   - [Supporting New Data Formats](./docs/ADRs/supportingNewFormats.md)
-   - [Critique of Point and Track interfaces](docs/ADRs/pointInterfaceCritique.md)
-  - [Why YAML configs are preferable to Properties](docs/ADRs/yamlOverProperties.md)
-   - [How to compute an event's uniqueId](docs/ADRs/computingUniqueId.md)
+    - [Supporting New Data Formats](./docs/ADRs/supportingNewFormats.md)
+    - [Critique of Point and Track interfaces](docs/ADRs/pointInterfaceCritique.md)
+    - [Why YAML configs are preferable to Properties](docs/ADRs/yamlOverProperties.md)
+    - [How to compute an event's uniqueId](docs/ADRs/computingUniqueId.md)
 
 ---
 
@@ -99,6 +116,7 @@ First of all, **Welcome to the community!**
 See [here](docs/version-release-notes.md)
 
 ### MITRE Public Release
+
 - Content approved for public release via The MITRE Corporation's "Public Release System" (PRS)
 - Reference:  `Public Release Case Number: 23-3623`
 

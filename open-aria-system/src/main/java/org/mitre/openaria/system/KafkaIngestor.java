@@ -27,7 +27,6 @@ import org.mitre.caasd.commons.util.ExceptionHandler;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.formats.nop.Facility;
-import org.mitre.openaria.core.temp.Extras;
 import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.kafka.PartitionMapping;
 import org.mitre.openaria.system.tools.DataLatencySummarizer;
@@ -410,7 +409,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
     public static class NopPlugin implements RecordHelper<String, Facility> {
 
         @Override
-        public Optional<NopPoint> parse(ConsumerRecord<String, String> consumerRecord) {
+        public Optional<Point<NopPoint>> parse(ConsumerRecord<String, String> consumerRecord) {
 
             String lineOfInput = consumerRecord.value();
 
@@ -425,9 +424,8 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
         public Facility partitionKeyFor(Point point) {
             System.out.println("BROKEN -- TODO -- FIX ME -- Use List of N SwimLanes, not a Keyed map!");
 
-            if(point instanceof HasSourceDetails) {
-                Extras.SourceDetails sd = ((HasSourceDetails) point).sourceDetails();
-                return toFacility(sd.facility());
+            if(point.rawData() instanceof HasSourceDetails hsd) {
+                return toFacility(hsd.sourceDetails().facility());
             } else {
                 System.out.println("failing so hard here...NopPlugin.partitionKeyFor(point)");
                 return Facility.A80;

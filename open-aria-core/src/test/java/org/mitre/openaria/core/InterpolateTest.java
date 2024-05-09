@@ -3,20 +3,16 @@ package org.mitre.openaria.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mitre.openaria.core.Interpolate.interpolate;
-import static org.mitre.openaria.core.Interpolate.interpolateCourse;
-import static org.mitre.openaria.core.Interpolate.interpolateLatLong;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mitre.openaria.core.Interpolate.*;
 
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Spherical;
+
+import org.junit.jupiter.api.Test;
 
 public class InterpolateTest {
 
@@ -184,7 +180,7 @@ public class InterpolateTest {
             .altitude(Distance.ofFeet(1000.0))
             .courseInDegrees(120.0)
             .latLong(new LatLong(0.0, 10.0))
-            .speed(200.0)
+            .speedInKnots(200.0)
             .build();
 
         Point p2 = (new PointBuilder())
@@ -192,7 +188,7 @@ public class InterpolateTest {
             .altitude(Distance.ofFeet(500.0))
             .courseInDegrees(130.0)
             .latLong(new LatLong(5.0, 15.0))
-            .speed(300.0)
+            .speedInKnots(300.0)
             .build();
 
         Point testPoint = interpolate(p1, p2, Instant.EPOCH.plusSeconds(4));
@@ -211,7 +207,7 @@ public class InterpolateTest {
         );
         assertEquals(
             125.0,
-            testPoint.course(),
+            testPoint.course().inDegrees(),
             TOLERANCE
         );
 
@@ -219,7 +215,7 @@ public class InterpolateTest {
 
         assertEquals(
             250.0,
-            testPoint.speedInKnots(),
+            testPoint.speed().inKnots(),
             TOLERANCE
         );
     }
@@ -235,7 +231,7 @@ public class InterpolateTest {
             .altitude(Distance.ofFeet(1000.0))
             .courseInDegrees(120.0)
             .latLong(new LatLong(0.0, 10.0))
-            .speed(200.0)
+            .speedInKnots(200.0)
             .build();
 
         Point p2 = (new PointBuilder())
@@ -243,7 +239,7 @@ public class InterpolateTest {
             .altitude(Distance.ofFeet(500.0))
             .courseInDegrees(130.0)
             .latLong(new LatLong(5.0, 15.0))
-            .speed(300.0)
+            .speedInKnots(300.0)
             .build();
 
         Point testPoint = interpolate(p1, p2, Instant.EPOCH);
@@ -262,7 +258,7 @@ public class InterpolateTest {
         );
         assertEquals(
             120.0,
-            testPoint.course(),
+            testPoint.course().inDegrees(),
             TOLERANCE
         );
 
@@ -270,7 +266,7 @@ public class InterpolateTest {
 
         assertEquals(
             200.0,
-            testPoint.speedInKnots(),
+            testPoint.speed().inKnots(),
             TOLERANCE
         );
     }
@@ -286,7 +282,7 @@ public class InterpolateTest {
             .altitude(Distance.ofFeet(1000.0))
             .courseInDegrees(120.0)
             .latLong(new LatLong(0.0, 10.0))
-            .speed(200.0)
+            .speedInKnots(200.0)
             .build();
 
         Point p2 = (new PointBuilder())
@@ -294,7 +290,7 @@ public class InterpolateTest {
             .altitude(Distance.ofFeet(500.0))
             .courseInDegrees(130.0)
             .latLong(new LatLong(5.0, 15.0))
-            .speed(300.0)
+            .speedInKnots(300.0)
             .build();
 
         Point testPoint = interpolate(p1, p2, Instant.EPOCH.plusSeconds(8));
@@ -313,7 +309,7 @@ public class InterpolateTest {
         );
         assertEquals(
             130.0,
-            testPoint.course(),
+            testPoint.course().inDegrees(),
             TOLERANCE
         );
 
@@ -321,7 +317,7 @@ public class InterpolateTest {
 
         assertEquals(
             300.0,
-            testPoint.speedInKnots(),
+            testPoint.speed().inKnots(),
             TOLERANCE
         );
     }
@@ -340,9 +336,9 @@ public class InterpolateTest {
         Point interpolated = interpolate(p1, p2, p1.time().plusSeconds(2));
 
         assertThat(
-            "The course of the interpolated point is set even though the 1st point had no ocourse",
+            "The course of the interpolated point is set even though the 1st point had no course",
             Spherical.courseInDegrees(p1.latLong(), p2.latLong()),
-            is(interpolated.course())
+            is(interpolated.course().inDegrees())
         );
     }
 

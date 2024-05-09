@@ -7,17 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointBuilder;
+
+import org.junit.jupiter.api.Test;
 
 public class TrackUnderConstructionTest {
 
     @Test
     public void testLastPoint() {
 
-        Point firstPoint = (new PointBuilder()).time(EPOCH.minusSeconds(5)).build();
-        Point secondPoint = (new PointBuilder()).time(EPOCH).build();
+        Point<?> firstPoint = Point.builder().time(EPOCH.minusSeconds(5)).latLong(0.0, 0.0).build();
+        Point<?> secondPoint = Point.builder().time(EPOCH).latLong(0.0, 0.0).build();
 
         TrackUnderConstruction tip = new TrackUnderConstruction(firstPoint);
         tip.addPoint(secondPoint);
@@ -29,7 +29,7 @@ public class TrackUnderConstructionTest {
     @Test
     public void testTimeSince() {
 
-        Point firstPoint = Point.builder().time(Instant.now()).build();
+        Point<?> firstPoint = Point.builder().time(Instant.now()).latLong(0.0, 0.0).build();
 
         TrackUnderConstruction tip = new TrackUnderConstruction(firstPoint);
 

@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 
 import org.mitre.openaria.airborne.AirbornePairConsumer;
+import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.formats.nop.NopParser;
@@ -53,7 +54,7 @@ public class RunAirborneViaStdIn {
         StreamingKpi<AirbornePairConsumer> streamingKpi = factory.createKpi(null);
 
         //this Iterator parses System.in and provides Points from exactly one Facility
-        Iterator<Point> pointIter = stdInPointIterator();
+        Iterator<Point<NopPoint>> pointIter = stdInPointIterator();
 
         System.out.println("Starting ARIA system.");
         pointIter.forEachRemaining(streamingKpi);

@@ -1,61 +1,26 @@
 
 package org.mitre.openaria.pointpairing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.CommonPoint;
-import org.mitre.openaria.core.PointBuilder;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Spherical;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointBuilder;
+
+import org.junit.jupiter.api.Test;
 
 public class PointDistanceMetricTest {
-
-    @Test
-    public void testPointsRequireTime() {
-
-        PointDistanceMetric metric = new PointDistanceMetric(1.0, 1.0);
-
-        CommonPoint point = new PointBuilder()
-            .latLong(0.0, 0.0)
-            .altitude(Distance.ofFeet(0.0))
-            .build();
-
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> metric.distanceBtw(point, point),
-            "Points should require time"
-        );
-    }
-
-    @Test
-    public void testPointsRequireLatLong() {
-
-        PointDistanceMetric metric = new PointDistanceMetric(1.0, 1.0);
-
-        CommonPoint point = new PointBuilder()
-            .altitude(Distance.ofFeet(0.0))
-            .time(Instant.EPOCH)
-            .build();
-
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> metric.distanceBtw(point, point),
-            "Points should require latitude and longitude"
-        );
-    }
 
     @Test
     public void testPointsRequireAltitude() {
 
         PointDistanceMetric metric = new PointDistanceMetric(1.0, 1.0);
 
-        CommonPoint point = new PointBuilder()
+        Point point = new PointBuilder()
             .latLong(0.0, 0.0)
             .time(Instant.EPOCH)
             .build();
@@ -76,13 +41,13 @@ public class PointDistanceMetricTest {
         Instant time1 = Instant.EPOCH;
         Instant time2 = time1.plusSeconds(1L);
 
-        CommonPoint p1 = new PointBuilder()
+        Point p1 = new PointBuilder()
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
             .time(time1)
             .build();
 
-        CommonPoint p2 = new PointBuilder()
+        Point p2 = new PointBuilder()
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
             .time(time2)
@@ -117,13 +82,13 @@ public class PointDistanceMetricTest {
         PointDistanceMetric metric = new PointDistanceMetric(1.0, 1.0);
         PointDistanceMetric metric2 = new PointDistanceMetric(1.0, 2.0);
 
-        CommonPoint p1 = new PointBuilder()
+        Point p1 = new PointBuilder()
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
             .time(Instant.EPOCH)
             .build();
 
-        CommonPoint p2 = new PointBuilder()
+        Point p2 = new PointBuilder()
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(1000.0))
             .time(Instant.EPOCH)
@@ -148,13 +113,13 @@ public class PointDistanceMetricTest {
         PointDistanceMetric metric1 = new PointDistanceMetric(1.0, 1.0);
         PointDistanceMetric metric2 = new PointDistanceMetric(1.0, 2.0);
 
-        CommonPoint p1 = new PointBuilder()
+        Point p1 = new PointBuilder()
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
             .time(Instant.EPOCH)
             .build();
 
-        CommonPoint p2 = new PointBuilder()
+        Point p2 = new PointBuilder()
             .latLong(1.0, 1.0)
             .altitude(Distance.ofFeet(0.0))
             .time(Instant.EPOCH)
@@ -188,13 +153,13 @@ public class PointDistanceMetricTest {
         PointDistanceMetric metric1 = new PointDistanceMetric(1.0, 1.0);
         PointDistanceMetric metric2 = new PointDistanceMetric(1.0, 2.0);
 
-        CommonPoint p1 = new PointBuilder()
+        Point p1 = new PointBuilder()
             .latLong(0.0, 0.0)
             .altitude(Distance.ofFeet(0.0))
             .time(Instant.EPOCH)
             .build();
 
-        CommonPoint p2 = new PointBuilder()
+        Point p2 = new PointBuilder()
             .latLong(0.0, 1.0)
             .altitude(Distance.ofFeet(0.0))
             .time(Instant.EPOCH)

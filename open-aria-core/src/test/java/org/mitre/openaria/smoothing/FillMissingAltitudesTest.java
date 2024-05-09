@@ -122,12 +122,14 @@ public class FillMissingAltitudesTest {
         return Point.builder()
             .time(EPOCH.plusSeconds(secondsFromStart))
             .altitude(Distance.ofFeet(altitudeInFeet))
+            .latLong(0.0, 0.0)
             .build();
     }
 
     private Point makeNullAltitudePoint(int secondsFromStart) {
         return Point.builder()
             .time(EPOCH.plusSeconds(secondsFromStart))
+            .latLong(0.0, 0.0)
             .build();
     }
 }

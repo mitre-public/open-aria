@@ -1,9 +1,7 @@
 
 package org.mitre.openaria.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingLinkedList;
 
 import java.io.File;
@@ -13,13 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingLinkedList;
 import org.mitre.caasd.commons.fileutil.FileUtils;
 
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class StrictTimeSortEnforcerTest {
 
@@ -81,7 +79,7 @@ public class StrictTimeSortEnforcerTest {
 
         ArrayList<Point> points = new ArrayList<>();
         for (Instant aTime : times) {
-            points.add(new PointBuilder().time(aTime).build());
+            points.add(new PointBuilder().time(aTime).latLong(0.0, 0.0).build());
         }
         return points;
     }

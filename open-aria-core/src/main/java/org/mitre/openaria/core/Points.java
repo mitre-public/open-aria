@@ -10,9 +10,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NavigableSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -20,76 +18,7 @@ import java.util.TreeSet;
 import org.mitre.caasd.commons.Speed;
 import org.mitre.caasd.commons.TimeWindow;
 
-import com.google.common.collect.Multiset;
-import com.google.common.collect.TreeMultiset;
-
 public class Points {
-
-    /**
-     * Dump the contents of a single Point to a Map.
-     *
-     * @param p A Point
-     *
-     * @return A Map that contains all the data within the point.
-     */
-    public static Map<PointField, Object> toMap(Point p) {
-
-        HashMap<PointField, Object> map = new HashMap<>();
-
-        for (PointField field : PointField.values()) {
-            map.put(field, field.get(p));
-        }
-        return map;
-    }
-
-    /**
-     * Find, and return the most common String value for a particular PointField across a collection
-     * of Points
-     *
-     * @param field  A PointField that only accepts String
-     * @param points The collection of points to count over
-     *
-     * @return The most value for a particular PointField
-     */
-    public static String mostCommon(PointField field, Collection<? extends Point> points) {
-
-        if (field.expectedType != String.class) {
-            throw new IllegalStateException("this method only works for String fields");
-        }
-
-        Multiset<String> multisetOfPointFields = multisetOf(field, points);
-        return mostCommonEntry(multisetOfPointFields);
-    }
-
-    private static Multiset<String> multisetOf(PointField field, Collection<? extends Point> points) {
-        Multiset<String> set = TreeMultiset.create();
-        for (Point point : points) {
-            String s = (String) field.get(point);
-            if (s != null) {
-                set.add(s);  //cannot add null to a multiset
-            }
-        }
-        return set;
-    }
-
-    private static String mostCommonEntry(Multiset<String> set) {
-        Multiset.Entry mostCommonEntry = null;
-        for (Multiset.Entry<String> entry : set.entrySet()) {
-            if (mostCommonEntry == null) {
-                mostCommonEntry = entry;
-            }
-
-            if (mostCommonEntry.getCount() < entry.getCount()) {
-                mostCommonEntry = entry;
-            }
-        }
-
-        if (mostCommonEntry != null) {
-            return (String) mostCommonEntry.getElement();
-        } else {
-            return null; //can be null if the set is empty (because the source points had no data)
-        }
-    }
 
     /**
      * Find the k Points in this Collection with time values that are closest to the input time.
@@ -273,7 +202,10 @@ public class Points {
             return newTreeSet();
         }
 
-        Point midPoint = Point.builder().time(subsetWindow.instantWithin(.5)).build();
+        Point midPoint = Point.builder()
+            .time(subsetWindow.instantWithin(.5))
+            .latLong(0.0, 0.0)
+            .build();
 
         /*
          * Find exactly one point in the actual Track, ideally this point will be in the middle of

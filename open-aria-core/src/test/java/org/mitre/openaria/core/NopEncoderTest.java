@@ -12,22 +12,18 @@ import java.time.Instant;
 import org.mitre.openaria.core.formats.nop.NopMessage;
 import org.mitre.openaria.core.formats.nop.NopMessageType;
 import org.mitre.openaria.core.formats.nop.NopParsingUtils;
-import org.mitre.openaria.core.formats.nop.NopRadarHit;
 
 import org.junit.jupiter.api.Test;
 
 public class NopEncoderTest {
-
-    public NopEncoderTest() {
-    }
 
     @Test
     public void testStars() {
 
         String realStarsMessage = "[RH],STARS,P31_B,07/10/2016,15:07:27.732,N52383,C182,,7102,065,128,217,030.63143,-087.42549,1657,7102,-12.4587,9.2657,1,E,A,P31,,ENE,JKA,1445,JKA,ACT,VFR,,00140,,,,,,S,1,,0,{RH}";
 
-        NopPoint firstPoint = NopPoint.from(realStarsMessage);
-        Point secondPoint = encodeAndReparse(firstPoint);
+        Point<NopPoint> firstPoint = NopPoint.from(realStarsMessage);
+        Point<NopPoint> secondPoint = encodeAndReparse(firstPoint);
 
         verifyPointFieldsAreEqual(firstPoint, secondPoint);
     }
@@ -36,8 +32,8 @@ public class NopEncoderTest {
     public void testCenter() {
         String realCenterMessage = "[RH],Center,ZLA_B,07-10-2016,06:16:35.000,SKW5840,CRJ2,L,4712,110,355,124,33.4922,-118.1300,465,,,,,/,,ZLA_B,,,,D0608,SAN,,IFR,,465,1396392357,LAX,,110//110,,L,1,,,{RH}";
 
-        NopPoint firstPoint = NopPoint.from(realCenterMessage);
-        Point secondPoint = encodeAndReparse(firstPoint);
+        Point<NopPoint>  firstPoint = NopPoint.from(realCenterMessage);
+        Point<NopPoint> secondPoint = encodeAndReparse(firstPoint);
 
         verifyPointFieldsAreEqual(firstPoint, secondPoint);
     }
@@ -46,8 +42,8 @@ public class NopEncoderTest {
     public void testAgw() {
         String realAgwMessage = "[RH],AGW,ABI_B,07/12/2016,19:21:19.384,N2233W,PA28,,6276,066,96,266,032.31720,-098.82792,209,6276,42.77,0.59,1,B,2,ABI,L,MWL,ABIA,,ABI,,VFR,,188,69,JEN276015,,00,,S,0,V,0,,125.69,78.2,{RH}";
 
-        NopPoint firstPoint = NopPoint.from(realAgwMessage);
-        Point secondPoint = encodeAndReparse(firstPoint);
+        Point<NopPoint>  firstPoint = NopPoint.from(realAgwMessage);
+        Point<NopPoint> secondPoint = encodeAndReparse(firstPoint);
 
         verifyPointFieldsAreEqual(firstPoint, secondPoint);
     }
@@ -55,7 +51,7 @@ public class NopEncoderTest {
     @Test
     public void testAgw2() {
         String realAgwMessage = "[RH],AGW,CHS,10/18/2016,00:00:08.281,,,,1200,015,93,170,033.14390,-080.22537,147,,-7.8,16.91,,,,CHS,,,,,???,,,,,7464,???,,00,,,1,,0,,72.2,97.84,{RH}";
-        NopPoint firstPoint = NopPoint.from(realAgwMessage);
+        Point<NopPoint>  firstPoint = NopPoint.from(realAgwMessage);
         Point secondPoint = encodeAndReparse(firstPoint);
 
         verifyPointFieldsAreEqual(firstPoint, secondPoint);
@@ -139,19 +135,18 @@ public class NopEncoderTest {
         }
     }
 
-    private Point encodeAndReparse(Point p) {
+    private Point<NopPoint> encodeAndReparse(Point p) {
         String pointAsRawString = (new NopEncoder()).asRawNop(p);
         NopMessage secondMessage = NopMessageType.parse(pointAsRawString);
-        return NopPoint.from((NopRadarHit) secondMessage);
+        return NopPoint.from(secondMessage);
     }
 
     private void verifyPointFieldsAreEqual(Point point1, Point point2) {
-
-        for (PointField field : PointField.values()) {
-            assertThat(
-                "Field: " + field + " should match",
-                field.get(point1), is(field.get(point2))
-            );
-        }
+        assertThat(point1.trackId(), is(point2.trackId()));
+        assertThat(point1.latLong(), is(point2.latLong()));
+        assertThat(point1.altitude(), is(point2.altitude()));
+        assertThat(point1.course(), is(point2.course()));
+        assertThat(point1.speed(), is(point2.speed()));
+        assertThat(point1.time(), is(point2.time()));
     }
 }

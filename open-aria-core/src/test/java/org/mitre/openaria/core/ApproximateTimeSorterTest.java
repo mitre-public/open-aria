@@ -3,13 +3,8 @@ package org.mitre.openaria.core;
 
 import static java.time.Instant.EPOCH;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 
 import java.time.Duration;
@@ -19,18 +14,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+import org.mitre.caasd.commons.HasTime;
 
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.Test;
 
 public class ApproximateTimeSorterTest {
+
+    // This simple record allows us to test ApproximateTimeSorter
+    record TimePojo(Instant time) implements HasTime {}
 
     /*
      * This list of partially sorted data can (A) be sorted properly on demand or (B) not get sorted
      * by a TimeBasedSorter if the "alloted lag" is too small.
      */
-    private static List<Point> testData() {
+    private static List<TimePojo> testData() {
 
         ArrayList<Instant> times = Lists.newArrayList(
             EPOCH,
@@ -44,11 +43,9 @@ public class ApproximateTimeSorterTest {
             EPOCH.plusSeconds(23)
         );
 
-        ArrayList<Point> points = new ArrayList<>();
-        for (Instant aTime : times) {
-            points.add(new PointBuilder().time(aTime).build());
-        }
-        return points;
+        return times.stream()
+            .map(time -> new TimePojo(time))
+            .toList();
     }
 
     @Test
@@ -58,44 +55,44 @@ public class ApproximateTimeSorterTest {
          */
         Duration maxLag = Duration.ofMinutes(5);
 
-        ApproximateTimeSorter<Point> sorter = new ApproximateTimeSorter<>(
+        ApproximateTimeSorter<TimePojo> sorter = new ApproximateTimeSorter<>(
             maxLag,
-            (Point t) -> {
+            (TimePojo t) -> {
                 throw new UnsupportedOperationException("No Point should be forward to this Consumer");
             }
         );
 
-        for (Point commonPoint : testData()) {
-            sorter.accept(commonPoint);
+        for (TimePojo timeBox : testData()) {
+            sorter.accept(timeBox);
         }
     }
 
     /**
      * This consumer verifies that CommonPoints passed to it are received in time-sorted order
      */
-    class TimeOrderVerifyingConsumer implements Consumer<Point> {
+    class TimeOrderVerifyingConsumer implements Consumer<TimePojo> {
 
-        LinkedList<Point> points = new LinkedList<>();
+        LinkedList<TimePojo> timePojos = new LinkedList<>();
 
         @Override
-        public void accept(Point t) {
+        public void accept(TimePojo t) {
 
-            if (!points.isEmpty()) {
-                Point lastPoint = points.getLast();
+            if (!timePojos.isEmpty()) {
+                TimePojo lastPoint = timePojos.getLast();
                 assertTrue(
                     lastPoint.time().isBefore(t.time())
                 );
             }
 
-            points.addLast(t);
+            timePojos.addLast(t);
         }
 
         public int size() {
-            return points.size();
+            return timePojos.size();
         }
 
         public Instant timeFor(int i) {
-            return points.get(i).time();
+            return timePojos.get(i).time();
         }
     }
 
@@ -106,13 +103,13 @@ public class ApproximateTimeSorterTest {
 
         TimeOrderVerifyingConsumer consumer = new TimeOrderVerifyingConsumer();
 
-        ApproximateTimeSorter sorter = new ApproximateTimeSorter(
+        ApproximateTimeSorter<TimePojo> sorter = new ApproximateTimeSorter<>(
             maxLag,
             consumer
         );
 
-        for (Point commonPoint : testData()) {
-            sorter.accept(commonPoint);
+        for (TimePojo timeBox : testData()) {
+            sorter.accept(timeBox);
         }
 
         assertEquals(7, consumer.size());
@@ -126,27 +123,27 @@ public class ApproximateTimeSorterTest {
 
         TimeOrderVerifyingConsumer consumer = new TimeOrderVerifyingConsumer();
 
-        ApproximateTimeSorter<Point> sorter = new ApproximateTimeSorter<>(maxLag, consumer);
+        ApproximateTimeSorter<TimePojo> sorter = new ApproximateTimeSorter<>(maxLag, consumer);
 
-        sorter.accept(new PointBuilder().time(EPOCH).build());
+        sorter.accept(new TimePojo(EPOCH));
         assertEquals(0, consumer.size());
 
-        sorter.accept(new PointBuilder().time(EPOCH.plusSeconds(1)).build());
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(1)));
         assertEquals(0, consumer.size());
 
-        sorter.accept(new PointBuilder().time(EPOCH.plusSeconds(10)).build());
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(10)));
         assertEquals(2, consumer.size());
         assertEquals(consumer.timeFor(0), EPOCH);
         assertEquals(consumer.timeFor(1), EPOCH.plusSeconds(1));
 
-        sorter.accept(new PointBuilder().time(EPOCH.plusSeconds(5)).build());
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(5)));
         assertEquals(3, consumer.size());
         assertEquals(consumer.timeFor(2), EPOCH.plusSeconds(5));
 
         //this TestConsumer fails here because this point is passed through the sorter (after the 5 point was)
         assertThrows(
             AssertionError.class,
-            () -> sorter.accept(new PointBuilder().time(EPOCH.plusSeconds(4)).build())
+            () -> sorter.accept(new TimePojo(EPOCH.plusSeconds(4)))
         );
     }
 
@@ -159,12 +156,12 @@ public class ApproximateTimeSorterTest {
 
         TimeOrderVerifyingConsumer consumer = new TimeOrderVerifyingConsumer();
 
-        ApproximateTimeSorter sorter = new ApproximateTimeSorter(
+        ApproximateTimeSorter<TimePojo> sorter = new ApproximateTimeSorter<>(
             maxLag,
             consumer
         );
 
-        for (Point commonPoint : testData()) {
+        for (TimePojo commonPoint : testData()) {
             sorter.accept(commonPoint);
         }
 
@@ -184,15 +181,15 @@ public class ApproximateTimeSorterTest {
 
         Duration maxLag = Duration.ofSeconds(3);  //an extremely small sorting window
 
-        ConsumingArrayList<Point> downstreamConsumer = newConsumingArrayList();
+        ConsumingArrayList<TimePojo> downstreamConsumer = newConsumingArrayList();
 
-        ApproximateTimeSorter sorter = new ApproximateTimeSorter(maxLag, downstreamConsumer);
+        ApproximateTimeSorter<TimePojo> sorter = new ApproximateTimeSorter<>(maxLag, downstreamConsumer);
 
         //add Points to the sorter that keep getting older and older
         int NUM_POINTS = 50_000;
         for (int i = 0; i < NUM_POINTS; i++) {
             Instant time = EPOCH.minusSeconds(i);
-            sorter.accept(new PointBuilder().time(time).build());
+            sorter.accept(new TimePojo(time));
         }
         int numPointsPastSorter = downstreamConsumer.size();
 
@@ -213,18 +210,18 @@ public class ApproximateTimeSorterTest {
             downstreamConsumer
         );
 
-        sorter.accept(Point.builder().time(EPOCH).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(4)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(8)).build());
+        sorter.accept(Point.builder().latLong(0.0,0.0).time(EPOCH).build());
+        sorter.accept(Point.builder().latLong(0.0,0.0).time(EPOCH.plusSeconds(4)).build());
+        sorter.accept(Point.builder().latLong(0.0,0.0).time(EPOCH.plusSeconds(8)).build());
         assertThat("no evictions yet", downstreamConsumer, empty());
 
         //Adding this point evicts the 1st point because it is more than 10 seconds older than the most recent input
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(12)).build()); //evict Epoch + 0
+        sorter.accept(Point.builder().latLong(0.0,0.0).time(EPOCH.plusSeconds(12)).build()); //evict Epoch + 0
         assertThat(downstreamConsumer, hasSize(1));
         assertThat(downstreamConsumer.get(0).time(), equalTo(EPOCH));
 
         //This stale point should get instantly evicted because it is too old (with respect to time highwater mark)
-        sorter.accept(Point.builder().time(EPOCH.minusSeconds(20)).build());
+        sorter.accept(Point.builder().latLong(0.0,0.0).time(EPOCH.minusSeconds(20)).build());
         assertThat(downstreamConsumer, hasSize(2));
         assertThat(downstreamConsumer.get(1).time(), equalTo(EPOCH.minusSeconds(20)));
     }
@@ -234,43 +231,43 @@ public class ApproximateTimeSorterTest {
 
         TimeOrderVerifyingConsumer downstreamConsumer = new TimeOrderVerifyingConsumer();
 
-        ApproximateTimeSorter sorter = new ApproximateTimeSorter(
+        ApproximateTimeSorter<TimePojo> sorter = new ApproximateTimeSorter<>(
             Duration.ofSeconds(10),
             downstreamConsumer
         );
 
-        sorter.accept(Point.builder().time(EPOCH).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(4)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(8)).build());
-        assertEquals(0, downstreamConsumer.points.size());
+        sorter.accept(new TimePojo(EPOCH));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(4)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(8)));
+        assertEquals(0, downstreamConsumer.timePojos.size());
 
         //Adding this point should evict the 1st point because it is more than 10 seconds older than the most recent input
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(12)).build()); //evict Epoch + 0
-        assertEquals(1, downstreamConsumer.points.size());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(16)).build()); //evict Epoch + 4
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(20)).build()); //evict Epoch + 8
-        assertEquals(3, downstreamConsumer.points.size());
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(12))); //evict Epoch + 0
+        assertEquals(1, downstreamConsumer.timePojos.size());
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(16))); //evict Epoch + 4
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(20))); //evict Epoch + 8
+        assertEquals(3, downstreamConsumer.timePojos.size());
 
         //none of these "semi-stale" points are auto evicted because are in the "wait for more data" window
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(14)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(13)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(12)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(11)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(10)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(9)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(8)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(7)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(6)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(5)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(4)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(3)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(2)).build());
-        sorter.accept(Point.builder().time(EPOCH.plusSeconds(1)).build());
-        sorter.accept(Point.builder().time(EPOCH).build());
-        assertEquals(3, downstreamConsumer.points.size());
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(14)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(13)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(12)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(11)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(10)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(9)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(8)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(7)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(6)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(5)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(4)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(3)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(2)));
+        sorter.accept(new TimePojo(EPOCH.plusSeconds(1)));
+        sorter.accept(new TimePojo(EPOCH));
+        assertEquals(3, downstreamConsumer.timePojos.size());
 
         try {
-            sorter.accept(Point.builder().time(EPOCH.minusSeconds(1)).build());
+            sorter.accept(new TimePojo(EPOCH.minusSeconds(1)));
             //if no exception is thrown above then we should fail
             fail("We expect this point the get evicted -- and trigger the TimeOrderVerifyingConsumer");
         } catch (AssertionError ae) {

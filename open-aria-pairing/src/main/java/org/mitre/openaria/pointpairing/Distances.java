@@ -4,10 +4,10 @@ package org.mitre.openaria.pointpairing;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointBuilder;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Time;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointBuilder;
 
 public class Distances {
 
@@ -80,21 +80,21 @@ public class Distances {
     static Point projectPointAtNewTime(Point point, Instant newTime) {
 
         //skip projection when data doesn't support it
-        if (point.speedInKnots() == null || point.course() == null) {
-            return new PointBuilder(point).butTime(newTime).build();
+        if (point.speed() == null || point.course() == null) {
+            return new PointBuilder(point).time(newTime).build();
         }
 
         Duration timeDelta = Duration.between(point.time(), newTime);
 
         //can be negative....but that's ok..
-        double distanceInNM = distTraveledInNM(point.speedInKnots(), timeDelta);
+        double distanceInNM = distTraveledInNM(point.speed().inKnots(), timeDelta);
 
         LatLong startPoint = point.latLong();
-        LatLong endPoint = startPoint.projectOut(point.course(), distanceInNM);
+        LatLong endPoint = startPoint.projectOut(point.course().inDegrees(), distanceInNM);
 
         return new PointBuilder(point)
-            .butLatLong(endPoint)
-            .butTime(newTime)
+            .latLong(endPoint)
+            .time(newTime)
             .build();
     }
 

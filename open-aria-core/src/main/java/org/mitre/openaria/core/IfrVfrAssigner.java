@@ -82,14 +82,14 @@ public class IfrVfrAssigner {
      */
     public IfrVfrStatus statusOf(Point point) {
 
-        NopPoint np = NopPoint.from(point.asNop());
+        Point<NopPoint> np = NopPoint.from(point.asNop());
 
-        if (np.hasValidBeaconActual() && beaconIsVfr(np.beaconActualAsInt())) {
+        if (np.rawData().hasValidBeaconActual() && beaconIsVfr(np.rawData().beaconActualAsInt())) {
             return VFR;
         }
 
-        if (np.hasValidCallsign() && np.hasFlightRules()) {
-            return IfrVfrStatus.from(np.flightRules());
+        if (np.hasValidCallsign() && np.rawData().hasFlightRules()) {
+            return IfrVfrStatus.from(np.rawData().flightRules());
         }
         //...at this point not 1200, and either missing callSign or FlightRules
         return (np.hasValidCallsign()) ? IFR : VFR;

@@ -6,6 +6,7 @@ import static org.mitre.caasd.commons.Time.theDuration;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.function.Consumer;
 
@@ -84,7 +85,9 @@ public class ApproximateTimeSorter<T extends HasTime> implements Consumer<T> {
         this.failSafeEvictionLag = maxInputLag.multipliedBy(2);
         this.outputMechanism = checkNotNull(outputMechanism);
         checkArgument(!maxInputLag.isNegative());
-        this.shortTermStorage = new PriorityQueue<>();
+        this.shortTermStorage = new PriorityQueue<>(
+            Comparator.comparing(t -> t.time())
+        );
         this.sizeHighWaterMark = 0;
     }
 

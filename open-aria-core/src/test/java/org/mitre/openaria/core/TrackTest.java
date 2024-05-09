@@ -3,6 +3,7 @@ package org.mitre.openaria.core;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -14,6 +15,7 @@ import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
 import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
+import java.io.File;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.NavigableSet;
@@ -54,12 +56,12 @@ public class TrackTest {
          * it is a sign that the bug has been fixed.
          */
 
-        NopPoint p1 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:17.000,N63886,PA27,,1060,70,150,65,39.09000,-79.52830,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p2 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:29.000,N63886,PA27,,1060,70,150,66,39.09280,-79.51780,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p3 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:42.000,N63886,PA27,,1060,71,151,68,39.09580,-79.50610,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p4 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:54.000,N63886,PA27,,1060,71,151,68,39.09830,-79.49670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p1 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:17.000,N63886,PA27,,1060,70,150,65,39.09000,-79.52830,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p2 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:29.000,N63886,PA27,,1060,70,150,66,39.09280,-79.51780,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p3 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:42.000,N63886,PA27,,1060,71,151,68,39.09580,-79.50610,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p4 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:54.000,N63886,PA27,,1060,71,151,68,39.09830,-79.49670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
         Instant t1 = parseNopTime("06/30/2017", "16:40:17.000");
 
@@ -73,12 +75,12 @@ public class TrackTest {
     @Test
     public void testGetOverlapWith() {
 
-        NopPoint p1 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:17.000,N63886,PA27,,1060,70,150,65,39.09000,-79.52830,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p2 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:29.000,N63886,PA27,,1060,70,150,66,39.09280,-79.51780,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p3 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:42.000,N63886,PA27,,1060,71,151,68,39.09580,-79.50610,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p4 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:54.000,N63886,PA27,,1060,71,151,68,39.09830,-79.49670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
-        NopPoint p6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p1 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:17.000,N63886,PA27,,1060,70,150,65,39.09000,-79.52830,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p2 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:29.000,N63886,PA27,,1060,70,150,66,39.09280,-79.51780,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p3 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:42.000,N63886,PA27,,1060,71,151,68,39.09580,-79.50610,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p4 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:40:54.000,N63886,PA27,,1060,71,151,68,39.09830,-79.49670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p5 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
+        Point<NopPoint> p6 = NopPoint.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
         Instant t1 = parseNopTime("06/30/2017", "16:40:17.000");
         Instant t2 = parseNopTime("06/30/2017", "16:40:29.000");
@@ -121,7 +123,7 @@ public class TrackTest {
     @Test
     public void subset_predicate() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
 
         int NUM_TRACK_POINTS = 63;
 
@@ -135,14 +137,14 @@ public class TrackTest {
         Collection<Point<String>> nothing = t1.subset(ALWAYS_FALSE);
         assertThat(nothing, hasSize(0));
 
-        Collection<Point> lowSpeedPoints = t1.subset(pt -> pt.speedInKnots() < 90);
+        Collection<Point> lowSpeedPoints = t1.subset(pt -> nonNull(pt.speed()) && pt.speed().inKnots() < 90);
 
         //get something...
         assertThat(lowSpeedPoints, not(empty()));
         assertThat(lowSpeedPoints.size(), lessThan(NUM_TRACK_POINTS));
         //and ensure the condition is always matched.
         for (Point lowSpeedPoint : lowSpeedPoints) {
-            assertTrue(lowSpeedPoint.speedInKnots() < 90);
+            assertTrue(lowSpeedPoint.speed().inKnots() < 90);
         }
     }
 

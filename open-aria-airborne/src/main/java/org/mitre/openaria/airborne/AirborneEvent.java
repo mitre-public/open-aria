@@ -143,10 +143,13 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         this.atClosestVerticalWith5Nm = importantMoments[5];
         this.isLevelOffEvent = isLevelOffEvent(event.time(), timeToCpa, bestAvailableData());
         this.courseDelta = (int) abs(Spherical.angleDifference(
-            points.point1().course(),
-            points.point2().course())
+            points.point1().course().inDegrees(),
+            points.point2().course().inDegrees())
         );
-        this.conflictAngle = ConflictAngle.beween(points.point1().course(), points.point2().course());
+        this.conflictAngle = ConflictAngle.beween(
+            points.point1().course().inDegrees(),
+            points.point2().course().inDegrees()
+        );
 
         //write down the raw track data...
         String[] trk0 = extractRawTrackData(rawTracks.track1());

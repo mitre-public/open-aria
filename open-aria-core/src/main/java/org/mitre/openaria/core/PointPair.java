@@ -55,7 +55,7 @@ public class PointPair {
     }
 
     public Speed speedDelta() {
-        double delta = abs(point1.speedInKnots() - point2.speedInKnots());
+        double delta = abs(point1.speed().inKnots() - point2.speed().inKnots());
         return Speed.of(delta, KNOTS);
     }
 
@@ -93,7 +93,7 @@ public class PointPair {
     }
 
     public double courseDelta() {
-        return Spherical.angleDifference(point1.course(), point2.course());
+        return Spherical.angleDifference(point1.course().inDegrees(), point2.course().inDegrees());
     }
 
     public Course angleDelta() {
@@ -177,11 +177,11 @@ public class PointPair {
     }
 
     private Vector velocityInKnots(Point point) {
-        requireNonNull(point.speedInKnots(), "Speed cannot be null");
+        requireNonNull(point.speed(), "Speed cannot be null");
         requireNonNull(point.course(), "Course cannot be null");
         return new Vector(
-            point.speedInKnots() * cos(toRadians(point.course())),
-            point.speedInKnots() * sin(toRadians(point.course()))
+            point.speed().inKnots() * cos(point.course().inRadians()),
+            point.speed().inKnots() * sin(point.course().inRadians())
         );
     }
 }

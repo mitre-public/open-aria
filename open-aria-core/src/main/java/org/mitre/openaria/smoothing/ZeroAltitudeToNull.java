@@ -23,7 +23,7 @@ public class ZeroAltitudeToNull implements DataCleaner<Track> {
     private Point pointWithNullAltitude(Point p) {
 
         return pointHasNegativeAltitude(p)
-            ? Point.builder(p).butAltitude(null).build()
+            ? Point.builder(p).altitude(null).build()
             : p;
     }
 

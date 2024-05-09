@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
-import static org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
-import org.mitre.openaria.core.CommonPoint;
 import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointBuilder;
@@ -23,9 +21,7 @@ import org.junit.jupiter.api.Test;
 
 public class TrackMakerTest {
 
-    /*
-     * Counts calls to "accept"
-     */
+    /* Counts calls to "accept" */
     static class TestConsumer implements Consumer<Track> {
 
         int numCallsToAccept = 0;
@@ -36,14 +32,11 @@ public class TrackMakerTest {
         }
     }
 
-    ;
-
-    private static CommonPoint newPoint(String trackId, Instant pointTime) {
+    private static Point newPoint(String trackId, Instant pointTime) {
 
         return (new PointBuilder())
             .trackId(trackId)
             .time(pointTime)
-            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0)
             .build();
     }
@@ -131,19 +124,16 @@ public class TrackMakerTest {
 
         Point point1 = (new PointBuilder())
             .trackId(trackId).time(time1)
-            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0)
             .build();
 
         Point point2 = (new PointBuilder())
             .trackId(trackId).time(time2)
-            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0001)
             .build();
 
         Point point3 = (new PointBuilder())
             .trackId(trackId).time(time3)
-            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0002)
             .build();
 
@@ -154,7 +144,6 @@ public class TrackMakerTest {
          */
         Point point4 = (new PointBuilder())
             .trackId(trackId).time(time4)
-            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 1.0)
             .build();
 
@@ -165,7 +154,6 @@ public class TrackMakerTest {
          */
         Point point5 = (new PointBuilder())
             .trackId(trackId).time(time5)
-            .sourceDetails(new SourceDetails("AAA","AAA"))
             .latLong(0.0, 0.0004)
             .build();
 
@@ -214,9 +202,9 @@ public class TrackMakerTest {
         String ONE = "[RH],STARS,D21_B,03/24/2018,14:42:00.130,N518SP,C172,,5256,032,110,186,042.92704,-083.70974,3472,5256,-14.5730,42.8527,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
         String TWO = "[RH],STARS,D21_B,03/24/2018,14:42:04.750,N518SP,C172,,5256,032,110,184,042.92457,-083.70999,3472,5256,-14.5847,42.7043,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
 
-        NopPoint pt1 = NopPoint.from(ONE);
-        NopPoint pt2 = NopPoint.from(TWO);
-        NopPoint pt2_copy = NopPoint.from(TWO);
+        Point<NopPoint> pt1 = NopPoint.from(ONE);
+        Point<NopPoint> pt2 = NopPoint.from(TWO);
+        Point<NopPoint> pt2_copy = NopPoint.from(TWO);
 
         ConsumingArrayList<Track> trackConsumer = newConsumingArrayList();
 

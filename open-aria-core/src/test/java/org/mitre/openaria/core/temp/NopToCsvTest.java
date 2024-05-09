@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
 import org.mitre.openaria.core.NopPoint;
+import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.formats.ariacsv.AriaCsvHit;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ class NopToCsvTest {
     @Test
     public void canTranslateCenter() {
 
-        NopPoint centerPoint = NopPoint.from(CENTER_RH_MESSAGE);
+        Point<NopPoint> centerPoint = NopPoint.from(CENTER_RH_MESSAGE);
         String csvString = NopToCsv.nopToAriaCsvFormat(CENTER_RH_MESSAGE);
 
         AriaCsvHit pt = new AriaCsvHit(csvString);
@@ -35,7 +36,7 @@ class NopToCsvTest {
     @Test
     public void canTranslateStars() {
 
-        NopPoint starsPoint = NopPoint.from(STARS_RH_MESSAGE);
+        Point<NopPoint> starsPoint = NopPoint.from(STARS_RH_MESSAGE);
         String csvString = NopToCsv.nopToAriaCsvFormat(STARS_RH_MESSAGE);
         AriaCsvHit pt = new AriaCsvHit(csvString);
 
@@ -50,7 +51,7 @@ class NopToCsvTest {
     @Test
     public void canTranslateMearts() {
 
-        NopPoint meartsPoint = NopPoint.from(MEARTS_RH_MESSAGE);
+        Point<NopPoint> meartsPoint = NopPoint.from(MEARTS_RH_MESSAGE);
         String csvString = NopToCsv.nopToAriaCsvFormat(MEARTS_RH_MESSAGE);
         AriaCsvHit pt = new AriaCsvHit(csvString);
 

@@ -55,7 +55,7 @@ public class EventRecords {
 
         System.out.println(point.getClass().getCanonicalName());
 
-        if(point instanceof HasBeaconCodes hbc) {
+        if(point.rawData() instanceof HasBeaconCodes hbc) {
 
             String beacon = hbc.beaconActual();
             return (beacon == null)

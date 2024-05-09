@@ -1,25 +1,27 @@
 
 package org.mitre.openaria.pointpairing;
 
+import static java.time.Instant.EPOCH;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mitre.caasd.commons.Spherical.feetPerNM;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointBuilder;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Pair;
 import org.mitre.caasd.commons.Spherical;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.PointBuilder;
+
+import org.junit.jupiter.api.Test;
 
 public class CylindricalFilterTest {
 
     @Test
     public void testHorizontalSeparation() {
 
-        Point p1 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p2 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p3 = (new PointBuilder()).latLong(0.0, 1.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p1 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p2 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p3 = (new PointBuilder()).time(EPOCH).latLong(0.0, 1.0).altitude(Distance.ofFeet(1000.0)).build();
 
         double MAX_HORIZ_SEPARATION_IN_FT = 1000;
         double MAX_VERT_SEPARATION = 500;
@@ -42,11 +44,11 @@ public class CylindricalFilterTest {
     @Test
     public void testVertSeparation() {
 
-        Point p1 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p2 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p3 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1500.0)).build();
-        Point p4 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1501.0)).build();
-        Point p5 = (new PointBuilder()).latLong(0.0, 0.0).build();
+        Point p1 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p2 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p3 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1500.0)).build();
+        Point p4 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1501.0)).build();
+        Point p5 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).build();
 
         double MAX_HORIZ_SEPARATION_IN_FT = 1000;
         double MAX_VERT_SEPARATION = 500;
@@ -63,10 +65,10 @@ public class CylindricalFilterTest {
     @Test
     public void testVertSeparation_allowMissingData() {
 
-        Point p1 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p2 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p3 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1500.0)).build();
-        Point p4 = (new PointBuilder()).latLong(0.0, 0.0).build();
+        Point p1 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p2 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p3 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1500.0)).build();
+        Point p4 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).build();
 
         double MAX_HORIZ_SEPARATION_IN_FT = 1000;
         double MAX_VERT_SEPARATION = 500;
@@ -82,8 +84,8 @@ public class CylindricalFilterTest {
     @Test
     public void testHorizAndVertSeparation() {
 
-        Point p1 = (new PointBuilder()).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
-        Point p2 = (new PointBuilder()).latLong(0.0, 1.0).altitude(Distance.ofFeet(2000.0)).build();
+        Point p1 = (new PointBuilder()).time(EPOCH).latLong(0.0, 0.0).altitude(Distance.ofFeet(1000.0)).build();
+        Point p2 = (new PointBuilder()).time(EPOCH).latLong(0.0, 1.0).altitude(Distance.ofFeet(2000.0)).build();
 
         double MAX_HORIZ_SEPARATION_IN_FT = 1000;
         double MAX_VERT_SEPARATION = 500;

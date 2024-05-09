@@ -1,30 +1,47 @@
 package org.mitre.openaria.core;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.mitre.openaria.core.Points.NULLABLE_COMPARATOR;
 
+import java.time.Instant;
+
+import org.mitre.caasd.commons.Course;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.HasPosition;
 import org.mitre.caasd.commons.HasTime;
+import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Position;
+import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
-/**
- * A Point object is a single piece of location data. Since we want to support multiple types of
- * location data this interface is meant to be decorated.
- *
- * @param <T>
- */
-public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
 
-    T rawData();
+public record Point<T>(Position position, Velocity velocity, String trackId,
+                       T rawData) implements HasPosition, HasTime, Comparable<Point> {
 
-    String trackId();  //almost always an Integer, but sometime this is a number and letter like "25F"
+    @Override
+    public Instant time() {
+        return position().time();
+    }
 
-    Distance altitude();
+    @Override
+    public LatLong latLong() {
+        return position().latLong();
+    }
 
-    Double course();
+    /** @return The altitude of this Position (which may be null). */
+    public Distance altitude() {
+        return position().hasAltitude() ? position().altitude() : null;
+    }
 
-    Double speedInKnots();
+
+    public Course course() {
+        return nonNull(velocity) ? velocity.course() : null;
+    }
+
+    public Speed speed() {
+        return nonNull(velocity) ? velocity.speed() : null;
+    }
 
 
     /**
@@ -33,7 +50,12 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
      *     contain the raw NOP Message). The default implementation "harvests" the data fields
      *     available as part of the Point interface and builds a "faux RH Message" from that data.
      */
-     default String asNop() {
+    public String asNop() {
+
+        if(rawData instanceof NopPoint np) {
+            return np.rawMessage().rawMessage();
+        }
+
 
         /*
          * If the implementing class cannot provide the raw Nop RH Message itself encode whatever
@@ -41,11 +63,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
          */
         return (new NopEncoder()).asRawNop(this);
     }
-
-//    /** @return a KeyExtractor that generates String keys by concatenating trackId() and facility() */
-//    static KeyExtractor<Point> keyExtractor() {
-//        return (Point p) -> p.trackId() + p.facility();
-//    }
 
     /**
      * This comparison technique generates a strict ordering between two Points using as little data
@@ -60,7 +77,7 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
      *     course, callsign, beaconActual, and trackId (in that order).
      */
     @Override
-    public default int compareTo(Point other) {
+    public int compareTo(Point other) {
 
         int timeResult = time().compareTo(other.time());
         if (timeResult != 0) {
@@ -77,16 +94,6 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
             return altitudeResult;
         }
 
-        int speedResult = NULLABLE_COMPARATOR.compare(speedInKnots(), other.speedInKnots());
-        if (speedResult != 0) {
-            return speedResult;
-        }
-
-        int courseResult = NULLABLE_COMPARATOR.compare(course(), other.course());
-        if (courseResult != 0) {
-            return courseResult;
-        }
-
         int trackIdResult = NULLABLE_COMPARATOR.compare(trackId(), other.trackId());
         if (trackIdResult != 0) {
             return trackIdResult;
@@ -97,11 +104,10 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
 
 
     /**
-     * Some Point implementations may implement HasAircraftDetails, if so, return callsign
-     * info.
+     * Some Point implementations may implement HasAircraftDetails, if so, return callsign info.
      */
-    default boolean hasValidCallsign() {
-        if (this instanceof HasAircraftDetails acDetails) {
+    public boolean hasValidCallsign() {
+        if (rawData instanceof HasAircraftDetails acDetails) {
             String cs = acDetails.callsign();
             return !(cs == null || cs.equals(""));
         }
@@ -113,25 +119,24 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
      * boolean telling us if the callsign is available. If the concrete Point implementation does
      * not also implement HasAircraftDetails the throw an {@link UnsupportedOperationException}
      */
-    default boolean callsignIsMissing() {
-        if (this instanceof HasAircraftDetails acDetails) {
+    public boolean callsignIsMissing() {
+        if (rawData instanceof HasAircraftDetails acDetails) {
             String cs = acDetails.callsign();
             return (cs == null || cs.equals(""));
         }
         throw new UnsupportedOperationException("This Point implementation does not support callsign");
     }
 
-    public default boolean altitudeIsMissing() {
-        return altitude() == null;
+    public boolean altitudeIsMissing() {
+        return isNull(altitude());
     }
 
-    public default boolean hasTrackId() {
+    public boolean hasTrackId() {
         return !trackIdIsMissing();
     }
 
-    public default boolean trackIdIsMissing() {
-        String trackId = trackId();
-        return (trackId == null || trackId.equals(""));
+    public boolean trackIdIsMissing() {
+        return isNull(trackId) || trackId.equals("");
     }
 
     /**
@@ -140,7 +145,7 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
      *     or ASDE).
      */
     public static PointBuilder builder() {
-        return new PointBuilder();
+        return new PointBuilder<>();
     }
 
     /**
@@ -150,15 +155,7 @@ public interface Point<T> extends HasPosition, HasTime, Comparable<Point> {
      *     useful for unit testing (because most Points are generated by parsing raw data like NOP
      *     or ASDE).
      */
-    public static PointBuilder builder(Point point) {
-        return new PointBuilder(point);
-    }
-
-    default Position position() {
-        return Position.builder()
-            .latLong(this.latLong())
-            .time(this.time())
-            .altitude(this.altitude())
-            .build();
+    public static <T> PointBuilder<T> builder(Point<T> point) {
+        return new PointBuilder<>(point);
     }
 }

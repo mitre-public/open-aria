@@ -38,11 +38,11 @@ public class TrimLowSpeedPoints<T> implements DataCleaner<Track> {
     public Optional<Track> clean(Track track) {
         NavigableSet<Point> points = newTreeSet(track.points());
         //remove low-speed points at the start of the track
-        while (!points.isEmpty() && points.first().speedInKnots() < speedLimitInKnots) {
+        while (!points.isEmpty() && points.first().speed().inKnots() < speedLimitInKnots) {
             points.pollFirst();
         }
         //remove low-speed points at the end of the trank
-        while (!points.isEmpty() && points.last().speedInKnots() < speedLimitInKnots) {
+        while (!points.isEmpty() && points.last().speed().inKnots() < speedLimitInKnots) {
             points.pollLast();
         }
         return (points.size() >= minNumberPoints) ? Optional.of(Track.of(points)) : Optional.empty();
