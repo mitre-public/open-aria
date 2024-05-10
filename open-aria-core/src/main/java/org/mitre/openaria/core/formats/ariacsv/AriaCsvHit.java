@@ -20,7 +20,7 @@ import org.mitre.caasd.commons.LatLong;
  * easily-debuggable, way to (A) archive data for unit-tests, and (B) provide a mechanism to port
  * external data into OpenARIA that does not require Java programming.
  */
-public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit>{
+public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit> {
 
     private final String rawCsv;
 
@@ -57,12 +57,14 @@ public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit>{
     private final double longitude;
 
     /**
-     * A unique ID number that identifies a specific vehicle within a large dataset of many location measurements.
+     * A unique ID number that identifies a specific vehicle within a large dataset of many location
+     * measurements.
      */
     private final String linkId;
 
     /**
-     * Eagerly parse: {time, latitude, longitude, and linkId} from this CSV.  Other fields are extract lazily
+     * Eagerly parse: {time, latitude, longitude, and linkId} from this CSV.  Other fields are
+     * extract lazily
      *
      * @param rawCsv A String of Comma Separated Values that matches the OpenARIA format.
      */
