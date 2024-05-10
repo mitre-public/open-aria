@@ -1,12 +1,10 @@
 
 package org.mitre.openaria.core;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
 
 import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
 
@@ -18,13 +16,6 @@ public class EventRecords {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(
         "MM/dd/yyyy,HH:mm:ss.SSS X").withZone(ZoneOffset.UTC);
 
-    private static final SimpleDateFormat DATE_FORMAT = createFormater();
-
-    private static SimpleDateFormat createFormater() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy,HH:mm:ss.SSS");
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return formatter;
-    }
 
     /**
      * @param time An Instant written as a String in the format that is used in EventRecords. This
@@ -52,8 +43,6 @@ public class EventRecords {
      *     null.
      */
     public static String safeBeaconCode(Point point) {
-
-        System.out.println(point.getClass().getCanonicalName());
 
         if(point.rawData() instanceof HasBeaconCodes hbc) {
 
