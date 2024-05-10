@@ -4,7 +4,7 @@ package org.mitre.openaria.smoothing;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.mitre.openaria.core.NopPoint;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.NopMessageType;
 import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
@@ -24,9 +24,9 @@ public class StarsSmoothingTest {
 
     @Test
     public void testIsCoastedPoint() {
-        NopPoint active = new NopPoint(ACTIVE_STARS);
-        NopPoint coasted = new NopPoint(COASTED_STARS);
-        NopPoint dropped = new NopPoint(DROPPED_STARS);
+        NopHit active = new NopHit(ACTIVE_STARS);
+        NopHit coasted = new NopHit(COASTED_STARS);
+        NopHit dropped = new NopHit(DROPPED_STARS);
 
         assertFalse(StarsSmoothing.isCoastedPoint(active));
         assertTrue(StarsSmoothing.isCoastedPoint(coasted));

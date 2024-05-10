@@ -9,6 +9,8 @@ import static org.mitre.openaria.core.IfrVfrStatus.VFR;
 import java.time.Instant;
 import java.util.Collection;
 
+import org.mitre.openaria.core.formats.NopHit;
+
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.Range;
 
@@ -82,7 +84,7 @@ public class IfrVfrAssigner {
      */
     public IfrVfrStatus statusOf(Point point) {
 
-        Point<NopPoint> np = NopPoint.from(point.asNop());
+        Point<NopHit> np = NopHit.from(point.asNop());
 
         if (np.rawData().hasValidBeaconActual() && beaconIsVfr(np.rawData().beaconActualAsInt())) {
             return VFR;

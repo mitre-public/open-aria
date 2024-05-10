@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
+import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,8 @@ public class PointPairTest {
     @Test
     public void testConstructors() {
 
-        Point p1 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
-        Point p2 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p1 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p2 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
 
         PointPair pair = new PointPair(p1, p2);
 
@@ -27,8 +28,8 @@ public class PointPairTest {
     @Test
     public void testStaticFactory() {
 
-        Point p1 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
-        Point p2 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p1 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p2 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
 
         PointPair pair = PointPair.of(p1, p2);
 
@@ -41,9 +42,9 @@ public class PointPairTest {
         Distance requiredAltitudeProximity = Distance.ofFeet(500);
 
         //alt = 2400
-        Point p1 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p1 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
         //alt = 3400
-        Point p2 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p2 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
 
         assertEquals(p1.altitude().inFeet(), 2400.0, 0.01);
         assertEquals(p2.altitude().inFeet(), 3400.0, 0.01);
@@ -57,9 +58,9 @@ public class PointPairTest {
     @Test
     public void testAltitudeDelta() {
         //alt = 2400
-        Point p1 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p1 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,024,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
         //alt = 3400
-        Point p2 = NopPoint.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
+        Point p2 = NopHit.from("[RH],STARS,A80_B,02/12/2018,18:36:46.667,JIA5545,CRJ9,E,5116,034,157,270,033.63143,-084.33913,1334,5116,22.4031,27.6688,1,O,A,A80,OZZ,OZZ,ATL,1827,ATL,ACT,IFR,,01719,,,,,27L,L,1,,0,{RH}");
 
         PointPair pair = new PointPair(p1, p2);
 

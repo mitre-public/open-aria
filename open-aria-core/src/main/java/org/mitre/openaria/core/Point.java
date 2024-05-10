@@ -13,6 +13,8 @@ import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
 
@@ -52,7 +54,7 @@ public record Point<T>(Position position, Velocity velocity, String trackId,
      */
     public String asNop() {
 
-        if(rawData instanceof NopPoint np) {
+        if(rawData instanceof NopHit np) {
             return np.rawMessage().rawMessage();
         }
 

@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
-import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParsingUtils;
 
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ public class TrimLowSpeedGroundPointsTest {
 
     public Track trackWithLowSpeedTakeOff() {
         List<Point> points = Stream.of(rawNopPoints)
-            .map(str -> NopPoint.from(str))
+            .map(str -> NopHit.from(str))
             .collect(toList());
 
         return Track.of((List) points);

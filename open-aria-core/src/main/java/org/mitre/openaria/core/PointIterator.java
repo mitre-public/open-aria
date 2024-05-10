@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Iterator;
 
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.NopMessage;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.core.formats.nop.NopRadarHit;
@@ -14,11 +15,11 @@ import org.mitre.openaria.core.formats.nop.NopRadarHit;
  * A PointIterator wraps a NopParser or a SWIMParser. The Iterator ensure
  * <p>
  */
-public class PointIterator implements Iterator<Point<NopPoint>> {
+public class PointIterator implements Iterator<Point<NopHit>> {
 
     private final Iterator<NopMessage> nopMessageIter;
 
-    Point<NopPoint> nextPoint;
+    Point<NopHit> nextPoint;
 
     public PointIterator(NopParser parser) {
         this.nopMessageIter = checkNotNull(parser, "The NopParser cannot be null");
@@ -31,13 +32,13 @@ public class PointIterator implements Iterator<Point<NopPoint>> {
     }
 
     @Override
-    public Point<NopPoint> next() {
-        Point<NopPoint> returnMe = nextPoint;
+    public Point<NopHit> next() {
+        Point<NopHit> returnMe = nextPoint;
         this.nextPoint = getNext();
         return returnMe;
     }
 
-    private Point<NopPoint> getNext() {
+    private Point<NopHit> getNext() {
 
         if (usingNop()) {
             return getNextPointFromNop();
@@ -50,13 +51,13 @@ public class PointIterator implements Iterator<Point<NopPoint>> {
         return this.nopMessageIter != null;
     }
 
-    private Point<NopPoint> getNextPointFromNop() {
+    private Point<NopHit> getNextPointFromNop() {
 
         while (nopMessageIter.hasNext()) {
             NopMessage message = nopMessageIter.next();
 
             if (message.getNopType().isRadarHit()) {
-                return NopPoint.from((NopRadarHit) message);
+                return NopHit.from((NopRadarHit) message);
             } else {
                 //ignore items like FlightPlan messages and conflict alerts
             }

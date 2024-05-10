@@ -14,9 +14,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.smoothing.VerticalOutlierDetector.AnalysisResult;
 
 import org.junit.jupiter.api.Test;
@@ -219,7 +219,7 @@ public class VerticalOutlierDetectorTest {
     private void confirmExactlyTheseOutliers(Collection<AnalysisResult> foundOutliers, String... expectedOutliters) {
 
         Set<String> knownOutliers = Stream.of(expectedOutliters)
-            .map(asRawNop -> NopPoint.from(asRawNop)) //convert the raw Nop to Points
+            .map(asRawNop -> NopHit.from(asRawNop)) //convert the raw Nop to Points
             .map(Point -> Point.asNop()) //get the "lossy" Strings
             .collect(toCollection(HashSet::new)); //in a HashSet
 

@@ -7,9 +7,9 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
@@ -29,7 +29,7 @@ public class CoastedPointRemover implements DataCleaner<Track> {
 
     public static boolean isCoasted(Point p) {
 
-        if (p.rawData() instanceof NopPoint nop) {
+        if (p.rawData() instanceof NopHit nop) {
             if (nop.rawMessage() instanceof CenterRadarHit crh) {
                 return CenterSmoothing.isCoastedRadarHit(crh);
             }

@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
 
@@ -106,7 +107,7 @@ public class PointsTest {
         try {
             //read a File, convert each Line to a Point and collect the results in a list
             List<Point> points = Files.lines(file.toPath())
-                .map((String s) -> NopPoint.from(s))
+                .map((String s) -> NopHit.from(s))
                 .collect(Collectors.toList());
 
             shuffle(points);

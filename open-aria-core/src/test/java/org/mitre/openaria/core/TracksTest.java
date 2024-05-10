@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
@@ -29,10 +30,10 @@ public class TracksTest {
         String raw2 = "[RH],Center,ZOB_B,07-10-2016,17:24:49.000,RPA4391,E170,L,7336,270,444,077,41.3781,-80.8100,809,,,,,ZOB/70,,ZOB_B,,,,E1719,JFK,,IFR,,809,616763984,IND,1813,270//270,,L,1,,,{RH}";
         String raw3 = "[RH],Center,ZOB_B,07-10-2016,17:25:02.000,RPA4391,E170,L,7336,270,444,077,41.3839,-80.7778,809,,,,,ZOB/70,,ZOB_B,,,,E1719,JFK,,IFR,,809,616764278,IND,1813,270//270,,L,1,,,{RH}";
 
-        Point<NopPoint> p1 = NopPoint.from(raw1);
-        Point<NopPoint> p2 = NopPoint.from(raw2);
-        Point<NopPoint> p3 = NopPoint.from(raw3);
-        List<Point<NopPoint>> points = new ArrayList<>();
+        Point<NopHit> p1 = NopHit.from(raw1);
+        Point<NopHit> p2 = NopHit.from(raw2);
+        Point<NopHit> p3 = NopHit.from(raw3);
+        List<Point<NopHit>> points = new ArrayList<>();
         points.add(p1);
         points.add(p2);
         points.add(p3);

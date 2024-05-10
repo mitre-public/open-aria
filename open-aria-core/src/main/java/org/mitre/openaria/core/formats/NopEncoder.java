@@ -1,5 +1,5 @@
 
-package org.mitre.openaria.core;
+package org.mitre.openaria.core.formats;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
@@ -19,9 +20,8 @@ import org.mitre.openaria.core.temp.Extras.SourceDetails;
 /**
  * A NopEncoder converts Points into a raw text format that mimics the NOP RH Message format.
  * <p>
- * A NopEncoder cannot produce "full NOP RH messages" because the Point interface, does not
- * currently include certain NOP fields like AGW and STARS's scratchpad1 fields (as just one
- * example).
+ * A NopEncoder cannot produce "full NOP RH messages" because Point does not include certain NOP
+ * fields like AGW and STARS's scratchpad1 fields (as just one example).
  */
 public class NopEncoder {
 
@@ -49,7 +49,7 @@ public class NopEncoder {
      *     "lossy" conversion because the Point interface does not include all the information that
      *     is available in any of the NOP formats (AGW, CENTER, or STARS)
      */
-    public String asRawNop(Point p) {
+    public String asRawNop(Point<?> p) {
 
         AircraftDetails acDetails = null;
         SourceDetails sourceDetails = null;
@@ -148,13 +148,13 @@ public class NopEncoder {
     private String formatSpeed(Point p) {
         return (p.speed() == null)
             ? ""
-            : Integer.toString( (int) p.speed().inKnots());
+            : Integer.toString((int) p.speed().inKnots());
     }
 
     private String formatCourse(Point p) {
         return (p.course()) == null
             ? ""
-            : Integer.toString( (int) p.course().inDegrees());
+            : Integer.toString((int) p.course().inDegrees());
     }
 
     private String formatAltitude(Point p) {
