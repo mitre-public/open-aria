@@ -67,16 +67,4 @@ public class EventRecordsTest {
 
         assertThat(safeBeaconCode(p), is(UNKOWN_BEACON_VALUE));
     }
-
-//    @Test
-//    public void safeBeaconGivesBeaconWhenItExists() {
-//
-//        Point p = Point.builder()
-//            .time(EPOCH)
-//            .latLong(0.0, 0.0)
-//            .beaconActual("myBeacon")
-//            .build();
-//
-//        assertThat(safeBeaconCode(p), is("myBeacon"));
-//    }
 }

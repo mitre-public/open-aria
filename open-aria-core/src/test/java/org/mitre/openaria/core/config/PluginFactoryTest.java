@@ -8,19 +8,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.junit.jupiter.api.Test;
 
 
 public class PluginFactoryTest {
 
     public interface InterfacePluginBuildersMustImplement {
-        public int injectedStrategyBehavior(Integer handleMe);
+        int injectedStrategyBehavior(Integer handleMe);
     }
 
     public static class SimplePlugin implements InterfacePluginBuildersMustImplement {

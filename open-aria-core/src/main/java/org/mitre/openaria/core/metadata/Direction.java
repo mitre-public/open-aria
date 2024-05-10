@@ -22,9 +22,9 @@ public enum Direction {
     NORTH_WEST(315.0, "NW"),
     NORTH_NORTH_WEST(337.5, "NNW");
 
-    double degrees;
+    final double degrees;
 
-    String abbreviation;
+    final String abbreviation;
 
     Direction(double degrees, String abbreviation) {
         this.degrees = degrees;

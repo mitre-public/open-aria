@@ -72,16 +72,4 @@ public class Extras {
     public record BeaconCodes(String actual, String assigned) {
 
     }
-
-    /*
-     * These are all the fields in Point that need to be migrated OUT of the original Point interface
-     * and into a data format
-     */
-//    public String beaconActual();
-//
-//    public String beaconAssigned();
-//
-//    public Double course();
-//
-//    public Double speedInKnots();
 }

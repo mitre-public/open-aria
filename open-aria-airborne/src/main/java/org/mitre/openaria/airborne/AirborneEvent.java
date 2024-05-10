@@ -229,10 +229,6 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         return laterClimbRate.isZero();
     }
 
-//    public Facility nopFacility() {
-//        return this.facility;
-//    }
-
     public TrackPair rawTracks() {
         return rawTracks;
     }

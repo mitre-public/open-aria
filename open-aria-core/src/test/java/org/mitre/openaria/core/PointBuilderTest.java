@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class PointBuilderTest {
 
     /* Declare a simple Pojo that holds data specific to a particular type of raw data. */
-    record PojoWithCallsign(String callsign) {};
+    record PojoWithCallsign(String callsign) {}
 
 
     @Test
@@ -77,15 +77,6 @@ public class PointBuilderTest {
         assertThat(p2.altitude(), nullValue());
     }
 
-
-//    @Test
-//    public void testSpeed_badValue() {
-//        assertThrows(
-//            IllegalArgumentException.class,
-//            () -> new PointBuilder().speed(-1.0),
-//            "negative speeds should throw exceptions"
-//        );
-//    }
 
     @Test
     public void testTime() {
