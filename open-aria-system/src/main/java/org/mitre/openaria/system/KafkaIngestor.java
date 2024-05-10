@@ -5,7 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.requireNonNull;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG;
 import static org.mitre.caasd.commons.util.PropertyUtils.*;
-import static org.mitre.openaria.core.NopPoint.parseSafely;
+import static org.mitre.openaria.core.formats.NopHit.parseSafely;
 import static org.mitre.openaria.core.formats.nop.Facility.toFacility;
 import static org.mitre.openaria.core.formats.nop.NopMessageType.isNopRadarHit;
 import static org.mitre.openaria.kafka.KafkaPropertyUtils.verifyKafkaBrokers;
@@ -24,8 +24,8 @@ import java.util.stream.IntStream;
 
 import org.mitre.caasd.commons.util.ErrorCatchingTask;
 import org.mitre.caasd.commons.util.ExceptionHandler;
-import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.kafka.PartitionMapping;
@@ -409,7 +409,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
     public static class NopPlugin implements RecordHelper<String, Facility> {
 
         @Override
-        public Optional<Point<NopPoint>> parse(ConsumerRecord<String, String> consumerRecord) {
+        public Optional<Point<NopHit>> parse(ConsumerRecord<String, String> consumerRecord) {
 
             String lineOfInput = consumerRecord.value();
 

@@ -8,9 +8,9 @@ import java.io.File;
 import java.util.Iterator;
 
 import org.mitre.openaria.airborne.AirbornePairConsumer;
-import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.system.StreamingKpi;
 
@@ -44,7 +44,7 @@ public class RunAirborneOnFile {
 
     static void execute(File dataFile, Config config) {
 
-        Iterator<Point<NopPoint>> pointIterator = iteratorFor(dataFile);
+        Iterator<Point<NopHit>> pointIterator = iteratorFor(dataFile);
 
         //Pass null because we don't need the AirborneFactory to keep a KPI-to-Facility mapping
         StreamingKpi<AirbornePairConsumer> streamingKpi = (config.airborneFactory()).createKpi(null);
@@ -55,7 +55,7 @@ public class RunAirborneOnFile {
         System.out.println("DONE PROCESSING: " + dataFile.getName());
     }
 
-    private static Iterator<Point<NopPoint>> iteratorFor(File dataFile) {
+    private static Iterator<Point<NopHit>> iteratorFor(File dataFile) {
         return new PointIterator(new NopParser(dataFile));
     }
 

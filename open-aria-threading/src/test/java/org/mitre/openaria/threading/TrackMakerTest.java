@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
-import org.mitre.openaria.core.NopPoint;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointBuilder;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
 
@@ -202,9 +202,9 @@ public class TrackMakerTest {
         String ONE = "[RH],STARS,D21_B,03/24/2018,14:42:00.130,N518SP,C172,,5256,032,110,186,042.92704,-083.70974,3472,5256,-14.5730,42.8527,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
         String TWO = "[RH],STARS,D21_B,03/24/2018,14:42:04.750,N518SP,C172,,5256,032,110,184,042.92457,-083.70999,3472,5256,-14.5847,42.7043,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
 
-        Point<NopPoint> pt1 = NopPoint.from(ONE);
-        Point<NopPoint> pt2 = NopPoint.from(TWO);
-        Point<NopPoint> pt2_copy = NopPoint.from(TWO);
+        Point<NopHit> pt1 = NopHit.from(ONE);
+        Point<NopHit> pt2 = NopHit.from(TWO);
+        Point<NopHit> pt2_copy = NopHit.from(TWO);
 
         ConsumingArrayList<Track> trackConsumer = newConsumingArrayList();
 
@@ -245,10 +245,10 @@ public class TrackMakerTest {
         TestConsumer trackConsumer = new TestConsumer();
         TrackMaker maker = new TrackMaker(trackConsumer);
 
-        maker.accept(NopPoint.from(ONE));
-        maker.accept(NopPoint.from(A));
-        maker.accept(NopPoint.from(TWO));
-        maker.accept(NopPoint.from(B));
+        maker.accept(NopHit.from(ONE));
+        maker.accept(NopHit.from(A));
+        maker.accept(NopHit.from(TWO));
+        maker.accept(NopHit.from(B));
 
         maker.flushAllTracks();
 
@@ -278,11 +278,11 @@ public class TrackMakerTest {
         TestConsumer smallCounter = new TestConsumer();
         TrackMaker smallTrackMaker = new TrackMaker(maxPointDelta, maxTrackAge_small, smallCounter);
 
-        smallTrackMaker.accept(NopPoint.from(p1));
-        smallTrackMaker.accept(NopPoint.from(p2));
-        smallTrackMaker.accept(NopPoint.from(p3));
-        smallTrackMaker.accept(NopPoint.from(p4));
-        smallTrackMaker.accept(NopPoint.from(p5)); //this point should cause the track to be "closeable"
+        smallTrackMaker.accept(NopHit.from(p1));
+        smallTrackMaker.accept(NopHit.from(p2));
+        smallTrackMaker.accept(NopHit.from(p3));
+        smallTrackMaker.accept(NopHit.from(p4));
+        smallTrackMaker.accept(NopHit.from(p5)); //this point should cause the track to be "closeable"
 
         assertThat(smallCounter.numCallsToAccept, is(1));
 
@@ -290,11 +290,11 @@ public class TrackMakerTest {
         TestConsumer bigCounter = new TestConsumer();
         TrackMaker bigTrackMaker = new TrackMaker(maxPointDelta, maxTrackAge_big, bigCounter);
 
-        bigTrackMaker.accept(NopPoint.from(p1));
-        bigTrackMaker.accept(NopPoint.from(p2));
-        bigTrackMaker.accept(NopPoint.from(p3));
-        bigTrackMaker.accept(NopPoint.from(p4));
-        bigTrackMaker.accept(NopPoint.from(p5)); //this point should NOT cause the track to be "closeable"
+        bigTrackMaker.accept(NopHit.from(p1));
+        bigTrackMaker.accept(NopHit.from(p2));
+        bigTrackMaker.accept(NopHit.from(p3));
+        bigTrackMaker.accept(NopHit.from(p4));
+        bigTrackMaker.accept(NopHit.from(p5)); //this point should NOT cause the track to be "closeable"
 
         assertThat(bigCounter.numCallsToAccept, is(0)); //nothing emitted yet
     }
@@ -331,12 +331,12 @@ public class TrackMakerTest {
         ConsumingArrayList<Track> sink = new ConsumingArrayList<>();
         TrackMaker tm = new TrackMaker(maxPointDelta, sink);
 
-        tm.accept(NopPoint.from(p1));
-        tm.accept(NopPoint.from(p2)); //this 2nd point should evict the "1st track" because that track is "too stale" to accept new points
-        tm.accept(NopPoint.from(p3));
-        tm.accept(NopPoint.from(p4));
-        tm.accept(NopPoint.from(p5));
-        tm.accept(NopPoint.from(p6));
+        tm.accept(NopHit.from(p1));
+        tm.accept(NopHit.from(p2)); //this 2nd point should evict the "1st track" because that track is "too stale" to accept new points
+        tm.accept(NopHit.from(p3));
+        tm.accept(NopHit.from(p4));
+        tm.accept(NopHit.from(p5));
+        tm.accept(NopHit.from(p6));
 
         tm.flushAllTracks();
 

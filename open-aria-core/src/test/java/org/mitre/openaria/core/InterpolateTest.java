@@ -11,6 +11,7 @@ import java.time.Instant;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Spherical;
+import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
 
@@ -330,8 +331,8 @@ public class InterpolateTest {
         //The RH message shown in s2 has a course of 253
         String s2 = "[RH],STARS,GEG,07/08/2017,14:09:16.284,,,,1200,28,88,253,47.61675,-117.54618,655,0,0.1876,-0.1797,,,,GEG,,,,,,,IFR,,,,,,,,,,,,{RH}\n";
 
-        Point p1 = NopPoint.from(s1);
-        Point p2 = NopPoint.from(s2);
+        Point p1 = NopHit.from(s1);
+        Point p2 = NopHit.from(s2);
 
         Point interpolated = interpolate(p1, p2, p1.time().plusSeconds(2));
 

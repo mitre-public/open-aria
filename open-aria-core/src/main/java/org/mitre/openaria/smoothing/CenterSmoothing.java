@@ -5,7 +5,7 @@ import static com.google.common.collect.Sets.newHashSet;
 
 import java.util.HashSet;
 
-import org.mitre.openaria.core.NopPoint;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 
 public class CenterSmoothing {
@@ -30,7 +30,7 @@ public class CenterSmoothing {
             : CENTER_COASTED_FLAGS.contains(cmsFieldValue);
     }
 
-    public static boolean isCoastedPoint(NopPoint centerPoint) {
+    public static boolean isCoastedPoint(NopHit centerPoint) {
         CenterRadarHit crh = (CenterRadarHit) centerPoint.rawMessage();
         return isCoastedRadarHit(crh);
     }

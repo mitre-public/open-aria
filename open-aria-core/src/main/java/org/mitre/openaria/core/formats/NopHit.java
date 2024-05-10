@@ -1,4 +1,4 @@
-package org.mitre.openaria.core;
+package org.mitre.openaria.core.formats;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -15,6 +15,8 @@ import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Velocity;
 import org.mitre.openaria.core.formats.nop.AgwRadarHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
@@ -29,18 +31,17 @@ import org.mitre.openaria.core.temp.Extras.HasSourceDetails;
 import org.mitre.openaria.core.temp.Extras.SourceDetails;
 
 /**
- * A NopPoint is wraps a raw NopRadarHit and declares which fields it contains using Mix-in/Trait
- * interfaces.
+ * A NopHit wraps a raw NopRadarHit and declares which fields it contains using Trait interfaces.
  * <p>
- * A NopPoint provides direct access to the underlying NopRadarHit. Having access to the NopRadarHit
+ * NopHit provides direct access to the underlying NopRadarHit. Having access to the NopRadarHit
  * permits creating custom logic (like point filtering and track smoothing) that relies on the
  * specific quirk of AGW, STARS, or CENTER data.
  */
-public class NopPoint implements HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes, HasTime {
+public class NopHit implements HasSourceDetails, HasAircraftDetails, HasFlightRules, HasBeaconCodes, HasTime {
 
-    final NopRadarHit rhMessage;
+    private final NopRadarHit rhMessage;
 
-    public NopPoint(String rawNopText) {
+    public NopHit(String rawNopText) {
         checkNotNull(rawNopText, "The input String cannot be null");
 
         NopMessage m = NopMessageType.parse(rawNopText);
@@ -54,23 +55,23 @@ public class NopPoint implements HasSourceDetails, HasAircraftDetails, HasFlight
         this.rhMessage = (NopRadarHit) NopMessageType.parse(rawNopText);
     }
 
-    public NopPoint(NopRadarHit rhMessage) {
+    public NopHit(NopRadarHit rhMessage) {
         this.rhMessage = checkNotNull(rhMessage);
     }
 
-    public static Point<NopPoint> from(NopMessage message) {
+    public static Point<NopHit> from(NopMessage message) {
         checkNotNull(message, "Cannot create a NopPoint from a null NopMessage");
 
-        NopPoint wrapped = null;
+        NopHit wrapped = null;
 
         if (message instanceof CenterRadarHit center) {
-            wrapped = new NopPoint(center);
+            wrapped = new NopHit(center);
         } else if (message instanceof StarsRadarHit stars) {
-            wrapped = new NopPoint(stars);
+            wrapped = new NopHit(stars);
         } else if (message instanceof AgwRadarHit agw) {
-            wrapped = new NopPoint(agw);
+            wrapped = new NopHit(agw);
         } else if (message instanceof MeartsRadarHit mearts) {
-            wrapped = new NopPoint(mearts);
+            wrapped = new NopHit(mearts);
         } else {
             throw new IllegalArgumentException("Cannot create a NopPoint from a " + message.getNopType());
         }
@@ -78,7 +79,7 @@ public class NopPoint implements HasSourceDetails, HasAircraftDetails, HasFlight
         return new Point<>(wrapped.position(), wrapped.velocity(), wrapped.trackId(), wrapped);
     }
 
-    public static Point<NopPoint> from(String rhMessage) {
+    public static Point<NopHit> from(String rhMessage) {
         return from(NopMessageType.parse(rhMessage));
     }
 
@@ -86,7 +87,7 @@ public class NopPoint implements HasSourceDetails, HasAircraftDetails, HasFlight
      * This is a wrapped version of the other static factory methods. This factory method catches
      * any parsing exceptions and returns an empty Optional rather than throwing a Exception.
      */
-    public static Optional<Point<NopPoint>> parseSafely(String rhMessage) {
+    public static Optional<Point<NopHit>> parseSafely(String rhMessage) {
         try {
             return Optional.of(from(rhMessage));
         } catch (Exception ex) {
@@ -255,9 +256,9 @@ public class NopPoint implements HasSourceDetails, HasAircraftDetails, HasFlight
         if (o == null || getClass() != o.getClass())
             return false;
 
-        NopPoint nopPoint = (NopPoint) o;
+        NopHit nopHit = (NopHit) o;
 
-        return Objects.equals(rhMessage, nopPoint.rhMessage);
+        return Objects.equals(rhMessage, nopHit.rhMessage);
     }
 
     @Override
