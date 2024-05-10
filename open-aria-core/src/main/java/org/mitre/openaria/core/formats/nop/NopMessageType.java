@@ -93,7 +93,7 @@ public enum NopMessageType {
 
     private final boolean isRadarHit;
 
-    private NopMessageType(String prefix, boolean isRadarHit) {
+    NopMessageType(String prefix, boolean isRadarHit) {
         this.messagePrefix = prefix;
         this.isRadarHit = isRadarHit;
     }

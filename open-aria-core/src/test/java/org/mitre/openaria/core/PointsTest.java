@@ -32,18 +32,6 @@ import org.junit.jupiter.api.Test;
 
 public class PointsTest {
 
-//    /**
-//     * @return A Point that has a "String field", a "Double field", and an "Instant field"
-//     */
-//    Point createTestPoint(Instant time) {
-//        return (new PointBuilder())
-//            .sourceDetails(new Extras.SourceDetails("sen", "XYZ"))
-//            .latLong(75.0, 1.0)
-//            .altitude(Distance.ofFeet(15.0))
-//            .time(time)
-//            .build();
-//    }
-
     @Test
     public void testLatLongOf() {
 

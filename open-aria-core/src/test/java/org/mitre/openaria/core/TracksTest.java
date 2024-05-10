@@ -48,7 +48,7 @@ public class TracksTest {
     @Test
     public void testAsNop_customPoints() {
 
-        record PojoWithAcDetails(AircraftDetails acDetails) implements HasAircraftDetails {};
+        record PojoWithAcDetails(AircraftDetails acDetails) implements HasAircraftDetails {}
 
         Point p1 = (new PointBuilder())
             .time(Instant.EPOCH)

@@ -13,5 +13,5 @@ package org.mitre.openaria.system;
 @FunctionalInterface
 public interface KpiFactory<K> {
 
-    public StreamingKpi createKpi(K key);
+    StreamingKpi createKpi(K key);
 }

@@ -87,9 +87,6 @@ public class AirborneDynamicsTest {
 
         String json = record.asJson();
 
-        // cache for use in other tests
-//		System.out.println(json);
-//		System.out.println(gson.toJson(record)); // not-pretty print as of writing
         SerializableAnalysis record_round2 = parseJson(json);
 
         String json2 = record_round2.asJson();
