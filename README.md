@@ -2,7 +2,6 @@
 
 [![Java CI with Gradle](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml/badge.svg)](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml)
 
-
 # Welcome to OpenARIA
 
 This repository contains an open-source edition of the _Aviation Risk Identification and Assessment_ (ARIA) software
