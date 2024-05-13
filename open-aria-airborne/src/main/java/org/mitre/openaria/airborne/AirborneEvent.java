@@ -36,6 +36,7 @@ import org.mitre.openaria.core.PointPair;
 import org.mitre.openaria.core.ScoredInstant;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.output.HashUtils;
 import org.mitre.openaria.core.utils.ConflictAngle;
 
@@ -541,8 +542,11 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
     }
 
     private String[] extractRawTrackData(Track track1) {
+
+        NopEncoder nopEncoder = new NopEncoder(); //assumes NOP encoding..
+
         return track1.points().stream()
-            .map(Point::asNop)
+            .map(p -> nopEncoder.asRawNop(p))
             .toArray(String[]::new);
     }
 

@@ -11,6 +11,7 @@ import static org.mitre.openaria.core.formats.nop.NopParsingUtils.parseNopTime;
 
 import java.util.Optional;
 
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.AgwRadarHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
@@ -166,10 +167,12 @@ public class NopPointsTest {
         Point<NopHit> agw = NopHit.from(AGW_RH_MESSAGE);
         Point<NopHit> mearts = NopHit.from(MEARTS_RH_MESSAGE);
 
-        assertEquals(CENTER_RH_MESSAGE, center.asNop());
-        assertEquals(STARS_RH_MESSAGE, stars.asNop());
-        assertEquals(AGW_RH_MESSAGE, agw.asNop());
-        assertEquals(MEARTS_RH_MESSAGE, mearts.asNop());
+        NopEncoder nopEncoder = new NopEncoder();
+
+        assertEquals(CENTER_RH_MESSAGE, nopEncoder.asRawNop(center));
+        assertEquals(STARS_RH_MESSAGE, nopEncoder.asRawNop(stars));
+        assertEquals(AGW_RH_MESSAGE, nopEncoder.asRawNop(agw));
+        assertEquals(MEARTS_RH_MESSAGE, nopEncoder.asRawNop(mearts));
     }
 
     @Test

@@ -6,10 +6,13 @@ import static java.util.Objects.nonNull;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasBeaconCodes;
@@ -36,6 +39,25 @@ public class NopEncoder {
         return formatter;
     }
 
+
+    /**
+     * @return A String with one line per point.  Each line a single Point as if it were a raw NOP
+     *     Radar Hit (RH) Messages. This method relies on each contained Point object to provide the
+     *     best possible "nop representation" of itself.
+     */
+    public String asRawNop(Collection<Point> points) {
+
+        String combinedString = points.stream()
+            .map(p -> asRawNop(p))
+            .collect(Collectors.joining("\n"));
+
+        return combinedString + "\n";
+    }
+
+    public String asRawNop(Track track) {
+        return asRawNop(track.points());
+    }
+
     /**
      * Note: Consider using a Point's "asNop()" method directly. It is possible the implementing
      * class can provide a better NOP encoding than a NopEncoder can generate. The NopEncoder must
@@ -50,6 +72,10 @@ public class NopEncoder {
      *     is available in any of the NOP formats (AGW, CENTER, or STARS)
      */
     public String asRawNop(Point<?> p) {
+
+        if(p.rawData() instanceof NopHit nop) {
+            return nop.rawMessage().rawMessage();
+        }
 
         AircraftDetails acDetails = null;
         SourceDetails sourceDetails = null;

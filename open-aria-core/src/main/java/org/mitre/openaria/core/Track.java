@@ -79,21 +79,6 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
     }
 
     /**
-     * @return A String that represent this Track as if it were a sequence of raw NOP Radar Hit (RH)
-     *     Messages. This method relies on each contained Point object to provide the best possible
-     *     "nop representation" of itself.
-     */
-    public String asNop() {
-
-        //rely on the each point to generate the best possible "nop representation" of itself.
-        StringBuilder sb = new StringBuilder();
-        for (Point point : points()) {
-            sb.append(point.asNop()).append("\n");
-        }
-        return sb.toString();
-    }
-
-    /**
      * @return The minimum TimeWindow that contains all Points within this Track."
      */
     public TimeWindow asTimeWindow() {

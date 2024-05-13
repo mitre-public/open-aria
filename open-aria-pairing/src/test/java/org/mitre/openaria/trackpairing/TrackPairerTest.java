@@ -25,6 +25,7 @@ import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.threading.TrackMaker;
 
@@ -100,10 +101,14 @@ public class TrackPairerTest {
         assertEquals(t1.size(), t2.size());
         NavigableSet<? extends Point> t1Points = newTreeSet(t1.points());
         NavigableSet<? extends Point> t2Points = newTreeSet(t2.points());
+
+        NopEncoder nopEncoder = new NopEncoder();
+
         while (!t1Points.isEmpty()) {
-            Point t1Point = t1Points.pollFirst();
-            Point t2Point = t2Points.pollFirst();
-            assertEquals(t1Point.asNop(), t2Point.asNop());
+            Point p1Pnt = t1Points.pollFirst();
+            Point t2Pnt = t2Points.pollFirst();
+            assertThat(nopEncoder.asRawNop(p1Pnt), is(nopEncoder.asRawNop(t2Pnt)));
+
         }
     }
 

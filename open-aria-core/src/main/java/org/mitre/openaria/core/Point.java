@@ -13,8 +13,6 @@ import org.mitre.caasd.commons.HasTime;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.Speed;
-import org.mitre.openaria.core.formats.NopEncoder;
-import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
 
@@ -43,27 +41,6 @@ public record Point<T>(Position position, Velocity velocity, String trackId,
 
     public Speed speed() {
         return nonNull(velocity) ? velocity.speed() : null;
-    }
-
-
-    /**
-     * @return A String that represent this point as if it were a raw NOP Radar Hit (RH) Message.
-     *     When possible, this method will delegate to the implementing Point class (which may
-     *     contain the raw NOP Message). The default implementation "harvests" the data fields
-     *     available as part of the Point interface and builds a "faux RH Message" from that data.
-     */
-    public String asNop() {
-
-        if(rawData instanceof NopHit np) {
-            return np.rawMessage().rawMessage();
-        }
-
-
-        /*
-         * If the implementing class cannot provide the raw Nop RH Message itself encode whatever
-         * data is available via the Point interface itself.
-         */
-        return (new NopEncoder()).asRawNop(this);
     }
 
     /**

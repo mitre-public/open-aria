@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.smoothing.VerticalOutlierDetector.AnalysisResult;
 
@@ -218,9 +219,11 @@ public class VerticalOutlierDetectorTest {
 
     private void confirmExactlyTheseOutliers(Collection<AnalysisResult> foundOutliers, String... expectedOutliters) {
 
+        NopEncoder nopEncoder = new NopEncoder();
+
         Set<String> knownOutliers = Stream.of(expectedOutliters)
             .map(asRawNop -> NopHit.from(asRawNop)) //convert the raw Nop to Points
-            .map(Point -> Point.asNop()) //get the "lossy" Strings
+            .map(p -> nopEncoder.asRawNop(p)) //get the "lossy" Strings
             .collect(toCollection(HashSet::new)); //in a HashSet
 
         Collection<Point> outlieingPoints = foundOutliers.stream()
@@ -230,7 +233,7 @@ public class VerticalOutlierDetectorTest {
         assertThat(foundOutliers.size(), is(expectedOutliters.length));
 
         for (Point foundOutlier : outlieingPoints) {
-            assertTrue(knownOutliers.contains(foundOutlier.asNop()));
+            assertTrue(knownOutliers.contains(nopEncoder.asRawNop(foundOutlier)));
         }
 
         assertEquals(

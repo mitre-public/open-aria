@@ -16,6 +16,7 @@ import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.ClosestPointOfApproach;
 import org.mitre.openaria.core.PointPair;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.NopEncoder;
 
 /**
  * A AirborneSeparationPredication takes two instantaneous aircraft trajectories and predicts: (1)
@@ -88,8 +89,9 @@ public class SeparationPrediction {
             this.immediateScore = computeImmediateScore();
 
         } catch (NullPointerException npe) {
-            String track1 = trackPair.track1().asNop();
-            String track2 = trackPair.track2().asNop();
+            NopEncoder nopEncoder = new NopEncoder();
+            String track1 = nopEncoder.asRawNop(trackPair.track1());
+            String track2 = nopEncoder.asRawNop(trackPair.track2());
             throw new RuntimeException(track1 + "\n" + track2 + "\n", npe);
         }
     }
