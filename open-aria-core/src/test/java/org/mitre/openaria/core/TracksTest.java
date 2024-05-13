@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
@@ -40,9 +41,11 @@ public class TracksTest {
 
         Track track = Track.of( (List) points);
 
+        NopEncoder nopEncoder = new NopEncoder();
+
         assertEquals(
             raw1 + "\n" + raw2 + "\n" + raw3 + "\n",
-            track.asNop()
+            nopEncoder.asRawNop(track.points())
         );
     }
 
@@ -74,11 +77,13 @@ public class TracksTest {
 
         Track track = Track.of(points);
 
+        NopEncoder nopEncoder = new NopEncoder();
+
         assertEquals(
             "[RH],STARS,,01/01/1970,00:00:00.000,,,,,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
                 + "[RH],STARS,,01/01/1970,00:00:04.000,AA123,BOEING,,,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
                 + "[RH],STARS,,01/01/1970,00:00:08.000,,,,,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n",
-            track.asNop()
+            nopEncoder.asRawNop(track.points())
         );
     }
 

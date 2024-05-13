@@ -21,6 +21,7 @@ import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
@@ -128,8 +129,8 @@ public class LateralOutlierDetectorTest {
         String outlier2 = "[RH],STARS,ABE_B,03/25/2018,21:45:18.207,N317A,SR22,,0224,033,170,269,040.48656,-075.97119,2326,0224,-24.2925,-9.8784,0,4,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
 
         Set<String> knownOutliers = newHashSet(
-            NopHit.from(outlier1).asNop(),
-            NopHit.from(outlier2).asNop()
+            outlier1,
+            outlier2
         );
 
         Track testTrack = createTrackFromFile(
@@ -140,9 +141,12 @@ public class LateralOutlierDetectorTest {
         NavigableSet<Point> outliers = outlierDetector.getOutliers(testTrack);
 
         assertEquals(2, outliers.size(), "We found exactly 2 outliers");
+
+        NopEncoder nopEncoder = new NopEncoder();
+
         //and they are the two shown above
-        for (Point outlier : outliers) {
-            assertTrue(knownOutliers.contains(outlier.asNop()));
+        for (Point<?> outlier : outliers) {
+            assertTrue(knownOutliers.contains(nopEncoder.asRawNop(outlier)));
         }
 
         //using the outlierDetector's "clean" method will mutate the input, save the prior state

@@ -15,6 +15,7 @@ import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.trackpairing.IsFormationFlight;
 import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 
@@ -94,19 +95,25 @@ public class DataCleaning {
      */
     private static class Printer implements Consumer<TrackPair> {
 
-        SequentialFileWriter writer = new SequentialFileWriter();
+        SequentialFileWriter writer;
+
+        NopEncoder nopEncoder;
 
         String filePrefix;
 
         Printer(String outputDir) {
             System.out.println("Making Printer for: " + outputDir);
             this.writer = new SequentialFileWriter(outputDir);
+            this.nopEncoder = new NopEncoder();
             this.filePrefix = outputDir;
         }
 
         @Override
         public void accept(TrackPair t) {
-            writer.write(filePrefix, t.track1().asNop() + t.track2().asNop());
+            writer.write(
+                filePrefix,
+                nopEncoder.asRawNop(t.track1()) + nopEncoder.asRawNop(t.track2())
+            );
         }
     }
 }

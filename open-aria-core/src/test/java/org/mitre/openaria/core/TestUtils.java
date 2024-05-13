@@ -2,11 +2,14 @@
 package org.mitre.openaria.core;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.Set;
+
+import org.mitre.openaria.core.formats.NopEncoder;
 
 public class TestUtils {
 
@@ -29,11 +32,11 @@ public class TestUtils {
 
         Set<String> arrayOfPoints = newHashSet(expectedPoints);
 
+        NopEncoder nopEncoder = new NopEncoder();
+
         for (Point actualResult : actualResults) {
-            assertTrue(
-                arrayOfPoints.contains(actualResult.asNop()),
-                "The actualResult:\n" + actualResult.asNop() + " \nwas not found in the array of expected points"
-            );
+            String asNop = nopEncoder.asRawNop(actualResult);
+            assertThat(arrayOfPoints.contains(asNop), is(true));
         }
     }
 

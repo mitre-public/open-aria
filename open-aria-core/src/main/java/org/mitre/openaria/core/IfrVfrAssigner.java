@@ -9,6 +9,7 @@ import static org.mitre.openaria.core.IfrVfrStatus.VFR;
 import java.time.Instant;
 import java.util.Collection;
 
+import org.mitre.openaria.core.formats.NopEncoder;
 import org.mitre.openaria.core.formats.NopHit;
 
 import com.google.common.collect.EnumMultiset;
@@ -33,6 +34,9 @@ public class IfrVfrAssigner {
      * particular point in time.
      */
     private int numPointsToConsider;
+
+    /** Converts Points into NopPoints so that we can access the toString(). */
+    private final NopEncoder nopEncoder = new NopEncoder();
 
     /**
      * Create an object that can determine the IFR/VFR status of a Track at a particular moment in
@@ -82,9 +86,9 @@ public class IfrVfrAssigner {
      *
      * @return IFR or VFR.
      */
-    public IfrVfrStatus statusOf(Point point) {
+    public IfrVfrStatus statusOf(Point<?> point) {
 
-        Point<NopHit> np = NopHit.from(point.asNop());
+        Point<NopHit> np = NopHit.from(nopEncoder.asRawNop(point));
 
         if (np.rawData().hasValidBeaconActual() && beaconIsVfr(np.rawData().beaconActualAsInt())) {
             return VFR;

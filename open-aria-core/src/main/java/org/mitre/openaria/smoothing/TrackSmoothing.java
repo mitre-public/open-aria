@@ -9,6 +9,7 @@ import org.mitre.caasd.commons.Functions.ToStringFunction;
 import org.mitre.caasd.commons.util.ExceptionHandler;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopEncoder;
 
 public class TrackSmoothing {
 
@@ -28,8 +29,6 @@ public class TrackSmoothing {
              * only the trailing points)
              */
             new TimeDownSampler(Duration.ofMillis(4_000)),
-            //correct missing speed values
-//            new FillMissingSpeeds(),
             //removes near-stationary Tracks produces by "radar mirages" off of skyscrapers and such
             new RemoveLowVariabilityTracks(),
             //removes near-duplicate points when a track is stationary.
@@ -49,8 +48,10 @@ public class TrackSmoothing {
 
     public static DataCleaner<Track> simpleSmoothing() {
 
+        NopEncoder nopEncoder = new NopEncoder();
+
         DataCleaner<Track> cleaner = coreSmoothing();
-        ToStringFunction<Track> toString = track -> track.asNop();
+        ToStringFunction<Track> toString = track -> nopEncoder.asRawNop(track);
         ExceptionHandler exceptionHandler = new SequentialFileWriter("trackCleaningExceptions");
 
         return new ExceptionCatchingCleaner<>(cleaner, toString, exceptionHandler);
