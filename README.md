@@ -1,4 +1,7 @@
+
 ![aria logo picture](./docs/assets/DFW-Airspace-Graph.gif)
+
+[![Java CI with Gradle](https://github.com/mitre-public/commons/actions/workflows/gradle.yml/badge.svg)](https://github.com/mitre-public/commons/actions/workflows/gradle.yml)
 
 # Welcome to OpenARIA
 
