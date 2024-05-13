@@ -18,7 +18,6 @@ import com.google.gson.JsonParser;
 public class HashUtils {
 
     private static final Gson FLAT_GSON = new Gson();
-    private static final JsonParser PARSER = new JsonParser();
 
     public static final String HASH_FIELD_NAME = "uniqueId";
 
@@ -48,7 +47,7 @@ public class HashUtils {
     static String removeWhiteSpaceFromJson(String json) {
 
         //reparse the JSON to ensure that all whitespace formatting is uniform
-        String flattend = FLAT_GSON.toJson(PARSER.parse(json));
+        String flattend = FLAT_GSON.toJson(JsonParser.parseString(json));
 
         return flattend;
     }

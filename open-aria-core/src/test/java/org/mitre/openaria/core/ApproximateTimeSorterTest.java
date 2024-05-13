@@ -205,7 +205,7 @@ public class ApproximateTimeSorterTest {
     public void testVeryOldPointsAreAutoEvicted() {
         ConsumingArrayList<Point> downstreamConsumer = newConsumingArrayList();
 
-        ApproximateTimeSorter sorter = new ApproximateTimeSorter(
+        ApproximateTimeSorter<Point> sorter = new ApproximateTimeSorter<>(
             Duration.ofSeconds(10),
             downstreamConsumer
         );
