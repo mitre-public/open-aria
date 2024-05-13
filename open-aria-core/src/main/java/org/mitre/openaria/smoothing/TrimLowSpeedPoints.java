@@ -16,7 +16,7 @@ import org.mitre.openaria.core.Track;
  * attempting to remove ground-data from Tracks (in cases where you only are interested in the
  * airborne section of a track).
  */
-public class TrimLowSpeedPoints<T> implements DataCleaner<Track> {
+public class TrimLowSpeedPoints implements DataCleaner<Track> {
 
     private final double speedLimitInKnots;
     private final int minNumberPoints;

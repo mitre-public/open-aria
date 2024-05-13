@@ -110,7 +110,7 @@ public class StrictTimeSortEnforcerTest {
 
         TestConsumer testConsumer = new TestConsumer();
 
-        StrictTimeSortEnforcer sorted = new StrictTimeSortEnforcer(testConsumer);
+        StrictTimeSortEnforcer<Point> sorted = new StrictTimeSortEnforcer<>(testConsumer);
 
         //only points with indice 0, 1, 3, 5, 6 should be delivered
         List<Point> testData = testData(0, 1, -1, 2, -3, 3, 4, -1, 3);
@@ -129,9 +129,9 @@ public class StrictTimeSortEnforcerTest {
     public void testSkippedAreAvailableInLastSkippedPoint() {
 
         TestConsumer testConsumer = new TestConsumer();
-        ConsumingLinkedList rejectionConsumer = newConsumingLinkedList();
+        ConsumingLinkedList<Point> rejectionConsumer = newConsumingLinkedList();
 
-        StrictTimeSortEnforcer sorted = new StrictTimeSortEnforcer(
+        StrictTimeSortEnforcer<Point> sorted = new StrictTimeSortEnforcer<>(
             testConsumer,
             rejectionConsumer
         );

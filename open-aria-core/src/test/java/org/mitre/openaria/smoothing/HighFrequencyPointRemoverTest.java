@@ -8,9 +8,10 @@ import static org.mitre.openaria.core.Tracks.createTrackFromResource;
 import java.time.Duration;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Track;
 import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.openaria.core.Track;
+
+import org.junit.jupiter.api.Test;
 
 public class HighFrequencyPointRemoverTest {
 
@@ -24,7 +25,7 @@ public class HighFrequencyPointRemoverTest {
 
         Duration MIN_ALLOWABLE_SPACING = Duration.ofMillis(500);
 
-        DataCleaner smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
+        DataCleaner<Track> smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
 
         Optional<Track> cleanedTrack = smoother.clean(testTrack);
 
@@ -49,7 +50,7 @@ public class HighFrequencyPointRemoverTest {
 
         Duration MIN_ALLOWABLE_SPACING = Duration.ofMillis(500);
 
-        DataCleaner smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
+        DataCleaner<Track> smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
 
         Optional<Track> cleanedTrack = smoother.clean(testTrack);
 
@@ -75,7 +76,7 @@ public class HighFrequencyPointRemoverTest {
 
         Duration MIN_ALLOWABLE_SPACING = Duration.ofSeconds(10);
 
-        DataCleaner smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
+        DataCleaner<Track> smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
 
         Optional<Track> cleanedTrack = smoother.clean(testTrack);
 
