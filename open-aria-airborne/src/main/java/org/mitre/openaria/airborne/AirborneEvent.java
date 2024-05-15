@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.NavigableSet;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -541,11 +542,13 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         return String.format("%05d", daySeconds);  //always use 5 characters for this number
     }
 
-    private String[] extractRawTrackData(Track track1) {
+    private String[] extractRawTrackData(Track track) {
 
         NopEncoder nopEncoder = new NopEncoder(); //assumes NOP encoding..
 
-        return track1.points().stream()
+        // this stream is wonky because Track is a rawType.  Fix Track, get better stream
+        return ((NavigableSet<Point<?>>) track.points())
+            .stream()
             .map(p -> nopEncoder.asRawNop(p))
             .toArray(String[]::new);
     }

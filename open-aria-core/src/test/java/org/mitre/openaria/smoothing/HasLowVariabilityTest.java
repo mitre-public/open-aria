@@ -75,7 +75,7 @@ public class HasLowVariabilityTest {
             points.add(gaussianPoint(i, distStandardDev));
         }
 
-        return Track.of(points);
+        return Track.ofRaw(points);
     }
 
     private static Point gaussianPoint(int i, double distStandardDev) {

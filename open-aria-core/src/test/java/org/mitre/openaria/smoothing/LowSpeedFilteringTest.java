@@ -2,6 +2,8 @@
 package org.mitre.openaria.smoothing;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,14 +32,17 @@ public class LowSpeedFilteringTest {
         Point<NopHit> p5 = NopHit.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
         Point<NopHit> p6 = NopHit.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
-        Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
+        Track<NopHit> fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
 
         //should remove p1 and p2
-        Optional<Track> cleanedTrack = (new TrimLowSpeedPoints(50, 1)).clean(fullTrack);
+        Optional<Track> optionalTrack = (new TrimLowSpeedPoints(50, 1)).clean(fullTrack);
 
-        assertTrue(cleanedTrack.isPresent());
-        assertTrue(cleanedTrack.get().size() == 4);
-        assertTrue(cleanedTrack.get().points().first().time().equals(
+        assertTrue(optionalTrack.isPresent());
+
+        Track<NopHit> cleaned = optionalTrack.get();
+
+        assertThat(cleaned.size(), is(4));
+        assertThat(cleaned.points().first().time(), is(
             NopParsingUtils.parseNopTime("06/30/2017", "16:40:42.000")
         ));
     }
@@ -52,14 +57,17 @@ public class LowSpeedFilteringTest {
         Point<NopHit> p5 = NopHit.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,0,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
         Point<NopHit> p6 = NopHit.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,0,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
-        Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
+        Track<NopHit> fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
 
         //should remove p5 and p6
-        Optional<Track> cleanedTrack = (new TrimLowSpeedPoints(50, 1)).clean(fullTrack);
+        Optional<Track> optionalTrack = (new TrimLowSpeedPoints(50, 1)).clean(fullTrack);
 
-        assertTrue(cleanedTrack.isPresent());
-        assertTrue(cleanedTrack.get().size() == 4);
-        assertTrue(cleanedTrack.get().points().last().time().equals(
+        assertTrue(optionalTrack.isPresent());
+
+        Track<NopHit> cleaned = optionalTrack.get();
+
+        assertThat(cleaned.size(), is(4));
+        assertThat(cleaned.points().last().time(), is(
             NopParsingUtils.parseNopTime("06/30/2017", "16:40:54.000")
         ));
     }

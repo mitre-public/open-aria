@@ -54,23 +54,23 @@ public class TracksTest {
 
         record PojoWithAcDetails(AircraftDetails acDetails) implements HasAircraftDetails {}
 
-        Point p1 = (new PointBuilder())
+        Point<PojoWithAcDetails> p1 = Point.<PojoWithAcDetails>builder()
             .time(Instant.EPOCH)
             .latLong(0.0, 1.0)
             .build();
 
-        Point p2 = (new PointBuilder())
+        Point p2 = Point.<PojoWithAcDetails>builder()
             .time(Instant.EPOCH.plusSeconds(4))
             .rawData(new PojoWithAcDetails(new AircraftDetails("AA123", "BOEING")))
             .latLong(0.0, 1.0)
             .build();
 
-        Point p3 = (new PointBuilder())
+        Point p3 = Point.<PojoWithAcDetails>builder()
             .time(Instant.EPOCH.plusSeconds(8))
             .latLong(0.0, 1.0)
             .build();
 
-        List<Point> points = new ArrayList<>();
+        List<Point<PojoWithAcDetails>> points = new ArrayList<>();
         points.add(p1);
         points.add(p2);
         points.add(p3);

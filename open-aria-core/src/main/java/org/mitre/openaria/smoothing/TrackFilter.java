@@ -77,7 +77,7 @@ public class TrackFilter implements DataCleaner<Track> {
 
         return smoothedPoints.isEmpty()
             ? Optional.empty()
-            : Optional.of(Track.of(smoothedPoints));
+            : Optional.of(Track.ofRaw(smoothedPoints));
     }
 
     private Point makeAdjustedPoint(KineticRecord<Point> kr) {

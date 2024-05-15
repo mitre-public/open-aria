@@ -46,7 +46,7 @@ public class IfrVfrAssigner {
      * @param numPointsToConsider The number of points to consider when making the determination
      *                            (must be odd)
      */
-    public IfrVfrAssigner(Range vfrRange, int numPointsToConsider) {
+    public IfrVfrAssigner(Range<Integer> vfrRange, int numPointsToConsider) {
         this.vfrBeaconRange = checkNotNull(vfrRange);
         checkArgument(numPointsToConsider % 2 == 1, "numPointsToConsider must be odd: " + numPointsToConsider);
         this.numPointsToConsider = numPointsToConsider;

@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 
@@ -37,7 +38,10 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
      */
     public ArrayList<AnalysisResult> getOutliers(Track track) {
 
-        return track.points().stream()
+        // the stream is wonky due to the raw type, probably could be improved
+
+        return ((NavigableSet<Point<?>>) track.points())
+            .stream()
             .map(point -> analyzePoint(point, track))
             .filter(analysisResult -> analysisResult.isOutlier())
             .collect(toCollection(ArrayList::new));
@@ -63,7 +67,7 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
         points.removeAll(outliers.stream().map(ar -> ar.originalPoint).toList());
         points.addAll(outliers.stream().map(ar -> ar.correctedPoint()).toList());
 
-        return Optional.of(Track.of(points));
+        return Optional.of(Track.ofRaw(points));
     }
 
     /**

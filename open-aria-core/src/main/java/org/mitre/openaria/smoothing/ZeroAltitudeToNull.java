@@ -2,6 +2,7 @@ package org.mitre.openaria.smoothing;
 
 import static java.util.stream.Collectors.toCollection;
 
+import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 
@@ -11,16 +12,17 @@ import org.mitre.openaria.core.Track;
 
 public class ZeroAltitudeToNull implements DataCleaner<Track> {
     @Override
-    public Optional<Track> clean(Track mutableTrack) {
+    public Optional<Track> clean(Track track) {
 
-        TreeSet<Point> cleanedPoints = mutableTrack.points().stream()
+        TreeSet<Point> cleanedPoints = ((NavigableSet<Point<?>>) track.points())
+            .stream()
             .map(p -> pointWithNullAltitude(p))
             .collect(toCollection(TreeSet::new));
 
-        return Optional.of(Track.of(cleanedPoints));
+        return Optional.of(Track.ofRaw(cleanedPoints));
     }
 
-    private Point pointWithNullAltitude(Point p) {
+    private Point<?> pointWithNullAltitude(Point<?> p) {
 
         return pointHasNegativeAltitude(p)
             ? Point.builder(p).altitude(null).build()

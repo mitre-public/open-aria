@@ -62,6 +62,6 @@ public class TimeDownSampler implements DataCleaner<Track> {
             }
         }
 
-        return Optional.of(Track.of(points));
+        return Optional.of(Track.ofRaw(points));
     }
 }

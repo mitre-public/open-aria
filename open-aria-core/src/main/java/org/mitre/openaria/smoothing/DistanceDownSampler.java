@@ -84,7 +84,7 @@ public class DistanceDownSampler implements DataCleaner<Track> {
             }
         }
 
-        return Optional.of(Track.of(points));
+        return Optional.of(Track.ofRaw(points));
     }
 
     private boolean tooCloseInSpace(LatLong anchor, Point point) {

@@ -61,12 +61,12 @@ public class TrimLowSpeedGroundPointsTest {
         "[RH],STARS,D01,08/27/2021,13:21:41.556,,,,1200,070,081,311,039.53691,-104.85966,3600,0000,76.0398,20.8328,,,,D01,,,,,,ACT,IFR,,00000,A2A0BB,,,,,,1,,0,{RH}"
     };
 
-    public Track trackWithLowSpeedTakeOff() {
-        List<Point> points = Stream.of(rawNopPoints)
+    public Track<NopHit> trackWithLowSpeedTakeOff() {
+        List<Point<NopHit>> points = Stream.of(rawNopPoints)
             .map(str -> NopHit.from(str))
             .collect(toList());
 
-        return Track.of((List) points);
+        return Track.of(points);
     }
 
     @Test
@@ -78,12 +78,12 @@ public class TrimLowSpeedGroundPointsTest {
             5
         );
 
-        Track testTrack = trackWithLowSpeedTakeOff();
+        Track<NopHit> testTrack = trackWithLowSpeedTakeOff();
 
         Optional<Track> cleanedTrack = smoother.clean(testTrack);
 
         assertThat(cleanedTrack.isPresent(), is(true));
-        Track track = cleanedTrack.get();
+        Track<NopHit> track = cleanedTrack.get();
         int numRemovedFromFront = 4;
         int numRemovedFromBack = 8;
         assertThat(track.size(), is(27 - numRemovedFromFront - numRemovedFromBack));

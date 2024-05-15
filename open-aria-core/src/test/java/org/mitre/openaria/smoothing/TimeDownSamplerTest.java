@@ -11,14 +11,13 @@ import java.time.Duration;
 import java.time.Instant;
 
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointBuilder;
 import org.mitre.openaria.core.Track;
 
 import org.junit.jupiter.api.Test;
 
 public class TimeDownSamplerTest {
 
-    public static Track testTrack() {
+    public static Track<String> testTrack() {
         return Track.of(newArrayList(
             newPoint(EPOCH),
             newPoint(EPOCH.plusSeconds(1)),
@@ -30,9 +29,9 @@ public class TimeDownSamplerTest {
         ));
     }
 
-    private static Point newPoint(Instant pointTime) {
+    private static Point<String> newPoint(Instant pointTime) {
 
-        return (new PointBuilder())
+        return Point.<String>builder()
             .time(pointTime)
             .latLong(0.0, 0.0)
             .build();
@@ -44,7 +43,7 @@ public class TimeDownSamplerTest {
         Duration maxTimeDelta = Duration.ofSeconds(5);
         TimeDownSampler smoother = new TimeDownSampler(maxTimeDelta);
 
-        Track cleanedTrack = smoother.clean(testTrack()).get();
+        Track<String> cleanedTrack = smoother.clean(testTrack()).get();
 
         Point last = null;
         for (Point point : cleanedTrack.points()) {

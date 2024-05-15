@@ -45,7 +45,7 @@ public class TrimLowSpeedPoints implements DataCleaner<Track> {
         while (!points.isEmpty() && points.last().speed().inKnots() < speedLimitInKnots) {
             points.pollLast();
         }
-        return (points.size() >= minNumberPoints) ? Optional.of(Track.of(points)) : Optional.empty();
+        return (points.size() >= minNumberPoints) ? Optional.of(Track.ofRaw(points)) : Optional.empty();
     }
 
 }

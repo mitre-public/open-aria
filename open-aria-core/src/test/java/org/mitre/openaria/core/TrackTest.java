@@ -124,7 +124,7 @@ public class TrackTest {
     @Test
     public void subset_predicate() {
 
-        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
 
         int NUM_TRACK_POINTS = 63;
 
@@ -138,7 +138,7 @@ public class TrackTest {
         Collection<Point<String>> nothing = t1.subset(ALWAYS_FALSE);
         assertThat(nothing, hasSize(0));
 
-        Collection<Point> lowSpeedPoints = t1.subset(pt -> nonNull(pt.speed()) && pt.speed().inKnots() < 90);
+        Collection<Point<NopHit>> lowSpeedPoints = t1.subset(pt -> nonNull(pt.speed()) && pt.speed().inKnots() < 90);
 
         //get something...
         assertThat(lowSpeedPoints, not(empty()));

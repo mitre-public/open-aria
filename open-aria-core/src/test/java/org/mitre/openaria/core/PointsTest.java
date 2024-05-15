@@ -149,26 +149,26 @@ public class PointsTest {
         );
     }
 
-    static final Point p1 = newPoint(EPOCH);
-    static final Point p2 = newPoint(EPOCH, Distance.ofFeet(1000)); //adding a beacon code makes it distinct from p1
-    static final Point p3 = newPoint(EPOCH.plusSeconds(1));
-    static final Point p4 = newPoint(EPOCH.plusSeconds(1), Distance.ofFeet(1000)); //adding a beacon code makes it distinct from p3
-    static final Point p5 = newPoint(EPOCH.plusSeconds(2));
-    static final Point p6 = newPoint(EPOCH.plusSeconds(3));
-    static final Point p7 = newPoint(EPOCH.plusSeconds(4));
-    static final Point p8 = newPoint(EPOCH.plusSeconds(5));
-    static final Point p9 = newPoint(EPOCH.plusSeconds(6));
-    static final Point p10 = newPoint(EPOCH.plusSeconds(7));
-    static final Point p11 = newPoint(EPOCH.plusSeconds(8));
-    static final Point p12 = newPoint(EPOCH.plusSeconds(9));
+    static final Point<String> p1 = newPoint(EPOCH);
+    static final Point<String> p2 = newPoint(EPOCH, Distance.ofFeet(1000)); //adding a beacon code makes it distinct from p1
+    static final Point<String> p3 = newPoint(EPOCH.plusSeconds(1));
+    static final Point<String> p4 = newPoint(EPOCH.plusSeconds(1), Distance.ofFeet(1000)); //adding a beacon code makes it distinct from p3
+    static final Point<String> p5 = newPoint(EPOCH.plusSeconds(2));
+    static final Point<String> p6 = newPoint(EPOCH.plusSeconds(3));
+    static final Point<String> p7 = newPoint(EPOCH.plusSeconds(4));
+    static final Point<String> p8 = newPoint(EPOCH.plusSeconds(5));
+    static final Point<String> p9 = newPoint(EPOCH.plusSeconds(6));
+    static final Point<String> p10 = newPoint(EPOCH.plusSeconds(7));
+    static final Point<String> p11 = newPoint(EPOCH.plusSeconds(8));
+    static final Point<String> p12 = newPoint(EPOCH.plusSeconds(9));
 
-    static final TreeSet<Point> points = newTreeSet(
+    static final TreeSet<Point<String>> points = newTreeSet(
         newArrayList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12)
     );
 
     @Test
     public void testFastKNearestPoints_1() {
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH.plusSeconds(20), 1);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH.plusSeconds(20), 1);
         assertEquals(1, knn.size());
         Point neighbor = knn.pollFirst();
         assertTrue(neighbor == p12);
@@ -177,7 +177,7 @@ public class PointsTest {
 
     @Test
     public void testFastKNearestPoints_2() {
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH, 2);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH, 2);
         assertEquals(2, knn.size());
         Point one = knn.pollFirst();
         Point two = knn.pollFirst();
@@ -188,7 +188,7 @@ public class PointsTest {
 
     @Test
     public void testFastKNearestPoints_3() {
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH.plusMillis(5), 3);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH.plusMillis(5), 3);
         assertEquals(3, knn.size());
         Point one = knn.pollFirst();
         Point two = knn.pollFirst();
@@ -203,7 +203,7 @@ public class PointsTest {
     @Test
     public void testFastKNearestPoints_4() {
         //Searching for a "time" that is NOT used in the points dataset works
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH.plusMillis(5_123), 3);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH.plusMillis(5_123), 3);
         assertEquals(3, knn.size());
         Point one = knn.pollFirst();
         Point two = knn.pollFirst();
@@ -217,7 +217,7 @@ public class PointsTest {
     @Test
     public void testFastKNearestPoints_5() {
         //Searching for a "time" that is used in the points dataset works
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH.plusSeconds(5), 3);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH.plusSeconds(5), 3);
         assertEquals(3, knn.size());
         Point one = knn.pollFirst();
         Point two = knn.pollFirst();
@@ -230,7 +230,7 @@ public class PointsTest {
 
     @Test
     public void testFastKNearestPoints_6() {
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH.plusSeconds(5), 100);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH.plusSeconds(5), 100);
         assertEquals(points.size(), knn.size());
         assertFalse(knn == points, "The datasets are different");
         knn.pollFirst();
@@ -239,27 +239,27 @@ public class PointsTest {
 
     @Test
     public void testFastKNearestPoints_7() {
-        NavigableSet<Point> knn = fastKNearestPoints(points, EPOCH.plusSeconds(5), 0);
+        NavigableSet<Point<String>> knn = fastKNearestPoints(points, EPOCH.plusSeconds(5), 0);
         assertEquals(0, knn.size());
         assertEquals(12, points.size());
     }
 
-    private static Point newPoint(Instant time) {
-        return Point.builder().latLong(0.0, 0.0).time(time).build();
+    private static Point<String> newPoint(Instant time) {
+        return Point.<String>builder().latLong(0.0, 0.0).time(time).build();
     }
 
-    private static Point newPoint(Instant time, Distance altitude) {
-        return Point.builder().latLong(0.0, 0.0).time(time).altitude(altitude).build();
+    private static Point<String> newPoint(Instant time, Distance altitude) {
+        return Point.<String>builder().latLong(0.0, 0.0).time(time).altitude(altitude).build();
     }
 
     @Test
     public void subset_returnsEmptyCollectionWhenNothingQualifies() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         TimeWindow windowThatDoesNotOverlapWithTrack = TimeWindow.of(EPOCH, EPOCH.plusSeconds(100));
 
-        TreeSet<Point> subset = subset(windowThatDoesNotOverlapWithTrack, (NavigableSet<Point>) t1.points());
+        TreeSet<Point<NopHit>> subset = subset(windowThatDoesNotOverlapWithTrack, t1.points());
 
         assertThat(subset, hasSize(0));
     }
@@ -267,14 +267,14 @@ public class PointsTest {
     @Test
     public void subset_reflectsEndTime() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         //this is the time of 21st point in the track
         Instant endTime = parseNopTime("07/08/2017", "14:10:45.534");
 
         TimeWindow extractionWindow = TimeWindow.of(EPOCH, endTime);
 
-        TreeSet<Point> subset = subset(extractionWindow, (NavigableSet<Point>) t1.points());
+        TreeSet<Point<NopHit>> subset = subset(extractionWindow, t1.points());
 
         assertThat(subset, hasSize(21));
         assertThat(subset.last().time(), is(endTime));
@@ -283,14 +283,14 @@ public class PointsTest {
     @Test
     public void subset_reflectsStartTime() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         //this is the time of 21st point in the track
         Instant startTime = parseNopTime("07/08/2017", "14:10:45.534");
 
         TimeWindow extractionWindow = TimeWindow.of(startTime, startTime.plus(365 * 20, DAYS));
 
-        NavigableSet<Point> subset = (NavigableSet<Point>) subset(extractionWindow, (NavigableSet<Point>) t1.points());
+        NavigableSet<Point<NopHit>> subset = subset(extractionWindow, t1.points());
 
         assertThat(subset, hasSize(t1.size() - 21 + 1)); //"+1" because the fence post Point is in both the original track and the subset
 
@@ -301,13 +301,13 @@ public class PointsTest {
     @Test
     public void subset_reflectsStartAndEndTimes() {
 
-        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
 
         Instant startTime = parseNopTime("07/08/2017", "14:10:45.534");
         Instant endTime = parseNopTime("07/08/2017", "14:11:17.854");
         TimeWindow extractionWindow = TimeWindow.of(startTime, endTime);
 
-        TreeSet<Point> subset = subset(extractionWindow, (NavigableSet<Point>) t1.points());
+        TreeSet<Point<NopHit>> subset = subset(extractionWindow, t1.points());
 
         assertThat(subset, hasSize(8));
 

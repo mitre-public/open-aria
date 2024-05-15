@@ -31,7 +31,7 @@ public class Points {
      *
      * @return A NavigableSet contain at most k Points from this Track.
      */
-    public static NavigableSet<Point> fastKNearestPoints(SortedSet<? extends Point> points, Instant time, int k) {
+    public static <T> NavigableSet<Point<T>> fastKNearestPoints(SortedSet<Point<T>> points, Instant time, int k) {
 
         checkNotNull(points, "The input SortedSet of Points cannot be null");
         checkNotNull(time, "The input time cannot be null");
@@ -41,17 +41,18 @@ public class Points {
             return newTreeSet(points);
         }
 
-        Point searchPoint = Point.builder().time(time).latLong(0.0, 0.0).build();
+        Point<T> stub = points.first();
+        Point<T> searchPoint = Point.builder(stub).time(time).latLong(0.0, 0.0).build();
 
         //create two iterators, one goes up from the searchPoint, one goes down from the searchPoint
-        NavigableSet<Point> headSet = ((NavigableSet<Point>) points).headSet(searchPoint, true);
-        NavigableSet<Point> tailSet = ((NavigableSet<Point>) points).tailSet(searchPoint, false);
-        Iterator<Point> headIter = headSet.descendingIterator();
-        Iterator<Point> tailIter = tailSet.iterator();
+        NavigableSet<Point<T>> headSet = ((NavigableSet<Point<T>>) points).headSet(searchPoint, true);
+        NavigableSet<Point<T>> tailSet = ((NavigableSet<Point<T>>) points).tailSet(searchPoint, false);
+        Iterator<Point<T>> headIter = headSet.descendingIterator();
+        Iterator<Point<T>> tailIter = tailSet.iterator();
 
-        TreeSet<Point> results = newTreeSet();
-        Point up = (headIter.hasNext()) ? headIter.next() : null;
-        Point down = (tailIter.hasNext()) ? tailIter.next() : null;
+        TreeSet<Point<T>> results = newTreeSet();
+        Point<T> up = (headIter.hasNext()) ? headIter.next() : null;
+        Point<T> down = (tailIter.hasNext()) ? tailIter.next() : null;
 
         while (results.size() < k) {
             //add an element from the "down set" when we are out of elements in the "up set"
@@ -193,7 +194,7 @@ public class Points {
      *
      * @return A new TreeSet containing all the points that fall within the TimeWindow
      */
-    public static TreeSet<Point> subset(TimeWindow subsetWindow, NavigableSet<Point> points) {
+    public static <T> TreeSet<Point<T>> subset(TimeWindow subsetWindow, NavigableSet<Point<T>> points) {
         checkNotNull(subsetWindow);
         checkNotNull(points);
 
@@ -216,11 +217,11 @@ public class Points {
             aPointInTrack = points.ceiling(midPoint);
         }
 
-        TreeSet<Point> outputSubset = newTreeSet();
+        TreeSet<Point<T>> outputSubset = newTreeSet();
 
         //given a starting point....go up until you hit startTime.
-        NavigableSet<Point> headset = points.headSet(aPointInTrack, true);
-        Iterator<Point> iter = headset.descendingIterator();
+        NavigableSet<Point<T>> headset = points.headSet(aPointInTrack, true);
+        Iterator<Point<T>> iter = headset.descendingIterator();
         while (iter.hasNext()) {
             Point pt = iter.next();
             if (subsetWindow.contains(pt.time())) {
@@ -233,7 +234,7 @@ public class Points {
         }
 
         //given a starting point....go down until you hit endTime.
-        NavigableSet<Point> tailSet = points.tailSet(aPointInTrack, true);
+        NavigableSet<Point<T>> tailSet = points.tailSet(aPointInTrack, true);
         iter = tailSet.iterator();
 
         while (iter.hasNext()) {

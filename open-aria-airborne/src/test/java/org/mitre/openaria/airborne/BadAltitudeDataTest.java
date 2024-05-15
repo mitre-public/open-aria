@@ -3,15 +3,18 @@ package org.mitre.openaria.airborne;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
 
-import org.junit.jupiter.api.Test;
+import java.util.NavigableSet;
+
+import org.mitre.caasd.commons.DataCleaner;
+import org.mitre.caasd.commons.Distance;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.caasd.commons.DataCleaner;
-import org.mitre.caasd.commons.Distance;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * The altitude field in NOP data can get confused when two aircraft fly directly over top of one
@@ -62,7 +65,7 @@ public class BadAltitudeDataTest {
 
         Point lastPoint = null;
 
-        for (Point point : track.points()) {
+        for (Point point : (NavigableSet<Point>) track.points()) {
             if (lastPoint == null) {
                 lastPoint = point;
                 continue;

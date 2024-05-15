@@ -74,7 +74,7 @@ public class FillMissingAltitudes implements DataCleaner<Track> {
             }
         }
 
-        return Optional.of(Track.of(points));
+        return Optional.of(Track.ofRaw(points));
     }
 
     private Optional<Point> firstPointWithAltitude(SortedSet<Point> points) {

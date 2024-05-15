@@ -46,7 +46,7 @@ public class SingleAircraftRecord implements JsonWritable {
     private final IfrVfrStatus ifrVfrStatus;
     final int climbRateInFeetPerMin;
 
-    public SingleAircraftRecord(Track track, Instant eventTime, String trackHash) {
+    public SingleAircraftRecord(Track<?> track, Instant eventTime, String trackHash) {
         Point p = track.interpolatedPoint(eventTime).get();
         this.callsign = track.callsign();
         this.uniqueId = trackHash;
@@ -113,7 +113,7 @@ public class SingleAircraftRecord implements JsonWritable {
         throw new IllegalStateException("Could not convert a Speed to a ClimbStatus");
     }
 
-    static Speed computeClimbRate(Track track, Instant time) {
+    static Speed computeClimbRate(Track<?> track, Instant time) {
 
         Duration timeDelta = Duration.ofMillis(7_500);
 

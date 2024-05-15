@@ -1,6 +1,7 @@
 
 package org.mitre.openaria.smoothing;
 
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -61,7 +62,8 @@ public class HasLowVariability implements Predicate<Track> {
             return false;
         }
 
-        Set<Pair<Integer, Integer>> positions = track.points().stream()
+        Set<Pair<Integer, Integer>> positions = ((NavigableSet<Point<?>>) track.points())
+            .stream()
             .map(x -> getRoundedPositionValue(x))
             .collect(Collectors.toSet());
 

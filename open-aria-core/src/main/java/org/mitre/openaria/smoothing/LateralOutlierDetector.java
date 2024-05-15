@@ -38,7 +38,8 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
 
         TreeSet<Point> outliers = new TreeSet<>();
 
-        for (Point point : track.points()) {
+        // the for loop is wonky due to the raw type, probably could be improved
+        for (Point point : ((NavigableSet<Point<?>>) track.points())) {
 
             LateralAnalysisResult result = analyzePoint(point, track);
 
@@ -131,7 +132,7 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
 
         return points.isEmpty()
             ? Optional.empty()
-            : Optional.of(Track.of(points));
+            : Optional.of(Track.ofRaw(points));
     }
 
     private static class LateralAnalysisResult {

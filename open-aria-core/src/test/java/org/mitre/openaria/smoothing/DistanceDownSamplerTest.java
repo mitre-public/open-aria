@@ -50,7 +50,7 @@ public class DistanceDownSamplerTest {
         addStagnantPoints(points);
         addMovingPoints(points);
 
-        return Track.of(points);
+        return Track.ofRaw(points);
     }
 
     private void addMovingPoints(LinkedList<Point> points) {

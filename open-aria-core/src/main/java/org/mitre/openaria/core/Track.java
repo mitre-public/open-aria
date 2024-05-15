@@ -21,29 +21,41 @@ import org.mitre.caasd.commons.out.JsonWritable;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
 /**
- * A Track is a NavigableSet of Points backed by the same type of raw location data.
+ * A Track is a NavigableSet of Points backed by a single type of location data T.
  * <p>
- * Track provides access to the underlying point data as well as a handful of
- * convenience methods that operate on that data. Ideally, all Tracks would be immutable. However,
- * this interface does not require immutability because it is far more efficient to directly
- * manipulate Track data when implementing DataCleaners that correct flawed data (like outlier
- * removers and other noise reduction techniques.)
+ * Track provides access to the underlying point data as well as a handful of convenience methods
+ * that operate on the internal Point data. Ideally, all Tracks would contain an immutable
+ * Collection of Points. This is not strictly required, but the convenience constructors always
+ * migrate Point data to an unmodifiableNavigableSet
+ * <p>
+ * @param <T> The format of the underlying Point data
  */
-public record Track(NavigableSet<Point> points) implements JsonWritable {
+public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
 
+    /** Ensure a Track uses a non-null, non-empty Collection of Points. */
     public Track {
         requireNonNull(points);
         checkArgument(!points.isEmpty());
     }
 
-    public static Track of(Collection<Point> points) {
-        TreeSet<Point> pts = new TreeSet<>(points);
-        return new Track(unmodifiableNavigableSet(pts));
+    public static <T> Track<T> of(Collection<Point<T>> points) {
+        TreeSet<Point<T>> pts = new TreeSet<>(points);
+        return new Track<>(unmodifiableNavigableSet(pts));
     }
 
+    @Deprecated
+    public static Track ofRaw(Collection<Point> points) {
+        TreeSet<Point> tree = new TreeSet<>(points);
+        return new Track(tree);
+    }
 
-    /** @return The Points that are inside this track (sorted in time order). */
-    public NavigableSet<Point> points() {
+    @Deprecated
+    public static Track ofRaw(TreeSet<Point> points) {
+        return new Track(unmodifiableNavigableSet(points));
+    }
+
+    /** @return The Points inside this track (sorted in time order). */
+    public NavigableSet<Point<T>> points() {
         return this.points;
     }
 
@@ -104,17 +116,18 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      *     supplied moment in time. An empty optional is returned if the time parameter is outside
      *     this track's TimeWindow (this method interpolates, it does not extrapolate).
      */
-    public Optional<Point> interpolatedPoint(Instant time) {
+    public Optional<Point<T>> interpolatedPoint(Instant time) {
 
         //here we interpolate, we do not extrapolate.
         if (!asTimeWindow().contains(time)) {
             return Optional.empty();
         }
 
-        Point pointWithTime = Point.builder().time(time).latLong(0.0, 0.0).build();
+        Point<T> stub = points.first();
+        Point<T> pointWithTime = Point.builder(stub).time(time).latLong(0.0, 0.0).build();
 
-        Point ceiling = points.ceiling(pointWithTime);
-        Point floor = points.floor(pointWithTime);
+        Point<T> ceiling = points.ceiling(pointWithTime);
+        Point<T> floor = points.floor(pointWithTime);
 
         if (floor == null) {
             //the floor is null when "time" parameter is the exact time of the 1st point
@@ -132,7 +145,7 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      *
      * @return A NavigableSet contain at most k Points from this Track.
      */
-    public NavigableSet<Point> kNearestPoints(Instant time, int k) {
+    public NavigableSet<Point<T>> kNearestPoints(Instant time, int k) {
         return Points.fastKNearestPoints(points(), time, k);
     }
 
@@ -144,7 +157,7 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      *
      * @return Exactly 1 Point from this Track
      */
-    public Point nearestPoint(Instant time) {
+    public Point<T> nearestPoint(Instant time) {
         return kNearestPoints(time, 1).first();
     }
 
@@ -153,15 +166,16 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      * points().stream().filter(predicate).collect(toCollection(TreeSet::new));
      * <p>
      * This method exhaustively searches the track. This method DOES NOT take advantage of time
-     * ordering to speed up time-based searches. Use {@link Track#subset(org.mitre.caasd.commons.TimeWindow)}
-     * and {@link Track#subset(java.time.Instant, java.time.Instant) } to take advantage of this
+     * ordering to speed up time-based searches. Use
+     * {@link Track#subset(org.mitre.caasd.commons.TimeWindow)} and
+     * {@link Track#subset(java.time.Instant, java.time.Instant) } to take advantage of this
      * optimization.
      *
      * @param includeIfTrue A predicate
      *
      * @return A completely distinct collection of Points.
      */
-    public TreeSet<Point> subset(Predicate<Point> includeIfTrue) {
+    public TreeSet<Point<T>> subset(Predicate<Point<T>> includeIfTrue) {
         checkNotNull(includeIfTrue);
 
         return points()
@@ -181,7 +195,7 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    public TreeSet<Point> subset(TimeWindow window) {
+    public TreeSet<Point<T>> subset(TimeWindow window) {
         checkNotNull(window);
         return subset(window.start(), window.end());
     }
@@ -198,7 +212,7 @@ public record Track(NavigableSet<Point> points) implements JsonWritable {
      *
      * @return A completely distinct collection of Points.
      */
-    public TreeSet<Point> subset(Instant startTime, Instant endTime) {
+    public TreeSet<Point<T>> subset(Instant startTime, Instant endTime) {
         return Points.subset(
             TimeWindow.of(startTime, endTime),
             points()

@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.mitre.caasd.commons.Time;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.fileutil.FileUtils;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 
 /**
@@ -147,7 +148,7 @@ public class Tracks {
      *
      * @return A Track that contains the Points found within the given sourceFile
      */
-    public static Track createTrackFromResource(Class clazz, String fileName) {
+    public static Track<NopHit> createTrackFromResource(Class clazz, String fileName) {
 
         Optional<File> trackFile = FileUtils.getResourceAsFile(clazz, fileName);
 
@@ -165,11 +166,11 @@ public class Tracks {
      *
      * @return A Track that contains the Point found within the given sourceFile
      */
-    public static Track createTrackFromFile(File sourceFile) {
+    public static Track<NopHit> createTrackFromFile(File sourceFile) {
 
         PointIterator ptIter = new PointIterator(new NopParser(sourceFile));
 
-        List<Point> points = newArrayList(ptIter);
+        List<Point<NopHit>> points = newArrayList(ptIter);
 
         return Track.of(points);
     }
@@ -189,7 +190,7 @@ public class Tracks {
      * @return An approximation of the amount of time these two tracks spent in close proximity to
      *     one another.
      */
-    public static <T> Duration computeTimeInCloseProximity(Track t1, Track t2, Duration timeStep, double distInNm) {
+    public static <T> Duration computeTimeInCloseProximity(Track<T> t1, Track<T> t2, Duration timeStep, double distInNm) {
 
         TimeWindow overlap = t1.getOverlapWith(t2).get();
         long endTimeInEpochMs = overlap.end().toEpochMilli();
@@ -204,8 +205,8 @@ public class Tracks {
             wasClose = isClose;
 
             //determine if the track "are close right now"
-            Optional<Point> opt1 = t1.interpolatedPoint(currentTime);
-            Optional<Point> opt2 = t2.interpolatedPoint(currentTime);
+            Optional<Point<T>> opt1 = t1.interpolatedPoint(currentTime);
+            Optional<Point<T>> opt2 = t2.interpolatedPoint(currentTime);
 
             //set the "isClose" variable
             if (!opt1.isPresent() || !opt2.isPresent()) {

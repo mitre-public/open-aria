@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -301,7 +302,9 @@ public class TrackPairer implements Consumer<Point> {
         /* return True if the offered Track was "accepted" as part of the pair. */
         public boolean offer(Track track) {
 
-            String trackKey = keyExtractor.joinKeyFor(track.points().first());
+            Point firstPoint = ((NavigableSet<Point<?>>) track.points()).first();
+
+            String trackKey = keyExtractor.joinKeyFor(firstPoint);
 
             /*
              * DO NOT allow "track1" or "track2" to be set twice. This can lead to lost events if

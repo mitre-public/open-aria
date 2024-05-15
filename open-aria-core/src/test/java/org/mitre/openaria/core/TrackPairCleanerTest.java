@@ -61,7 +61,7 @@ public class TrackPairCleanerTest {
         assertTrue(result.get().track2() == track2);
     }
 
-    private Track testTrack(int numPoints) {
+    private Track<String> testTrack(int numPoints) {
 
         ArrayList<Point> points = newArrayList();
 
@@ -74,7 +74,7 @@ public class TrackPairCleanerTest {
                 .build();
             points.add(newPoint);
         }
-        return Track.of(points);
+        return (Track<String>) Track.ofRaw(points);
     }
 
 }

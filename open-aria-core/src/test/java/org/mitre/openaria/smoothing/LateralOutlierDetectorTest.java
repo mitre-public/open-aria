@@ -33,7 +33,7 @@ public class LateralOutlierDetectorTest {
     public void testFindingOneOutlier() {
 
         //this point is the lateral outlier if the test data
-        Point theOutlier = NopHit.from("[RH],STARS,D21_B,03/24/2018,14:57:02.226,N518SP,C172,,5256,031,109,184,042.46462,-083.75121,3472,5256,-16.5222,15.1222,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}");
+        Point<NopHit> theOutlier = NopHit.from("[RH],STARS,D21_B,03/24/2018,14:57:02.226,N518SP,C172,,5256,031,109,184,042.46462,-083.75121,3472,5256,-16.5222,15.1222,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}");
 
         Track testTrack = createTrackFromFile(
             new File("src/test/resources/oneLateralOutlierTest.txt")
@@ -117,7 +117,7 @@ public class LateralOutlierDetectorTest {
         Point adjustedPoint = Point.builder(prior).latLong(newPosition).build();
         points.set(14, adjustedPoint);
 
-        return Track.of(points);
+        return Track.ofRaw(points);
     }
 
     @Test
