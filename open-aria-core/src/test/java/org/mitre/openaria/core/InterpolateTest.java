@@ -176,7 +176,7 @@ public class InterpolateTest {
     @Test
     public void testInterpolatePoint() {
 
-        Point p1 = (new PointBuilder())
+        Point<String> p1 = (new PointBuilder<String>())
             .time(Instant.EPOCH)
             .altitude(Distance.ofFeet(1000.0))
             .courseInDegrees(120.0)
@@ -184,7 +184,7 @@ public class InterpolateTest {
             .speedInKnots(200.0)
             .build();
 
-        Point p2 = (new PointBuilder())
+        Point<String> p2 = (new PointBuilder<String>())
             .time(Instant.EPOCH.plusSeconds(8))
             .altitude(Distance.ofFeet(500.0))
             .courseInDegrees(130.0)
@@ -192,7 +192,7 @@ public class InterpolateTest {
             .speedInKnots(300.0)
             .build();
 
-        Point testPoint = interpolate(p1, p2, Instant.EPOCH.plusSeconds(4));
+        Point<String> testPoint = interpolate(p1, p2, Instant.EPOCH.plusSeconds(4));
 
         double TOLERANCE = 0.0001;
 
@@ -227,7 +227,7 @@ public class InterpolateTest {
          * Test the interpolation works properly at the "start" of the timewindow
          */
 
-        Point p1 = (new PointBuilder())
+        Point<String> p1 = (new PointBuilder<String>())
             .time(Instant.EPOCH)
             .altitude(Distance.ofFeet(1000.0))
             .courseInDegrees(120.0)
@@ -235,7 +235,7 @@ public class InterpolateTest {
             .speedInKnots(200.0)
             .build();
 
-        Point p2 = (new PointBuilder())
+        Point<String> p2 = (new PointBuilder<String>())
             .time(Instant.EPOCH.plusSeconds(8))
             .altitude(Distance.ofFeet(500.0))
             .courseInDegrees(130.0)
@@ -243,7 +243,7 @@ public class InterpolateTest {
             .speedInKnots(300.0)
             .build();
 
-        Point testPoint = interpolate(p1, p2, Instant.EPOCH);
+        Point<String> testPoint = interpolate(p1, p2, Instant.EPOCH);
 
         double TOLERANCE = 0.0001;
 
@@ -278,7 +278,7 @@ public class InterpolateTest {
          * Test the interpolation works properly at the "end" of the timewindow
          */
 
-        Point p1 = (new PointBuilder())
+        Point<String> p1 = (new PointBuilder<String>())
             .time(Instant.EPOCH)
             .altitude(Distance.ofFeet(1000.0))
             .courseInDegrees(120.0)
@@ -286,7 +286,7 @@ public class InterpolateTest {
             .speedInKnots(200.0)
             .build();
 
-        Point p2 = (new PointBuilder())
+        Point<String> p2 = (new PointBuilder<String>())
             .time(Instant.EPOCH.plusSeconds(8))
             .altitude(Distance.ofFeet(500.0))
             .courseInDegrees(130.0)
@@ -294,7 +294,7 @@ public class InterpolateTest {
             .speedInKnots(300.0)
             .build();
 
-        Point testPoint = interpolate(p1, p2, Instant.EPOCH.plusSeconds(8));
+        Point<String> testPoint = interpolate(p1, p2, Instant.EPOCH.plusSeconds(8));
 
         double TOLERANCE = 0.0001;
 
@@ -331,10 +331,10 @@ public class InterpolateTest {
         //The RH message shown in s2 has a course of 253
         String s2 = "[RH],STARS,GEG,07/08/2017,14:09:16.284,,,,1200,28,88,253,47.61675,-117.54618,655,0,0.1876,-0.1797,,,,GEG,,,,,,,IFR,,,,,,,,,,,,{RH}\n";
 
-        Point p1 = NopHit.from(s1);
-        Point p2 = NopHit.from(s2);
+        Point<NopHit> p1 = NopHit.from(s1);
+        Point<NopHit> p2 = NopHit.from(s2);
 
-        Point interpolated = interpolate(p1, p2, p1.time().plusSeconds(2));
+        Point<NopHit> interpolated = interpolate(p1, p2, p1.time().plusSeconds(2));
 
         assertThat(
             "The course of the interpolated point is set even though the 1st point had no course",

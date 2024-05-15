@@ -106,13 +106,13 @@ public class PointsTest {
 
         try {
             //read a File, convert each Line to a Point and collect the results in a list
-            List<Point> points = Files.lines(file.toPath())
+            List<Point<NopHit>> points = Files.lines(file.toPath())
                 .map((String s) -> NopHit.from(s))
                 .collect(Collectors.toList());
 
             shuffle(points);
 
-            NavigableSet<Point> kNN = slowKNearestPoints(
+            NavigableSet<Point<NopHit>> kNN = slowKNearestPoints(
                 points,
                 parseNopTime("07/08/2017", "14:11:59.454"),
                 5
@@ -139,9 +139,9 @@ public class PointsTest {
          * This test confirms that the signature of kNearestPoints will accept any Collection<T>
          * where T is some arbitrary class that implements Point
          */
-        List<Point> listOfPoints = newArrayList();
+        List<Point<NopHit>> listOfPoints = newArrayList();
 
-        NavigableSet<Point> neighbors = slowKNearestPoints(listOfPoints, Instant.EPOCH, 2);
+        NavigableSet<Point<NopHit>> neighbors = slowKNearestPoints(listOfPoints, Instant.EPOCH, 2);
 
         assertTrue(
             neighbors.isEmpty(),

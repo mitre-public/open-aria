@@ -18,7 +18,7 @@ public class ZeroAltitudeFilterTest {
     public void trackWithAllZeroAltitudesTest() {
         Track<NopHit> track = createTrackFromResource(ZeroAltitudeToNull.class, "allPointsHaveZeroAltitude.txt");
 
-        Track<NopHit> cleaned = (new ZeroAltitudeToNull()).clean(track).get();
+        Track<NopHit> cleaned = (new ZeroAltitudeToNull<NopHit>()).clean(track).get();
         Optional<Point<NopHit>> any = cleaned.points().stream().filter(mp -> !mp.altitudeIsMissing()).findAny();
 
         assertFalse(any.isPresent());
@@ -28,7 +28,7 @@ public class ZeroAltitudeFilterTest {
     public void trackThatStartsWithZeroAltitudesTest() {
         Track<NopHit> track = createTrackFromResource(ZeroAltitudeToNull.class, "firstPointsHaveZeroAltitude.txt");
 
-        Track<NopHit> cleaned = (new ZeroAltitudeToNull()).clean(track).get();
+        Track<NopHit> cleaned = (new ZeroAltitudeToNull<NopHit>()).clean(track).get();
         Point<NopHit> first = cleaned.points().first();
 
         assertTrue(first.altitudeIsMissing());
@@ -38,7 +38,7 @@ public class ZeroAltitudeFilterTest {
     public void trackThatEndsWithZeroAltitudesTest() {
         Track<NopHit> track = createTrackFromResource(ZeroAltitudeToNull.class, "lastPointsHaveZeroAltitude.txt");
 
-        Track<NopHit> cleaned = (new ZeroAltitudeToNull()).clean(track).get();
+        Track<NopHit> cleaned = (new ZeroAltitudeToNull<NopHit>()).clean(track).get();
         Point<NopHit> last = cleaned.points().last();
 
         assertTrue(last.altitudeIsMissing());
@@ -48,7 +48,7 @@ public class ZeroAltitudeFilterTest {
     public void trackWithZeroAltitudesInMiddleTest() {
         Track<NopHit> track = createTrackFromResource(ZeroAltitudeToNull.class, "middleOfTrackHasZeroAltitudes.txt");
 
-        Track<NopHit> cleaned = (new ZeroAltitudeToNull()).clean(track).get();
+        Track<NopHit> cleaned = (new ZeroAltitudeToNull<NopHit>()).clean(track).get();
         Point<NopHit> missing = cleaned.points().stream().filter(Point::altitudeIsMissing).findFirst().get();
 
         assertTrue(!missing.equals(cleaned.points().first()) && !missing.equals(cleaned.points().last()));
@@ -57,8 +57,8 @@ public class ZeroAltitudeFilterTest {
     @Test
     public void smoothTrackWithAllZeroAltitudesTest() {
 
-        Track track = createTrackFromResource(ZeroAltitudeToNull.class, "allPointsHaveZeroAltitude.txt");
-        Optional<Track> cleaned = coreSmoothing().clean(track);
+        Track<NopHit> track = createTrackFromResource(ZeroAltitudeToNull.class, "allPointsHaveZeroAltitude.txt");
+        Optional<Track<NopHit>> cleaned = coreSmoothing().clean(track);
 
         assertFalse(cleaned.isPresent());
     }

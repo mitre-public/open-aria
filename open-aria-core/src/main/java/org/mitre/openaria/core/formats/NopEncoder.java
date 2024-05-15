@@ -45,7 +45,7 @@ public class NopEncoder {
      *     Radar Hit (RH) Messages. This method relies on each contained Point object to provide the
      *     best possible "nop representation" of itself.
      */
-    public String asRawNop(Collection<Point> points) {
+    public String asRawNop(Collection<Point<?>> points) {
 
         String combinedString = points.stream()
             .map(p -> asRawNop(p))

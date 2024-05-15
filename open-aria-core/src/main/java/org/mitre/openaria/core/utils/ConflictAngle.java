@@ -27,7 +27,7 @@ public enum ConflictAngle {
         return ConflictAngle.valueOf(string.trim().toUpperCase());
     }
 
-    public static final Range VALID_COURSE_RANGE = Range.closed(0.0, 360.0);
+    public static final Range<Double> VALID_COURSE_RANGE = Range.closed(0.0, 360.0);
 
     /**
      * @param c1 A course between 0 and 360
@@ -44,7 +44,7 @@ public enum ConflictAngle {
         );
     }
 
-    public static final Range VALID_ANGLE_DIFFERENCE_RANGE = Range.closed(-180.0, 180.0);
+    public static final Range<Double> VALID_ANGLE_DIFFERENCE_RANGE = Range.closed(-180.0, 180.0);
 
     /**
      * @param angleDifference An angle between -180 and 180

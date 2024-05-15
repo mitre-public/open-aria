@@ -7,7 +7,6 @@ import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
 
@@ -23,7 +22,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
  * that adjusts the altitude value of Points in a Track. A VerticalOutlierDetector can also be used
  * to just identify Points with outlying altitude values.
  */
-public class VerticalOutlierDetector implements DataCleaner<Track> {
+public class VerticalOutlierDetector<T> implements DataCleaner<Track<T>> {
 
     private final int REQUIRED_SAMPLE_SIZE = 7;
 
@@ -36,12 +35,11 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
      *
      * @return The set of Point in this Track with outlying altitude values.
      */
-    public ArrayList<AnalysisResult> getOutliers(Track track) {
+    public ArrayList<AnalysisResult<T>> getOutliers(Track<T> track) {
 
         // the stream is wonky due to the raw type, probably could be improved
 
-        return ((NavigableSet<Point<?>>) track.points())
-            .stream()
+        return track.points().stream()
             .map(point -> analyzePoint(point, track))
             .filter(analysisResult -> analysisResult.isOutlier())
             .collect(toCollection(ArrayList::new));
@@ -59,15 +57,15 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
      *     implement the DataCleaner interface
      */
     @Override
-    public Optional<Track> clean(Track inputTrack) {
+    public Optional<Track<T>> clean(Track<T> inputTrack) {
 
-        ArrayList<AnalysisResult> outliers = getOutliers(inputTrack);
+        ArrayList<AnalysisResult<T>> outliers = getOutliers(inputTrack);
 
-        TreeSet<Point> points = new TreeSet<>(inputTrack.points());
+        TreeSet<Point<T>> points = new TreeSet<>(inputTrack.points());
         points.removeAll(outliers.stream().map(ar -> ar.originalPoint).toList());
         points.addAll(outliers.stream().map(ar -> ar.correctedPoint()).toList());
 
-        return Optional.of(Track.ofRaw(points));
+        return Optional.of(Track.of(points));
     }
 
     /**
@@ -87,16 +85,16 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
      *
      * @return An AnalysisResult object that summarizes the altitude analysis.
      */
-    private AnalysisResult analyzePoint(Point testPoint, Track track) {
+    private AnalysisResult<T> analyzePoint(Point<T> testPoint, Track<T> track) {
 
-        Collection<Point> pointsNearby = track.kNearestPoints(
+        Collection<Point<T>> pointsNearby = track.kNearestPoints(
             testPoint.time(),
             REQUIRED_SAMPLE_SIZE
         );
 
         if (pointsNearby.size() < REQUIRED_SAMPLE_SIZE) {
             //When the sample size is small do not declare outliers and do not provide predictions
-            return new AnalysisResult(testPoint);
+            return new AnalysisResult<>(testPoint);
         }
 
         SimpleRegression regression = regressionWithoutTestPoint(pointsNearby, testPoint);
@@ -125,19 +123,19 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
 
         boolean isOutlier = (largeDropInR && altitudeError > MIN_CORRECTABLE_ALTITUDE_ERROR);
 
-        return new AnalysisResult(testPoint, isOutlier, predictedAltitude);
+        return new AnalysisResult<>(testPoint, isOutlier, predictedAltitude);
     }
 
     /**
      * This class is not meant to be used externally.
      */
-    public static class AnalysisResult {
+    public static class AnalysisResult<T> {
 
-        private final Point originalPoint;
+        private final Point<T> originalPoint;
         private final boolean isOutlier;
         private final Distance correctedAltitude;
 
-        AnalysisResult(Point originalPoint, boolean isOutlier, double correctedAltitude) {
+        AnalysisResult(Point<T> originalPoint, boolean isOutlier, double correctedAltitude) {
             this.originalPoint = checkNotNull(originalPoint);
             this.isOutlier = isOutlier;
 
@@ -147,11 +145,11 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
                 : null;
         }
 
-        AnalysisResult(Point originalPoint) {
+        AnalysisResult(Point<T> originalPoint) {
             this(originalPoint, false, Double.NaN);
         }
 
-        public Point originalPoint() {
+        public Point<T> originalPoint() {
             return originalPoint;
         }
 
@@ -163,7 +161,7 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
             return correctedAltitude;
         }
 
-        public Point correctedPoint() {
+        public Point<T> correctedPoint() {
             return Point.builder(originalPoint).altitude(correctedAltitude).build();
         }
     }
@@ -176,11 +174,11 @@ public class VerticalOutlierDetector implements DataCleaner<Track> {
      *
      * @return A simple linear regression that regresses altitude vs. time from the points supplied.
      */
-    private SimpleRegression regressionWithoutTestPoint(Collection<Point> localPoints, Point testPoint) {
+    private SimpleRegression regressionWithoutTestPoint(Collection<Point<T>> localPoints, Point<T> testPoint) {
 
         SimpleRegression regression = new SimpleRegression();
 
-        for (Point localPoint : localPoints) {
+        for (Point<T> localPoint : localPoints) {
 
             //don't include the test point
             if (localPoint == testPoint) {

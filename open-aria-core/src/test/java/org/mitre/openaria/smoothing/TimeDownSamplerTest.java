@@ -41,7 +41,7 @@ public class TimeDownSamplerTest {
     public void testDownSampling() {
 
         Duration maxTimeDelta = Duration.ofSeconds(5);
-        TimeDownSampler smoother = new TimeDownSampler(maxTimeDelta);
+        TimeDownSampler<String> smoother = new TimeDownSampler<>(maxTimeDelta);
 
         Track<String> cleanedTrack = smoother.clean(testTrack()).get();
 

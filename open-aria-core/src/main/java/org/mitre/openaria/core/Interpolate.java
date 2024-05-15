@@ -51,9 +51,9 @@ public class Interpolate {
         );
 
         if (p1.time().equals(targetTime)) {
-            return (new PointBuilder(p1)).build();
+            return (new PointBuilder<T>(p1)).build();
         } else if (p2.time().equals(targetTime)) {
-            return (new PointBuilder(p2)).build();
+            return (new PointBuilder<T>(p2)).build();
         } else {
 
             double fraction = window.toFractionOfRange(targetTime);
@@ -81,7 +81,7 @@ public class Interpolate {
             );
 
             //return a copy of the 1st input point but with corrected trajectory data
-            return (new PointBuilder(p1))
+            return (new PointBuilder<T>(p1))
                 .latLong(interpolatedLatLong)
                 .course(Course.ofDegrees(interpolatedCourseInDegrees))
                 .speed(Speed.ofKnots(interpolatedSpeed))
@@ -140,8 +140,8 @@ public class Interpolate {
 
 
 
-    private static final Range VALID_COURSE_RANGE = Range.closed(0.0, 360.0);
-    private static final Range VALID_FRACTION_RANGE = Range.closed(0.0, 1.0);
+    private static final Range<Double> VALID_COURSE_RANGE = Range.closed(0.0, 360.0);
+    private static final Range<Double> VALID_FRACTION_RANGE = Range.closed(0.0, 1.0);
 
     /**
      * Compute a course that occurs some fraction of the way between a starting course and an ending

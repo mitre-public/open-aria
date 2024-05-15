@@ -24,28 +24,28 @@ import org.mitre.openaria.core.Track;
  * interpolated between the previous point and the following point. If all the points in a track are
  * missing altitudes, then the track is removed.
  */
-public class FillMissingAltitudes implements DataCleaner<Track> {
+public class FillMissingAltitudes<T> implements DataCleaner<Track<T>> {
 
     private final HasNullAltitude hasNullAltitude = new HasNullAltitude();
 
     @Override
-    public Optional<Track> clean(Track track) {
+    public Optional<Track<T>> clean(Track<T> track) {
 
-        TreeSet<Point> points = new TreeSet<>(track.points());
+        TreeSet<Point<T>> points = new TreeSet<>(track.points());
 
-        Optional<Point> firstNonNull = firstPointWithAltitude(points);
+        Optional<Point<T>> firstNonNull = firstPointWithAltitude(points);
         if (!firstNonNull.isPresent()) {
             return Optional.empty();
         }
 
-        SortedSet<Point> pointsMissingAltitude = points.headSet(firstNonNull.get());
-        TreeSet<Point> fixedPoints = extrapolateAltitudes(pointsMissingAltitude, firstNonNull.get());
+        SortedSet<Point<T>> pointsMissingAltitude = points.headSet(firstNonNull.get());
+        TreeSet<Point<T>> fixedPoints = extrapolateAltitudes(pointsMissingAltitude, firstNonNull.get());
         pointsMissingAltitude.clear();
         points.addAll(fixedPoints);
 
 
-        Optional<Point> gapStart;
-        Optional<Point> gapEnd = firstNonNull;
+        Optional<Point<T>> gapStart;
+        Optional<Point<T>> gapEnd = firstNonNull;
 
         while (gapEnd.isPresent()) {
 
@@ -74,32 +74,32 @@ public class FillMissingAltitudes implements DataCleaner<Track> {
             }
         }
 
-        return Optional.of(Track.ofRaw(points));
+        return Optional.of(Track.of(points));
     }
 
-    private Optional<Point> firstPointWithAltitude(SortedSet<Point> points) {
+    private Optional<Point<T>> firstPointWithAltitude(SortedSet<Point<T>> points) {
         return points.stream().filter(hasNullAltitude.negate()).findFirst();
     }
 
-    private Optional<Point> firstPointWithoutAltitude(SortedSet<Point> points) {
+    private Optional<Point<T>> firstPointWithoutAltitude(SortedSet<Point<T>> points) {
         return points.stream().filter(hasNullAltitude).findFirst();
     }
 
     /** For each point that is missing an altitude create a "patched point. */
-    private TreeSet<Point> extrapolateAltitudes(SortedSet<Point> missingAltitudePoints, Point referencePoint) {
+    private TreeSet<Point<T>> extrapolateAltitudes(SortedSet<Point<T>> missingAltitudePoints, Point<T> referencePoint) {
 
         Distance referenceAltitude = referencePoint.altitude();
 
-        TreeSet<Point> fixedPoints = missingAltitudePoints.stream()
+        TreeSet<Point<T>> fixedPoints = missingAltitudePoints.stream()
             .map(prior -> Point.builder(prior).altitude(referenceAltitude).build())
             .collect(toCollection(TreeSet::new));
 
         return fixedPoints;
     }
 
-    private TreeSet<Point> interpolateAltitudes(SortedSet<Point> missingAltitudePoints, Point startPoint, Point endPoint) {
+    private TreeSet<Point<T>> interpolateAltitudes(SortedSet<Point<T>> missingAltitudePoints, Point<T> startPoint, Point<T> endPoint) {
 
-        TreeSet<Point> fixedPoints = missingAltitudePoints.stream()
+        TreeSet<Point<T>> fixedPoints = missingAltitudePoints.stream()
             .map(pt -> {
                 Distance altitude = interpolate(
                     startPoint.altitude(),

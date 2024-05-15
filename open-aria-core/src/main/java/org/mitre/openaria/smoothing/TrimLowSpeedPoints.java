@@ -16,7 +16,7 @@ import org.mitre.openaria.core.Track;
  * attempting to remove ground-data from Tracks (in cases where you only are interested in the
  * airborne section of a track).
  */
-public class TrimLowSpeedPoints implements DataCleaner<Track> {
+public class TrimLowSpeedPoints<T> implements DataCleaner<Track<T>> {
 
     private final double speedLimitInKnots;
     private final int minNumberPoints;
@@ -35,8 +35,8 @@ public class TrimLowSpeedPoints implements DataCleaner<Track> {
     }
 
     @Override
-    public Optional<Track> clean(Track track) {
-        NavigableSet<Point> points = newTreeSet(track.points());
+    public Optional<Track<T>> clean(Track<T> track) {
+        NavigableSet<Point<T>> points = newTreeSet(track.points());
         //remove low-speed points at the start of the track
         while (!points.isEmpty() && points.first().speed().inKnots() < speedLimitInKnots) {
             points.pollFirst();
@@ -45,7 +45,7 @@ public class TrimLowSpeedPoints implements DataCleaner<Track> {
         while (!points.isEmpty() && points.last().speed().inKnots() < speedLimitInKnots) {
             points.pollLast();
         }
-        return (points.size() >= minNumberPoints) ? Optional.of(Track.ofRaw(points)) : Optional.empty();
+        return (points.size() >= minNumberPoints) ? Optional.of(Track.of(points)) : Optional.empty();
     }
 
 }

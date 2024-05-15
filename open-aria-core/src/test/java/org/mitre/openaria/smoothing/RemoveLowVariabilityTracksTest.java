@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,16 +21,16 @@ public class RemoveLowVariabilityTracksTest {
     @Test
     public void testFilteringOnShortTrack() {
 
-        HasLowVariability predicate = new HasLowVariability();
+        HasLowVariability<String> predicate = new HasLowVariability<>();
 
         assertFalse(
             predicate.test(trackThatsTooShort()),
             "This track is too short -- so it cant \"HaveLowVariance\""
         );
 
-        RemoveLowVariabilityTracks filter = new RemoveLowVariabilityTracks(predicate);
+        RemoveLowVariabilityTracks<String> filter = new RemoveLowVariabilityTracks<>(predicate);
 
-        Optional<Track> result = filter.clean(trackThatsTooShort());
+        Optional<Track<String>> result = filter.clean(trackThatsTooShort());
 
         assertTrue(
             result.isPresent(),
@@ -37,10 +38,10 @@ public class RemoveLowVariabilityTracksTest {
         );
     }
 
-    private static Track trackThatsTooShort() {
+    private static Track<String> trackThatsTooShort() {
         //this track is bad because it is too short for the "low variance predicate" to apply
 
-        Point singlePoint = Point.builder()
+        Point<String> singlePoint = Point.<String>builder()
             .latLong(50.0, 50.0)
             .time(EPOCH)
             .build();
@@ -51,15 +52,15 @@ public class RemoveLowVariabilityTracksTest {
     @Test
     public void testFilteringOnRealData() {
 
-        Track trackFromBadData = erroneousTrackFromRadarMirage();
+        Track<NopHit> trackFromBadData = erroneousTrackFromRadarMirage();
 
-        HasLowVariability predicate = new HasLowVariability();
+        HasLowVariability<NopHit> predicate = new HasLowVariability<>();
 
         assertTrue(predicate.test(trackFromBadData));
 
-        RemoveLowVariabilityTracks filter = new RemoveLowVariabilityTracks(predicate);
+        RemoveLowVariabilityTracks<NopHit> filter = new RemoveLowVariabilityTracks<>(predicate);
 
-        Optional<Track> result = filter.clean(trackFromBadData);
+        Optional<Track<NopHit>> result = filter.clean(trackFromBadData);
 
         assertFalse(result.isPresent(), "This track should not make it through the filter");
     }
@@ -68,7 +69,7 @@ public class RemoveLowVariabilityTracksTest {
      * The REAL data in this track barely moves, thus the track should be tagged as "having low
      * variability"
      */
-    public static Track erroneousTrackFromRadarMirage() {
+    public static Track<NopHit> erroneousTrackFromRadarMirage() {
 
         return createTrackFromResource(
             RemoveLowVariabilityTracks.class,

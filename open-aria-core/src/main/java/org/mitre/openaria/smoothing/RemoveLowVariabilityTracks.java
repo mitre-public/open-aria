@@ -14,17 +14,17 @@ import org.mitre.openaria.core.Track;
  * reflects off a stationary objects (like a radio tower or tall building). This flaw phenomenon
  * generates very long tracks that have very little movement.
  */
-public class RemoveLowVariabilityTracks extends DataFilter<Track> {
+public class RemoveLowVariabilityTracks<T> extends DataFilter<Track<T>> {
 
     public RemoveLowVariabilityTracks() {
-        this(new HasLowVariability(), ignored -> {});
+        this(new HasLowVariability<T>(), ignored -> {});
     }
 
-    public RemoveLowVariabilityTracks(HasLowVariability test) {
+    public RemoveLowVariabilityTracks(HasLowVariability<T> test) {
         this(test, ignored -> {});
     }
 
-    public RemoveLowVariabilityTracks(HasLowVariability test, Consumer<Track> onRemoval) {
+    public RemoveLowVariabilityTracks(HasLowVariability<T> test, Consumer<Track<T>> onRemoval) {
         //THIS NEGATE IS IMPORTANT !! ALL CONSTRUCTORS SHOULD BE ROUTED THROUGH HERE
         super(test.negate(), onRemoval);
     }

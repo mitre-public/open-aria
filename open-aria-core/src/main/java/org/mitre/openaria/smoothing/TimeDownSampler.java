@@ -21,7 +21,7 @@ import org.mitre.openaria.core.Track;
  * finding two points separated by just 2 seconds is likely to indicate that the "out of step" point
  * is flawed.
  */
-public class TimeDownSampler implements DataCleaner<Track> {
+public class TimeDownSampler<T> implements DataCleaner<Track<T>> {
 
     private final long minAllowableTimeDelta;
 
@@ -38,11 +38,11 @@ public class TimeDownSampler implements DataCleaner<Track> {
     }
 
     @Override
-    public Optional<Track> clean(Track track) {
+    public Optional<Track<T>> clean(Track<T> track) {
 
-        TreeSet<Point> points = new TreeSet<>(track.points());
+        TreeSet<Point<T>> points = new TreeSet<>(track.points());
 
-        Iterator<Point> iter = points.iterator();
+        Iterator<Point<T>> iter = points.iterator();
 
         Long tau = null;
         while (iter.hasNext()) {
@@ -62,6 +62,6 @@ public class TimeDownSampler implements DataCleaner<Track> {
             }
         }
 
-        return Optional.of(Track.ofRaw(points));
+        return Optional.of(Track.of(points));
     }
 }

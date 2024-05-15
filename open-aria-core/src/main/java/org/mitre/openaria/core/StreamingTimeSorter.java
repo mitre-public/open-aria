@@ -2,7 +2,6 @@ package org.mitre.openaria.core;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newTreeMap;
-import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -69,7 +68,7 @@ public class StreamingTimeSorter<T extends HasTime> implements Consumer<T> {
      * @param sortingDuration How much data is kept in memory to smooth out timing errors
      */
     public StreamingTimeSorter(Consumer<T> target, Duration sortingDuration) {
-        this(target, sortingDuration, NO_OP_CONSUMER);
+        this(target, sortingDuration, ignoredInput -> {});
     }
 
     @Override

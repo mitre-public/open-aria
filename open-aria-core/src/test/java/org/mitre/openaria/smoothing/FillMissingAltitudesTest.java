@@ -17,19 +17,21 @@ import org.junit.jupiter.api.Test;
 
 public class FillMissingAltitudesTest {
 
+    record NoRawData(String doNotUse) {}
+
     @Test
     public void removeTracksWithNoAltitudes() {
-        Track testTrack = trackWithNoAltitudes();
-        Optional<Track> cleanedTrack = (new FillMissingAltitudes()).clean(testTrack);
+        Track<NoRawData> testTrack = trackWithNoAltitudes();
+        Optional<Track<NoRawData>> cleanedTrack = (new FillMissingAltitudes<NoRawData>()).clean(testTrack);
 
         assertTrue(!cleanedTrack.isPresent(), "A track with no altitude data should be removed");
     }
 
     @Test
     public void testFillingInitialAltitudes() {
-        Track testTrack = trackWithNoInitialAltitudes();
-        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
+        Track<NoRawData> testTrack = trackWithNoInitialAltitudes();
+        Track<NoRawData> cleanedTrack = (new FillMissingAltitudes<NoRawData>()).clean(testTrack).get();
+        ArrayList<Point<NoRawData>> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             points.get(0).altitude().equals(points.get(1).altitude()) &&
@@ -40,9 +42,9 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void testFillingFinalAltitudes() {
-        Track testTrack = trackWithNoFinalAltitudes();
-        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
+        Track<NoRawData> testTrack = trackWithNoFinalAltitudes();
+        Track<NoRawData> cleanedTrack = (new FillMissingAltitudes<NoRawData>()).clean(testTrack).get();
+        ArrayList<Point<NoRawData>> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             points.get(3).altitude().equals(points.get(1).altitude()) &&
@@ -53,9 +55,9 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void testFillingMissingAltitude() {
-        Track testTrack = trackWithSingleMissingAltitude();
-        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
+        Track<NoRawData> testTrack = trackWithSingleMissingAltitude();
+        Track<NoRawData> cleanedTrack = (new FillMissingAltitudes<NoRawData>()).clean(testTrack).get();
+        ArrayList<Point<NoRawData>> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             points.get(1).altitude().inFeet() == 130.0,
@@ -65,9 +67,9 @@ public class FillMissingAltitudesTest {
 
     @Test
     public void testFillingMultipleMissingAltitudes() {
-        Track testTrack = trackWithMultipleMissingAltitudes();
-        Track cleanedTrack = (new FillMissingAltitudes()).clean(testTrack).get();
-        ArrayList<Point> points = new ArrayList<>(cleanedTrack.points());
+        Track<NoRawData> testTrack = trackWithMultipleMissingAltitudes();
+        Track<NoRawData> cleanedTrack = (new FillMissingAltitudes<NoRawData>()).clean(testTrack).get();
+        ArrayList<Point<NoRawData>> points = new ArrayList<>(cleanedTrack.points());
 
         assertTrue(
             (points.get(1).altitude().inFeet() == 0.0) &&
@@ -76,7 +78,7 @@ public class FillMissingAltitudesTest {
         );
     }
 
-    private Track trackWithNoAltitudes() {
+    private Track<NoRawData> trackWithNoAltitudes() {
         return Track.of(new TreeSet<>(Arrays.asList(
             makeNullAltitudePoint(0),
             makeNullAltitudePoint(1),
@@ -84,7 +86,7 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private Track trackWithNoInitialAltitudes() {
+    private Track<NoRawData> trackWithNoInitialAltitudes() {
         return Track.of(new TreeSet<>(Arrays.asList(
             makeNullAltitudePoint(0),
             makeNullAltitudePoint(1),
@@ -92,7 +94,7 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private Track trackWithNoFinalAltitudes() {
+    private Track<NoRawData> trackWithNoFinalAltitudes() {
         return Track.of(new TreeSet<>(Arrays.asList(
             makePoint(0, 100.0),
             makePoint(1, 110.0),
@@ -101,7 +103,7 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private Track trackWithSingleMissingAltitude() {
+    private Track<NoRawData> trackWithSingleMissingAltitude() {
         return Track.of(new TreeSet<>(Arrays.asList(
             makePoint(0, 100.0),
             makeNullAltitudePoint(3),
@@ -109,7 +111,7 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private Track trackWithMultipleMissingAltitudes() {
+    private Track<NoRawData> trackWithMultipleMissingAltitudes() {
         return Track.of(new TreeSet<>(Arrays.asList(
             makePoint(0, -100.0),
             makeNullAltitudePoint(25),
@@ -118,16 +120,16 @@ public class FillMissingAltitudesTest {
         )));
     }
 
-    private Point makePoint(int secondsFromStart, double altitudeInFeet) {
-        return Point.builder()
+    private Point<NoRawData> makePoint(int secondsFromStart, double altitudeInFeet) {
+        return Point.<NoRawData>builder()
             .time(EPOCH.plusSeconds(secondsFromStart))
             .altitude(Distance.ofFeet(altitudeInFeet))
             .latLong(0.0, 0.0)
             .build();
     }
 
-    private Point makeNullAltitudePoint(int secondsFromStart) {
-        return Point.builder()
+    private Point<NoRawData> makeNullAltitudePoint(int secondsFromStart) {
+        return Point.<NoRawData>builder()
             .time(EPOCH.plusSeconds(secondsFromStart))
             .latLong(0.0, 0.0)
             .build();

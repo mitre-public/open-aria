@@ -1,6 +1,7 @@
 
 package org.mitre.openaria.core;
 
+import static java.util.Objects.requireNonNull;
 import static org.mitre.openaria.core.Tracks.hasAircraftId;
 
 import java.util.Optional;
@@ -18,8 +19,10 @@ public class TrackPairs {
      *
      * @return True if the data from these two tracks overlaps in time.
      */
-    public static boolean overlapInTime(Track t1, Track t2) {
-        return TrackPair.of(t1, t2).overlapInTime();
+    public static boolean overlapInTime(Track<?> t1, Track<?> t2) {
+        requireNonNull(t1);
+        requireNonNull(t2);
+        return t1.asTimeWindow().overlapsWith(t2.asTimeWindow());
     }
 
     /**
@@ -29,7 +32,7 @@ public class TrackPairs {
      * @return The TimeWindow that covers the space of time for which there is data for both tracks
      *     space if the data from these two tracks overlap in time.
      */
-    public static Optional<TimeWindow> timeOverlap(Track t1, Track t2) {
+    public static Optional<TimeWindow> timeOverlap(Track<?> t1, Track<?> t2) {
         return TrackPair.of(t1, t2).timeOverlap();
     }
 
@@ -69,7 +72,7 @@ public class TrackPairs {
      * @return True if these two tracks ever separated by this required distance. These tracks must
      *     overlap in time for this method to have any meaning.
      */
-    public static boolean separateBy(Track t1, Track t2, double distInNm) {
+    public static boolean separateBy(Track<?> t1, Track<?> t2, double distInNm) {
         return TrackPair.of(t1, t2).separateBy(distInNm);
     }
 }

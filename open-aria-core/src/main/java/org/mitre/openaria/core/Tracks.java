@@ -29,7 +29,7 @@ public class Tracks {
     /**
      * @return The most common callsign for the points inside this Track.
      */
-    public static String aircraftId(Track track) {
+    public static <T> String aircraftId(Track<T> track) {
         return track.callsign();
     }
 
@@ -38,7 +38,7 @@ public class Tracks {
      *
      * @return True when track.aircraftId() returns null or "";
      */
-    public static boolean missingAircraftId(Track track) {
+    public static <T>  boolean missingAircraftId(Track<T>  track) {
         String acid = aircraftId(track);
         return acid == null || acid.equals("");
     }
@@ -48,7 +48,7 @@ public class Tracks {
      *
      * @return False when track.aircraftId() returns null or "";
      */
-    public static boolean hasAircraftId(Track track) {
+    public static <T> boolean hasAircraftId(Track<T>  track) {
         return !missingAircraftId(track);
     }
 
@@ -68,13 +68,13 @@ public class Tracks {
      * @return The maximum instantaneous distance between each track (ignores altitude, only uses
      *     Lat/Long position data for this computation)
      */
-    public static double maxDistBetween(Track t1, Track t2) {
+    public static <T> double maxDistBetween(Track<T>  t1, Track<T> t2) {
         checkNotNull(t1, "The 1st input track is null");
         checkNotNull(t2, "The 2nd input track is null");
         checkArgument(overlapInTime(t1, t2), "The input tracks do not overlap in time");
 
-        NavigableSet<Point> t1Points = (NavigableSet<Point>) t1.points();
-        NavigableSet<Point> t2Points = (NavigableSet<Point>) t2.points();
+        NavigableSet<Point<T> > t1Points = t1.points();
+        NavigableSet<Point<T> > t2Points = t2.points();
 
         return max(
             maxDistance(t1Points, t2Points),
@@ -89,20 +89,20 @@ public class Tracks {
      * @return The maximum distance between a point in the src dataset to its "matching point"
      *     (created using interpolation) in the destination dataset.
      */
-    private static double maxDistance(NavigableSet<Point> src, NavigableSet<Point> destination) {
+    private static <T> double maxDistance(NavigableSet<Point<T>> src, NavigableSet<Point<T>> destination) {
 
         double maxDist = 0;
 
-        for (Point srcPoint : src) {
+        for (Point<T> srcPoint : src) {
 
-            Point ceiling = destination.ceiling(srcPoint);
-            Point floor = destination.floor(srcPoint);
+            Point<T> ceiling = destination.ceiling(srcPoint);
+            Point<T> floor = destination.floor(srcPoint);
 
             if (ceiling == null || floor == null) {
                 continue;
             }
 
-            Point interpolatedPoint = interpolate(floor, ceiling, srcPoint.time());
+            Point<T> interpolatedPoint = interpolate(floor, ceiling, srcPoint.time());
 
             double curDist = srcPoint.distanceInNmTo(interpolatedPoint);
 
@@ -119,7 +119,7 @@ public class Tracks {
      *
      * @return The smallest possible TimeWindow that contains all input tracks
      */
-    public static TimeWindow windowContaining(Collection<Track> tracks) {
+    public static TimeWindow windowContaining(Collection<Track<?>> tracks) {
         checkNotNull(tracks, "The input Collection of Tracks cannot be null");
         checkArgument(!tracks.isEmpty(), "Cannot compute a TimeWindow for an empty collection of Tracks");
 
@@ -212,8 +212,8 @@ public class Tracks {
             if (!opt1.isPresent() || !opt2.isPresent()) {
                 isClose = false;
             } else {
-                Point p1 = opt1.get();
-                Point p2 = opt2.get();
+                Point<T> p1 = opt1.get();
+                Point<T> p2 = opt2.get();
                 double curDist = p1.distanceInNmTo(p2);
                 isClose = curDist <= distInNm;
             }

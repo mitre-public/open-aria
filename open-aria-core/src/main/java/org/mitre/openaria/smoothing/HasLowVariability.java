@@ -1,7 +1,6 @@
 
 package org.mitre.openaria.smoothing;
 
-import java.util.NavigableSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ import com.google.common.base.Preconditions;
  * that reflected off a stationary objects (like a radio tower or tall building). This phenomenon
  * produces very long tracks that have very little movement.
  */
-public class HasLowVariability implements Predicate<Track> {
+public class HasLowVariability<T> implements Predicate<Track<T>> {
 
     private final int trackSizeReq;
     private final double fracUniqueLocations;
@@ -57,12 +56,12 @@ public class HasLowVariability implements Predicate<Track> {
     }
 
     @Override
-    public boolean test(Track track) {
+    public boolean test(Track<T> track) {
         if (track.size() < trackSizeReq) {
             return false;
         }
 
-        Set<Pair<Integer, Integer>> positions = ((NavigableSet<Point<?>>) track.points())
+        Set<Pair<Integer, Integer>> positions = track.points()
             .stream()
             .map(x -> getRoundedPositionValue(x))
             .collect(Collectors.toSet());
@@ -75,7 +74,7 @@ public class HasLowVariability implements Predicate<Track> {
         return ratio <= fracUniqueLocations;
     }
 
-    private Pair<Integer, Integer> getRoundedPositionValue(Point pt) {
+    private Pair<Integer, Integer> getRoundedPositionValue(Point<T> pt) {
         return Pair.of(
             (int) (pt.latLong().latitude() * latLongGridScalingFactor),
             (int) (pt.latLong().longitude() * latLongGridScalingFactor)

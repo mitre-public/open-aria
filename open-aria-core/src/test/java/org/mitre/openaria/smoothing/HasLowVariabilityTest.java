@@ -22,7 +22,7 @@ public class HasLowVariabilityTest {
 
     static Random RNG = new Random(17L);
 
-    static final Point CENTER_POINT = Point.builder()
+    static final Point<String> CENTER_POINT = Point.<String>builder()
         .latLong(50.0, 50.0)
         .time(EPOCH)
         .build();
@@ -30,10 +30,10 @@ public class HasLowVariabilityTest {
     @Test
     public void testTrackSizeIsConsidered() {
 
-        HasLowVariability filter = new HasLowVariability(20, 0.1, 1e5);
+        HasLowVariability<String> filter = new HasLowVariability<>(20, 0.1, 1e5);
 
-        Track shortTestTrack = createTestTrack(19, 0.0);
-        Track longTestTrack = createTestTrack(21, 0.0);
+        Track<String> shortTestTrack = createTestTrack(19, 0.0);
+        Track<String> longTestTrack = createTestTrack(21, 0.0);
 
         assertFalse(
             filter.test(shortTestTrack),
@@ -48,13 +48,13 @@ public class HasLowVariabilityTest {
     @Test
     public void testReducingTrackLocationVarianceTriggersFilter() {
 
-        HasLowVariability filter = new HasLowVariability(300, 0.2, 1e5);
+        HasLowVariability<String> filter = new HasLowVariability<>(300, 0.2, 1e5);
 
         double higherDistFromCenterStdDev = 20.0 / feetPerNM();
-        Track highVarienceTrack = createTestTrack(1000, higherDistFromCenterStdDev);
+        Track<String> highVarienceTrack = createTestTrack(1000, higherDistFromCenterStdDev);
 
         double lowerDistFromCenterStdDev = 10 / feetPerNM();
-        Track lowVarienceTrack = createTestTrack(1000, lowerDistFromCenterStdDev);
+        Track <String>lowVarienceTrack = createTestTrack(1000, lowerDistFromCenterStdDev);
 
         assertFalse(
             filter.test(highVarienceTrack),
@@ -68,24 +68,24 @@ public class HasLowVariabilityTest {
     }
 
     /* This track contains Points in a guassian distribution centered around CENTER_POINT. */
-    private static Track createTestTrack(int numPoints, double distStandardDev) {
-        List<Point> points = newArrayList();
+    private static Track<String> createTestTrack(int numPoints, double distStandardDev) {
+        List<Point<String>> points = newArrayList();
 
         for (int i = 0; i < numPoints; i++) {
             points.add(gaussianPoint(i, distStandardDev));
         }
 
-        return Track.ofRaw(points);
+        return Track.of(points);
     }
 
-    private static Point gaussianPoint(int i, double distStandardDev) {
+    private static Point<String> gaussianPoint(int i, double distStandardDev) {
 
         LatLong randomLocation = CENTER_POINT.latLong().projectOut(
             360.0 * RNG.nextDouble(), //0-360 degress
             distStandardDev * abs(RNG.nextGaussian())
         );
 
-        return Point.builder()
+        return Point.<String>builder()
             .latLong(randomLocation)
             .time(EPOCH.plusSeconds(i))
             .build();

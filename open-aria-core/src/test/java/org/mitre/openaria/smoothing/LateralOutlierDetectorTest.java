@@ -35,17 +35,17 @@ public class LateralOutlierDetectorTest {
         //this point is the lateral outlier if the test data
         Point<NopHit> theOutlier = NopHit.from("[RH],STARS,D21_B,03/24/2018,14:57:02.226,N518SP,C172,,5256,031,109,184,042.46462,-083.75121,3472,5256,-16.5222,15.1222,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}");
 
-        Track testTrack = createTrackFromFile(
+        Track<NopHit> testTrack = createTrackFromFile(
             new File("src/test/resources/oneLateralOutlierTest.txt")
         );
 
-        NavigableSet<Point> outliers = (new LateralOutlierDetector()).getOutliers(testTrack);
+        NavigableSet<Point<NopHit>> outliers = (new LateralOutlierDetector<NopHit>()).getOutliers(testTrack);
 
         assertEquals(1, outliers.size());
         assertEquals(outliers.first().time(), theOutlier.time());
 
         int sizeBeforeCleaning = testTrack.size();
-        Track cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
+        Track<NopHit> cleanedTrack = (new LateralOutlierDetector<NopHit>()).clean(testTrack).get();
 
         assertEquals(sizeBeforeCleaning, cleanedTrack.size() + 1);
         assertNotEquals(cleanedTrack.nearestPoint(theOutlier.time()).time(), theOutlier.time());
@@ -55,13 +55,13 @@ public class LateralOutlierDetectorTest {
     public void testCurvyTrack() {
 
         //this test track is nice and smooth -- it shouldn't flag any outliers (even in the curves)
-        Track testTrack = createTrackFromFile(new File("src/test/resources/curvyTrack.txt"));
+        Track<NopHit> testTrack = createTrackFromFile(new File("src/test/resources/curvyTrack.txt"));
 
-        NavigableSet<Point> outliers = (new LateralOutlierDetector()).getOutliers(testTrack);
+        NavigableSet<Point<NopHit>> outliers = (new LateralOutlierDetector<NopHit>()).getOutliers(testTrack);
 
         assertEquals(0, outliers.size());
 
-        Track cleanedTrack = (new LateralOutlierDetector()).clean(testTrack).get();
+        Track<NopHit> cleanedTrack = (new LateralOutlierDetector<NopHit>()).clean(testTrack).get();
 
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
@@ -69,14 +69,14 @@ public class LateralOutlierDetectorTest {
     @Test
     public void testNearPerfectTrackWithMinorJitter() {
 
-        Track testTrack = trackWithVeryMinorJitter();
+        Track<String> testTrack = trackWithVeryMinorJitter();
 
-        LateralOutlierDetector outlierDetector = new LateralOutlierDetector();
+        LateralOutlierDetector<String> outlierDetector = new LateralOutlierDetector<>();
 
-        NavigableSet<Point> outliers = outlierDetector.getOutliers(testTrack);
+        NavigableSet<Point<String>> outliers = outlierDetector.getOutliers(testTrack);
         assertEquals(0, outliers.size());
 
-        Track cleanedTrack = outlierDetector.clean(testTrack).get();
+        Track<String> cleanedTrack = outlierDetector.clean(testTrack).get();
 
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
@@ -89,11 +89,11 @@ public class LateralOutlierDetectorTest {
      *     should be detected even though the error increased "dramatically" (when compared to zero
      *     error))
      */
-    public static Track trackWithVeryMinorJitter() {
+    public static Track<String> trackWithVeryMinorJitter() {
 
-        LinkedList<Point> points = newLinkedList();
+        LinkedList<Point<String>> points = newLinkedList();
 
-        Point cur = Point.builder().latLong(10.0, 10.0).time(EPOCH).build();
+        Point<String> cur = Point.<String>builder().latLong(10.0, 10.0).time(EPOCH).build();
         points.add(cur);
 
         int NUM_POINTS = 30;
@@ -103,8 +103,8 @@ public class LateralOutlierDetectorTest {
         Distance dist = Speed.of(200, KNOTS).times(timeStep);
 
         while (points.size() < NUM_POINTS) {
-            Point last = points.getLast();
-            Point next = Point.builder()
+            Point<String> last = points.getLast();
+            Point<String> next = Point.<String>builder()
                 .latLong(last.latLong().projectOut(NORTH_EAST, dist.inNauticalMiles()))
                 .time(last.time().plus(timeStep))
                 .build();
@@ -112,12 +112,12 @@ public class LateralOutlierDetectorTest {
         }
 
         //manipulate the 15th point very slightly
-        Point prior = points.get(14);
+        Point<String> prior = points.get(14);
         LatLong newPosition = prior.latLong().projectOut(NORTH_WEST, 0.1); //adjust location 0.01 NM
-        Point adjustedPoint = Point.builder(prior).latLong(newPosition).build();
+        Point<String> adjustedPoint = Point.builder(prior).latLong(newPosition).build();
         points.set(14, adjustedPoint);
 
-        return Track.ofRaw(points);
+        return Track.of(points);
     }
 
     @Test
@@ -133,12 +133,12 @@ public class LateralOutlierDetectorTest {
             outlier2
         );
 
-        Track testTrack = createTrackFromFile(
+        Track<NopHit> testTrack = createTrackFromFile(
             new File("src/test/resources/trackWithSomeGentalError.txt"));
 
-        LateralOutlierDetector outlierDetector = new LateralOutlierDetector();
+        LateralOutlierDetector<NopHit> outlierDetector = new LateralOutlierDetector<>();
 
-        NavigableSet<Point> outliers = outlierDetector.getOutliers(testTrack);
+        NavigableSet<Point<NopHit>> outliers = outlierDetector.getOutliers(testTrack);
 
         assertEquals(2, outliers.size(), "We found exactly 2 outliers");
 
@@ -152,7 +152,7 @@ public class LateralOutlierDetectorTest {
         //using the outlierDetector's "clean" method will mutate the input, save the prior state
         int sizeBeforeCleaning = testTrack.size();
 
-        Track cleanedTrack = outlierDetector.clean(testTrack).get();
+        Track<NopHit> cleanedTrack = outlierDetector.clean(testTrack).get();
 
         assertEquals(sizeBeforeCleaning, cleanedTrack.size() + knownOutliers.size());
 
