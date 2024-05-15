@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,16 +19,16 @@ public class HighFrequencyPointRemoverTest {
     @Test
     public void testCleaningExample1() {
 
-        Track testTrack = createTrackFromResource(
+        Track<NopHit> testTrack = createTrackFromResource(
             HighFrequencyPointRemover.class,
             "highFrequencyPoints_example1.txt"
         );
 
         Duration MIN_ALLOWABLE_SPACING = Duration.ofMillis(500);
 
-        DataCleaner<Track> smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
+        DataCleaner<Track<NopHit>> smoother = new HighFrequencyPointRemover<>(MIN_ALLOWABLE_SPACING);
 
-        Optional<Track> cleanedTrack = smoother.clean(testTrack);
+        Optional<Track<NopHit>> cleanedTrack = smoother.clean(testTrack);
 
         assertEquals(
             20, testTrack.size(),
@@ -43,16 +44,16 @@ public class HighFrequencyPointRemoverTest {
     @Test
     public void testCleaningExample2() {
 
-        Track testTrack = createTrackFromResource(
+        Track<NopHit> testTrack = createTrackFromResource(
             HighFrequencyPointRemover.class,
             "highFrequencyPoints_example2.txt"
         );
 
         Duration MIN_ALLOWABLE_SPACING = Duration.ofMillis(500);
 
-        DataCleaner<Track> smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
+        DataCleaner<Track<NopHit>> smoother = new HighFrequencyPointRemover<>(MIN_ALLOWABLE_SPACING);
 
-        Optional<Track> cleanedTrack = smoother.clean(testTrack);
+        Optional<Track<NopHit>> cleanedTrack = smoother.clean(testTrack);
 
         assertEquals(
             406, testTrack.size(),
@@ -69,16 +70,16 @@ public class HighFrequencyPointRemoverTest {
     @Test
     public void testCleaning_obliterate() {
 
-        Track testTrack = createTrackFromResource(
+        Track<NopHit> testTrack = createTrackFromResource(
             HighFrequencyPointRemover.class,
             "highFrequencyPoints_example1.txt"
         );
 
         Duration MIN_ALLOWABLE_SPACING = Duration.ofSeconds(10);
 
-        DataCleaner<Track> smoother = new HighFrequencyPointRemover(MIN_ALLOWABLE_SPACING);
+        DataCleaner<Track<NopHit>> smoother = new HighFrequencyPointRemover<>(MIN_ALLOWABLE_SPACING);
 
-        Optional<Track> cleanedTrack = smoother.clean(testTrack);
+        Optional<Track<NopHit>> cleanedTrack = smoother.clean(testTrack);
 
         assertEquals(
             20, testTrack.size(),

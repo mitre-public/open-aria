@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class TrackPairCleanerTest {
 
     //a simple test cleaner
-    class SizeBasedCleaner implements DataCleaner<Track> {
+    static class SizeBasedCleaner<T> implements DataCleaner<Track<T>> {
 
         final int requiredSize;
 
@@ -26,7 +26,7 @@ public class TrackPairCleanerTest {
         }
 
         @Override
-        public Optional<Track> clean(Track track) {
+        public Optional<Track<T>> clean(Track<T> track) {
             return (track.size() >= requiredSize)
                 ? Optional.of(track)
                 : Optional.empty();
@@ -36,8 +36,8 @@ public class TrackPairCleanerTest {
     @Test
     public void rejectingOneTrackProducesEmptyOptional() {
 
-        Track track1 = testTrack(15);
-        Track track2 = testTrack(5);
+        Track<String> track1 = testTrack(15);
+        Track<String> track2 = testTrack(5);
 
         TrackPairCleaner instance = new TrackPairCleaner(new SizeBasedCleaner(10));
 
@@ -49,8 +49,8 @@ public class TrackPairCleanerTest {
     @Test
     public void rejectingNoTracksProducesUsableOptional() {
 
-        Track track1 = testTrack(15);
-        Track track2 = testTrack(5);
+        Track<String> track1 = testTrack(15);
+        Track<String> track2 = testTrack(5);
 
         TrackPairCleaner instance = new TrackPairCleaner(new SizeBasedCleaner(2));
 
@@ -63,18 +63,18 @@ public class TrackPairCleanerTest {
 
     private Track<String> testTrack(int numPoints) {
 
-        ArrayList<Point> points = newArrayList();
+        ArrayList<Point<String>> points = newArrayList();
 
         LatLong startPoint = LatLong.of(0.0, 0.0);
 
         for (int i = 0; i < numPoints; i++) {
-            Point newPoint = Point.builder()
+            Point<String> newPoint = Point.<String>builder()
                 .time(EPOCH.plusSeconds(i))
                 .latLong(startPoint.projectOut(90.0, (double) i))
                 .build();
             points.add(newPoint);
         }
-        return (Track<String>) Track.ofRaw(points);
+        return Track.of(points);
     }
 
 }

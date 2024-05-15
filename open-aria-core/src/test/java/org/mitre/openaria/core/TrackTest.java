@@ -8,8 +8,6 @@ import static java.util.Optional.empty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mitre.caasd.commons.Functions.ALWAYS_FALSE;
-import static org.mitre.caasd.commons.Functions.ALWAYS_TRUE;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.core.TestUtils.confirmNopEquality;
 import static org.mitre.openaria.core.Tracks.createTrackFromFile;
@@ -33,11 +31,11 @@ public class TrackTest {
     @Test
     public void testKNearestPoints() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         Instant time = parseNopTime("07/08/2017", "14:11:59.454");
 
-        NavigableSet<Point> knn = t1.kNearestPoints(time, 5);
+        NavigableSet<Point<NopHit>> knn = t1.kNearestPoints(time, 5);
 
         confirmNopEquality(
             knn,
@@ -66,9 +64,9 @@ public class TrackTest {
 
         Instant t1 = parseNopTime("06/30/2017", "16:40:17.000");
 
-        Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
+        Track<NopHit> fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
 
-        Optional<Point> result = fullTrack.interpolatedPoint(t1);
+        Optional<Point<NopHit>> result = fullTrack.interpolatedPoint(t1);
         assertTrue(result.isPresent());
         assertTrue(result.get().time().equals(t1));
     }
@@ -87,12 +85,12 @@ public class TrackTest {
         Instant t2 = parseNopTime("06/30/2017", "16:40:29.000");
         Instant t3 = parseNopTime("06/30/2017", "16:40:42.000");
 
-        Track fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
-        Track firstHalf = Track.of(newArrayList(p1, p2, p3));
-        Track secondHalf = Track.of(newArrayList(p4, p5, p6));
+        Track<NopHit> fullTrack = Track.of(newArrayList(p1, p2, p3, p4, p5, p6));
+        Track<NopHit> firstHalf = Track.of(newArrayList(p1, p2, p3));
+        Track<NopHit> secondHalf = Track.of(newArrayList(p4, p5, p6));
 
-        Track firstAndThirdPoints = Track.of(newArrayList(p1, p3));
-        Track secondAndFourthPoints = Track.of(newArrayList(p2, p4));
+        Track<NopHit> firstAndThirdPoints = Track.of(newArrayList(p1, p3));
+        Track<NopHit> secondAndFourthPoints = Track.of(newArrayList(p2, p4));
 
         assertEquals(
             fullTrack.getOverlapWith(firstHalf).get(),
@@ -131,11 +129,11 @@ public class TrackTest {
         assertThat(t1.size(), is(NUM_TRACK_POINTS));
 
         //get everything
-        Collection<Point<String>> everything = t1.subset(ALWAYS_TRUE);
+        Collection<Point<NopHit>> everything = t1.subset(p -> true);
         assertThat(everything, hasSize(NUM_TRACK_POINTS));
 
         //get nothing
-        Collection<Point<String>> nothing = t1.subset(ALWAYS_FALSE);
+        Collection<Point<NopHit>> nothing = t1.subset(p -> false);
         assertThat(nothing, hasSize(0));
 
         Collection<Point<NopHit>> lowSpeedPoints = t1.subset(pt -> nonNull(pt.speed()) && pt.speed().inKnots() < 90);
@@ -152,12 +150,12 @@ public class TrackTest {
     @Test
     public void subset_reflectsEndTime() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         //this is the time of 21st point in the track
         Instant endTime = parseNopTime("07/08/2017", "14:10:45.534");
 
-        NavigableSet<Point> subset = (NavigableSet<Point>) t1.subset(Instant.EPOCH, endTime);
+        NavigableSet<Point<NopHit>> subset = t1.subset(Instant.EPOCH, endTime);
 
         assertThat(subset, hasSize(21));
         assertThat(subset.last().time(), is(endTime));
@@ -166,12 +164,12 @@ public class TrackTest {
     @Test
     public void subset_reflectsStartTime() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         //this is the time of 21st point in the track
         Instant startTime = parseNopTime("07/08/2017", "14:10:45.534");
 
-        NavigableSet<Point> subset = (NavigableSet<Point>) t1.subset(startTime, startTime.plus(365 * 20, DAYS));
+        NavigableSet<Point<NopHit>> subset = t1.subset(startTime, startTime.plus(365 * 20, DAYS));
 
         assertThat(subset, hasSize(t1.size() - 21 + 1)); //"+1" because the fence post Point is in both the original track and the subset
 
@@ -182,12 +180,12 @@ public class TrackTest {
     @Test
     public void subset_reflectsStartAndEndTimes() {
 
-        Track t1 = createTrackFromFile(getResourceFile("Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(getResourceFile("Track1.txt"));
 
         Instant startTime = parseNopTime("07/08/2017", "14:10:45.534");
         Instant endTime = parseNopTime("07/08/2017", "14:11:17.854");
 
-        NavigableSet<Point> subset = (NavigableSet<Point>) t1.subset(startTime, endTime);
+        NavigableSet<Point<NopHit>> subset = t1.subset(startTime, endTime);
 
         assertThat(subset, hasSize(8));
 

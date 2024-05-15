@@ -130,8 +130,8 @@ public class StrictTimeSortEnforcer<T extends HasTime> implements Consumer<T> {
         return this.lastDroppedPoint;
     }
 
-    static Consumer ignorePoints() {
-        return (Object p) -> {
+    static <T> Consumer<T> ignorePoints() {
+        return (T p) -> {
             //do nothing
         };
     }

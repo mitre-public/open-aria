@@ -24,7 +24,7 @@ import org.mitre.openaria.core.Track;
  * <p>
  * (This is ARIA's replacement for StationaryPointFilter which is compute intensive)
  */
-public class DistanceDownSampler implements DataCleaner<Track> {
+public class DistanceDownSampler<T> implements DataCleaner<Track<T>> {
 
     private final double requiredDistSeparationInNM;
 
@@ -57,17 +57,17 @@ public class DistanceDownSampler implements DataCleaner<Track> {
     }
 
     @Override
-    public Optional<Track> clean(Track track) {
+    public Optional<Track<T>> clean(Track<T> track) {
 
-        TreeSet<Point> points = new TreeSet<>(track.points());
+        TreeSet<Point<T>> points = new TreeSet<>(track.points());
 
-        Iterator<Point> iter = points.iterator();
+        Iterator<Point<T>> iter = points.iterator();
 
         LatLong anchor = null;
         Instant anchorTime = null;
 
         while (iter.hasNext()) {
-            Point point = iter.next();
+            Point<T> point = iter.next();
 
             //the 1st time through this loop set the anchor information
             if (anchor == null) {
@@ -84,10 +84,10 @@ public class DistanceDownSampler implements DataCleaner<Track> {
             }
         }
 
-        return Optional.of(Track.ofRaw(points));
+        return Optional.of(Track.of(points));
     }
 
-    private boolean tooCloseInSpace(LatLong anchor, Point point) {
+    private boolean tooCloseInSpace(LatLong anchor, Point<T> point) {
         return anchor.distanceInNM(point.latLong()) < requiredDistSeparationInNM;
     }
 

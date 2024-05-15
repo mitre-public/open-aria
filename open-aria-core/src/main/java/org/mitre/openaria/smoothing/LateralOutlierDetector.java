@@ -17,7 +17,7 @@ import org.mitre.openaria.core.Track;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-public class LateralOutlierDetector implements DataCleaner<Track> {
+public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
 
     private final int REQUIRED_SAMPLE_SIZE = 9;
 
@@ -34,12 +34,12 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
      *
      * @return The set of Point in this Track with outlying latitude-longitude locations.
      */
-    public NavigableSet<Point> getOutliers(Track track) {
+    public NavigableSet<Point<T>> getOutliers(Track<T> track) {
 
-        TreeSet<Point> outliers = new TreeSet<>();
+        TreeSet<Point<T>> outliers = new TreeSet<>();
 
         // the for loop is wonky due to the raw type, probably could be improved
-        for (Point point : ((NavigableSet<Point<?>>) track.points())) {
+        for (Point<T> point : track.points()) {
 
             LateralAnalysisResult result = analyzePoint(point, track);
 
@@ -68,9 +68,9 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
      * @return A LateralAnalysisResult object that describes whether or not the testPoint is an
      *     outlier.
      */
-    private LateralAnalysisResult analyzePoint(Point testPoint, Track track) {
+    private LateralAnalysisResult analyzePoint(Point<T> testPoint, Track<T> track) {
 
-        Collection<Point> pointsNearby = track.kNearestPoints(
+        Collection<Point<T>> pointsNearby = track.kNearestPoints(
             testPoint.time(),
             REQUIRED_SAMPLE_SIZE
         );
@@ -80,7 +80,7 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
             return new LateralAnalysisResult(false);
         }
 
-        LateralRegression localRegression = new LateralRegression(pointsNearby, testPoint);
+        LateralRegression<T> localRegression = new LateralRegression<T>(pointsNearby, testPoint);
 
         LatLong predictedLocation = localRegression.predictLocation(testPoint.time());
         Distance locationError = predictedLocation.distanceTo(testPoint.latLong());
@@ -123,16 +123,16 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
      * @return An Optional Track with lateral outliers removed.
      */
     @Override
-    public Optional<Track> clean(Track inputTrack) {
+    public Optional<Track<T>> clean(Track<T> inputTrack) {
 
-        Collection<Point> outliers = getOutliers(inputTrack);
+        Collection<Point<T>> outliers = getOutliers(inputTrack);
 
-        TreeSet<Point> points = new TreeSet<>(inputTrack.points());
+        TreeSet<Point<T>> points = new TreeSet<>(inputTrack.points());
         points.removeAll(outliers);
 
         return points.isEmpty()
             ? Optional.empty()
-            : Optional.of(Track.ofRaw(points));
+            : Optional.of(Track.of(points));
     }
 
     private static class LateralAnalysisResult {
@@ -148,16 +148,16 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
      * A LateralRegression puts LatLong locations from a collection of Points into two Regressions
      * (one for latitude, one for longitude).
      */
-    private static class LateralRegression {
+    private static class LateralRegression<T> {
 
         SimpleRegression latRegression;
         SimpleRegression longRegression;
 
-        LateralRegression(Collection<Point> points, Point testPoint) {
+        LateralRegression(Collection<Point<T>> points, Point<T> testPoint) {
             this.latRegression = new SimpleRegression();
             this.longRegression = new SimpleRegression();
 
-            for (Point point : points) {
+            for (Point<T> point : points) {
                 if (point == testPoint) {
                     continue;
                 }
@@ -165,7 +165,7 @@ public class LateralOutlierDetector implements DataCleaner<Track> {
             }
         }
 
-        private void incorporatePoint(Point p) {
+        private void incorporatePoint(Point<T> p) {
             long time = p.time().toEpochMilli();
             latRegression.addData(time, p.latLong().latitude());
             longRegression.addData(time, p.latLong().longitude());

@@ -94,7 +94,7 @@ public class Points {
      *
      * @return A NavigableSet contain at most k Points from this Track.
      */
-    public static NavigableSet<Point> slowKNearestPoints(Collection<? extends Point> points, Instant time, int k) {
+    public static <T> NavigableSet<Point<T>> slowKNearestPoints(Collection<? extends Point<T>> points, Instant time, int k) {
         checkNotNull(points, "The input collection of Points cannot be null");
         checkNotNull(time, "The input time cannot be null");
         checkArgument(k >= 0, "k (" + k + ") must be non-negative");
@@ -106,8 +106,8 @@ public class Points {
             return newTreeSet();
         }
 
-        TreeSet<Point> bestSoFar = new TreeSet<>();
-        Iterator<Point> iter = (Iterator<Point>) points.iterator();
+        TreeSet<Point<T>> bestSoFar = new TreeSet<>();
+        Iterator<? extends Point<T>> iter = points.iterator();
 
         //seed with k pieces of data
         while (bestSoFar.size() < k) {
@@ -120,7 +120,7 @@ public class Points {
         Duration addThreshold = max(upperDelta, lowerDelta);
 
         while (iter.hasNext()) {
-            Point next = iter.next();
+            Point<T> next = iter.next();
 
             Duration delta = durationBtw(time, next.time());
 
@@ -203,7 +203,7 @@ public class Points {
             return newTreeSet();
         }
 
-        Point midPoint = Point.builder()
+        Point<T> midPoint = Point.<T>builder()
             .time(subsetWindow.instantWithin(.5))
             .latLong(0.0, 0.0)
             .build();
@@ -212,7 +212,7 @@ public class Points {
          * Find exactly one point in the actual Track, ideally this point will be in the middle of
          * the time window
          */
-        Point aPointInTrack = points.floor(midPoint);
+        Point<T> aPointInTrack = points.floor(midPoint);
         if (aPointInTrack == null) {
             aPointInTrack = points.ceiling(midPoint);
         }
@@ -238,7 +238,7 @@ public class Points {
         iter = tailSet.iterator();
 
         while (iter.hasNext()) {
-            Point pt = iter.next();
+            Point<T> pt = iter.next();
             if (subsetWindow.contains(pt.time())) {
                 outputSubset.add(pt);
             }

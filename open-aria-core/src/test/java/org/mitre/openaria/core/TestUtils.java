@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.NopHit;
 
 public class TestUtils {
 
@@ -23,7 +24,7 @@ public class TestUtils {
      * @param actualResults  A Collection of points (typically generated algorithmically)
      * @param expectedPoints An array of NOP Strings
      */
-    public static void confirmNopEquality(Collection<Point> actualResults, String... expectedPoints) {
+    public static void confirmNopEquality(Collection<Point<NopHit>> actualResults, String... expectedPoints) {
 
         assertEquals(
             actualResults.size(), expectedPoints.length,
@@ -34,7 +35,7 @@ public class TestUtils {
 
         NopEncoder nopEncoder = new NopEncoder();
 
-        for (Point actualResult : actualResults) {
+        for (Point<NopHit> actualResult : actualResults) {
             String asNop = nopEncoder.asRawNop(actualResult);
             assertThat(arrayOfPoints.contains(asNop), is(true));
         }

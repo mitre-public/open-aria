@@ -39,13 +39,13 @@ public class TracksTest {
         points.add(p2);
         points.add(p3);
 
-        Track track = Track.of( (List) points);
+        Track<NopHit> track = Track.of(points);
 
         NopEncoder nopEncoder = new NopEncoder();
 
         assertEquals(
             raw1 + "\n" + raw2 + "\n" + raw3 + "\n",
-            nopEncoder.asRawNop(track.points())
+            nopEncoder.asRawNop(track)
         );
     }
 
@@ -59,13 +59,13 @@ public class TracksTest {
             .latLong(0.0, 1.0)
             .build();
 
-        Point p2 = Point.<PojoWithAcDetails>builder()
+        Point<PojoWithAcDetails> p2 = Point.<PojoWithAcDetails>builder()
             .time(Instant.EPOCH.plusSeconds(4))
             .rawData(new PojoWithAcDetails(new AircraftDetails("AA123", "BOEING")))
             .latLong(0.0, 1.0)
             .build();
 
-        Point p3 = Point.<PojoWithAcDetails>builder()
+        Point<PojoWithAcDetails> p3 = Point.<PojoWithAcDetails>builder()
             .time(Instant.EPOCH.plusSeconds(8))
             .latLong(0.0, 1.0)
             .build();
@@ -75,7 +75,7 @@ public class TracksTest {
         points.add(p2);
         points.add(p3);
 
-        Track track = Track.of(points);
+        Track<PojoWithAcDetails> track = Track.of(points);
 
         NopEncoder nopEncoder = new NopEncoder();
 
@@ -83,15 +83,15 @@ public class TracksTest {
             "[RH],STARS,,01/01/1970,00:00:00.000,,,,,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
                 + "[RH],STARS,,01/01/1970,00:00:04.000,AA123,BOEING,,,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n"
                 + "[RH],STARS,,01/01/1970,00:00:08.000,,,,,,,,0.00000,1.00000,null,,,,,,,,,,,,,,,,,,,,,,,,,,{RH}\n",
-            nopEncoder.asRawNop(track.points())
+            nopEncoder.asRawNop(track)
         );
     }
 
     @Test
     public void testTrackDistance() {
 
-        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
-        Track t2 = createTrackFromFile(new File("src/test/resources/Track2.txt"));
+        Track<NopHit> t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
+        Track<NopHit> t2 = createTrackFromFile(new File("src/test/resources/Track2.txt"));
 
         double dist = Tracks.maxDistBetween(t1, t2);
 
@@ -103,9 +103,9 @@ public class TracksTest {
     @Test
     public void testInterpolatedPoint_outsideTimeWindow() {
 
-        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
 
-        Optional<Point> p = t1.interpolatedPoint(Instant.EPOCH);
+        Optional<Point<NopHit>> p = t1.interpolatedPoint(Instant.EPOCH);
 
         assertFalse(
             p.isPresent(),
@@ -116,12 +116,12 @@ public class TracksTest {
     @Test
     public void testInterpolatedPoint_insdieTimeWindow() {
 
-        Track t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
+        Track<NopHit> t1 = createTrackFromFile(new File("src/test/resources/Track1.txt"));
 
         //pick an arbitrary time "within" this track
         Instant time = parseNopTime("07/08/2017", "14:11:03.999");
 
-        Optional<Point> p = t1.interpolatedPoint(time);
+        Optional<Point<NopHit>> p = t1.interpolatedPoint(time);
 
         /*
          * The interpolated point occurs between these two radar hits..
@@ -147,8 +147,8 @@ public class TracksTest {
     @Test
     public void testComputeTimeInCloseProximity() {
 
-        Track t1 = createTrackFromResource(Tracks.class, "twoMilitaryAircraft_part1.txt");
-        Track t2 = createTrackFromResource(Tracks.class, "twoMilitaryAircraft_part2.txt");
+        Track<NopHit> t1 = createTrackFromResource(Tracks.class, "twoMilitaryAircraft_part1.txt");
+        Track<NopHit> t2 = createTrackFromResource(Tracks.class, "twoMilitaryAircraft_part2.txt");
 
         Duration durationWithinOneHalfNM = computeTimeInCloseProximity(
             t1,

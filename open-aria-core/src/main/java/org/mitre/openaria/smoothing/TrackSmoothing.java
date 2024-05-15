@@ -10,13 +10,14 @@ import org.mitre.caasd.commons.util.ExceptionHandler;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.NopHit;
 
 public class TrackSmoothing {
 
     /**
      * @return A single DataCleaner built from a chain of DataCleaners that are run in sequence.
      */
-    public static DataCleaner<Track> coreSmoothing() {
+    public static DataCleaner<Track<NopHit>> coreSmoothing() {
         return CompositeCleaner.of(
             //removes error prone synthetic "assumed" points from Nop data
             new CoastedPointRemover(),
@@ -46,12 +47,12 @@ public class TrackSmoothing {
         );
     }
 
-    public static DataCleaner<Track> simpleSmoothing() {
+    public static DataCleaner<Track<NopHit>> simpleSmoothing() {
 
         NopEncoder nopEncoder = new NopEncoder();
 
-        DataCleaner<Track> cleaner = coreSmoothing();
-        ToStringFunction<Track> toString = track -> nopEncoder.asRawNop(track);
+        DataCleaner<Track<NopHit>> cleaner = coreSmoothing();
+        ToStringFunction<Track<NopHit>> toString = track -> nopEncoder.asRawNop(track);
         ExceptionHandler exceptionHandler = new SequentialFileWriter("trackCleaningExceptions");
 
         return new ExceptionCatchingCleaner<>(cleaner, toString, exceptionHandler);

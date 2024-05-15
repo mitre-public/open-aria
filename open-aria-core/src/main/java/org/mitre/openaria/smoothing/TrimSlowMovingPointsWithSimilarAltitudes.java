@@ -20,7 +20,7 @@ import org.mitre.openaria.core.Track;
  * measurement. This filter can be useful when attempting to remove ground-data from Tracks (in
  * cases where you only are interested in the airborne section of a track).
  */
-public class TrimSlowMovingPointsWithSimilarAltitudes implements DataCleaner<Track> {
+public class TrimSlowMovingPointsWithSimilarAltitudes<T> implements DataCleaner<Track<T>> {
 
     private final double speedLimitInKnots;
     private final Distance groundAltitudeTolerance;
@@ -45,18 +45,18 @@ public class TrimSlowMovingPointsWithSimilarAltitudes implements DataCleaner<Tra
     }
 
     @Override
-    public Optional<Track> clean(Track track) {
-        TreeSet<Point> points = newTreeSet(track.points());
+    public Optional<Track<T>> clean(Track<T> track) {
+        TreeSet<Point<T>> points = newTreeSet(track.points());
 
         removePointsFromBeginning(points);
         removePointsFromEnd(points);
 
         return (points.size() >= minNumberPoints)
-            ? Optional.of(Track.of( (TreeSet) points))
+            ? Optional.of(Track.of(points))
             : Optional.empty();
     }
 
-    private void removePointsFromBeginning(NavigableSet<Point> points) {
+    private void removePointsFromBeginning(NavigableSet<Point<T>> points) {
 
         if (points.isEmpty()) {
             return;
@@ -70,7 +70,7 @@ public class TrimSlowMovingPointsWithSimilarAltitudes implements DataCleaner<Tra
         }
     }
 
-    private void removePointsFromEnd(NavigableSet<Point> points) {
+    private void removePointsFromEnd(NavigableSet<Point<T>> points) {
 
         if (points.isEmpty()) {
             return;
@@ -84,7 +84,7 @@ public class TrimSlowMovingPointsWithSimilarAltitudes implements DataCleaner<Tra
         }
     }
 
-    private boolean isSlowAndInRange(Point p, Distance estimatedGroundAlt) {
+    private boolean isSlowAndInRange(Point<T> p, Distance estimatedGroundAlt) {
         boolean isSlow = p.speed().inKnots() < speedLimitInKnots;
         boolean hasSimilarAlt = p.altitude().minus(estimatedGroundAlt).abs().isLessThan(groundAltitudeTolerance);
 

@@ -14,12 +14,13 @@ import org.junit.jupiter.api.Test;
 
 public class DistanceDownSamplerTest {
 
+
     @Test
     public void testTrackWithPause() {
 
-        Track track = trackWithPause();
+        Track<String> track = trackWithPause();
 
-        Track cleanedTrack = (new DistanceDownSampler()).clean(track).get();
+        Track<String> cleanedTrack = (new DistanceDownSampler<String>()).clean(track).get();
 
         int numRemovedPoints = track.size() - cleanedTrack.size();
 
@@ -35,11 +36,11 @@ public class DistanceDownSamplerTest {
      * Create a Track with 1 point every second. The track contains 1 seed point, 300 points that
      * move, 300 points that stay still, and 300 more points that move.
      */
-    private Track trackWithPause() {
+    private Track<String> trackWithPause() {
 
-        LinkedList<Point> points = newLinkedList();
+        LinkedList<Point<String>> points = newLinkedList();
 
-        Point startPoint = Point.builder()
+        Point<String> startPoint = Point.<String>builder()
             .latLong(50.0, 50.0)
             .time(EPOCH)
             .build();
@@ -50,14 +51,14 @@ public class DistanceDownSamplerTest {
         addStagnantPoints(points);
         addMovingPoints(points);
 
-        return Track.ofRaw(points);
+        return Track.of(points);
     }
 
-    private void addMovingPoints(LinkedList<Point> points) {
+    private void addMovingPoints(LinkedList<Point<String>> points) {
         int i = 0;
         while (i < 300) {
-            Point lastPoint = points.getLast();
-            Point newPoint = Point.builder()
+            Point<String> lastPoint = points.getLast();
+            Point<String> newPoint = Point.<String>builder()
                 .time(lastPoint.time().plusSeconds(1))
                 .latLong(lastPoint.latLong().projectOut(45.0, 1.0 / 60.0)) //point moves 1/60th of a mile
                 .build();
@@ -67,11 +68,11 @@ public class DistanceDownSamplerTest {
         }
     }
 
-    private void addStagnantPoints(LinkedList<Point> points) {
+    private void addStagnantPoints(LinkedList<Point<String>> points) {
         int i = 0;
         while (i < 300) {
-            Point lastPoint = points.getLast();
-            Point newPoint = Point.builder()
+            Point<String> lastPoint = points.getLast();
+            Point<String> newPoint = Point.<String>builder()
                 .time(lastPoint.time().plusSeconds(1))
                 .latLong(lastPoint.latLong()) //point stays at the same place
                 .build();

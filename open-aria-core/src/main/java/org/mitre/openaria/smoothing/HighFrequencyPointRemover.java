@@ -19,7 +19,7 @@ import org.mitre.openaria.core.Track;
  * at least one of the points must be flawed. For example, if normal radar returns occur every 6
  * seconds how can two points in the same track be 0.5 seconds apart?
  */
-public class HighFrequencyPointRemover implements DataCleaner<Track> {
+public class HighFrequencyPointRemover<T> implements DataCleaner<Track<T>> {
 
     final long minAllowableSpacingInMilliSec;
 
@@ -34,17 +34,17 @@ public class HighFrequencyPointRemover implements DataCleaner<Track> {
      *     spacing specified at construction. Note: this rule can result in an empty Optional.
      */
     @Override
-    public Optional<Track> clean(Track track) {
+    public Optional<Track<T>> clean(Track<T> track) {
 
-        NavigableSet<Point> points = newTreeSet(track.points());
+        NavigableSet<Point<T>> points = newTreeSet(track.points());
 
-        Set<Point> badPoints = findPointsWithoutEnoughTimeSpacing(track);
+        Set<Point<T>> badPoints = findPointsWithoutEnoughTimeSpacing(track);
 
         points.removeAll(badPoints);
 
         return (points.isEmpty())
             ? Optional.empty()
-            : Optional.of(Track.of( (NavigableSet) points));
+            : Optional.of(Track.of(points));
     }
 
     /**
@@ -55,15 +55,14 @@ public class HighFrequencyPointRemover implements DataCleaner<Track> {
      *
      * @return All the Points in this Track that are too close together in time.
      */
-    public TreeSet<Point> findPointsWithoutEnoughTimeSpacing(Track track) {
+    public TreeSet<Point<T>> findPointsWithoutEnoughTimeSpacing(Track<T> track) {
 
-        TreeSet<Point> badPoints = newTreeSet();
+        TreeSet<Point<T>> badPoints = newTreeSet();
 
-        Point lastPoint = null;
+        Point<T> lastPoint = null;
         Instant lastTime = Instant.MIN; //do not use null here, it triggers a "possible null reference" flag during a FAA code scan
 
-        for (Object c : track.points()) {
-            Point curPoint = (Point) c;
+        for (Point<T> curPoint : track.points()) {
 
             //the first time through the loop set the "last" variables
             if (lastPoint == null) {

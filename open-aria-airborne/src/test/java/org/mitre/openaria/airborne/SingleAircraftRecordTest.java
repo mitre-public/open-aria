@@ -3,29 +3,31 @@ package org.mitre.openaria.airborne;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mitre.caasd.commons.Speed.Unit.KNOTS;
+import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.airborne.SingleAircraftRecord.mean;
 import static org.mitre.openaria.airborne.SingleAircraftRecord.parseJson;
 import static org.mitre.openaria.smoothing.TrackSmoothing.coreSmoothing;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.Speed.Unit.KNOTS;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.TrackPair;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.NopHit;
+
+import org.junit.jupiter.api.Test;
 
 public class SingleAircraftRecordTest {
 
     static final TrackPair TEST_TRACKS = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
 
-    static final Track TRACK_1 = smooth(TEST_TRACKS.track1());
-    static final Track TRACK_2 = smooth(TEST_TRACKS.track2());
+    static final Track<NopHit> TRACK_1 = smooth(TEST_TRACKS.track1());
+    static final Track<NopHit> TRACK_2 = smooth(TEST_TRACKS.track2());
 
     //smooth the test tracks to correct missing values..
-    private static Track smooth(Track rawTrack) {
-        DataCleaner<Track> cleaner = coreSmoothing();
+    private static Track<NopHit> smooth(Track<NopHit> rawTrack) {
+        DataCleaner<Track<NopHit>> cleaner = coreSmoothing();
         return cleaner.clean(rawTrack).get();
     }
 

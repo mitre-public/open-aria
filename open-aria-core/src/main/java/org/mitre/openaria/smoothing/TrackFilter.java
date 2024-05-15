@@ -25,7 +25,7 @@ import org.mitre.openaria.core.Track;
  * <p>The replacement was necessary to remove the JBLAS dependency under-the-hood of
  * AlongTrackFilter and CrossTrackFilter
  */
-public class TrackFilter implements DataCleaner<Track> {
+public class TrackFilter<T> implements DataCleaner<Track<T>> {
 
     /* This fitter doubles its Window Size when the "narrower window" does not contain enough sample data. */
     private final PositionInterpolator fitter;
@@ -46,24 +46,24 @@ public class TrackFilter implements DataCleaner<Track> {
      * @return
      */
     @Override
-    public Optional<Track> clean(Track track) {
+    public Optional<Track<T>> clean(Track<T> track) {
 
-        TreeSet<Point> points = new TreeSet<>(track.points());
+        TreeSet<Point<T>> points = new TreeSet<>(track.points());
 
         if (points.size() == 1) {
-            Point pt = points.first();
+            Point<T> pt = points.first();
             //if points supported this field here is where we'd add it
-            Point corrected = Point.builder(pt).speedInKnots(0.0).build();
+            Point<T> corrected = Point.builder(pt).speedInKnots(0.0).build();
             return Optional.of(Track.of(List.of(corrected)));
         }
 
         //Extract the potentially noisy physical position of each input point
-        List<PositionRecord<Point>> originalPositions = points.stream()
+        List<PositionRecord<Point<T>>> originalPositions = points.stream()
             .map(pt -> asPositionRecord(pt))
             .collect(toList());
 
         //Deduce noise-reduced Lat/Long/Speed/Course/etc values
-        List<KineticRecord<Point>> fitPositions = points.stream()
+        List<KineticRecord<Point<T>>> fitPositions = points.stream()
             .map(pt -> fitter.floorInterpolate(originalPositions, pt.time()))
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -71,16 +71,16 @@ public class TrackFilter implements DataCleaner<Track> {
 
 
         //Rebuild the "points" NavigableSet from only the valid data
-        List<Point> smoothedPoints = fitPositions.stream()
+        List<Point<T>> smoothedPoints = fitPositions.stream()
             .map(kr -> makeAdjustedPoint(kr))
             .collect(toList());
 
         return smoothedPoints.isEmpty()
             ? Optional.empty()
-            : Optional.of(Track.ofRaw(smoothedPoints));
+            : Optional.of(Track.of(smoothedPoints));
     }
 
-    private Point makeAdjustedPoint(KineticRecord<Point> kr) {
+    private Point<T> makeAdjustedPoint(KineticRecord<Point<T>> kr) {
 
         /*
          * There are a few cases instances when a computed speed will be negative. This can
@@ -96,7 +96,7 @@ public class TrackFilter implements DataCleaner<Track> {
             .build();
     }
 
-    private PositionRecord<Point> asPositionRecord(Point point) {
+    private PositionRecord<Point<T>> asPositionRecord(Point<T> point) {
         Position p = new Position(point.time(), point.latLong());
         return new PositionRecord<>(point, p);
     }

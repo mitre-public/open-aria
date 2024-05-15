@@ -13,6 +13,7 @@ import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.StreamingTimeSorter;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.threading.TrackMaker;
 
@@ -85,12 +86,12 @@ public class ProfilingDemo {
     static class Smoother implements Consumer<Track> {
 
         StatsAccumulator stats = new StatsAccumulator();
-        DataCleaner<Track> smoother = coreSmoothing();
+        DataCleaner<Track<NopHit>> smoother = coreSmoothing();
 
         @Override
         public void accept(Track track) {
             //Do the computation work...
-            Optional<Track> smoothedTrack = smoother.clean(track);
+            Optional<Track<NopHit>> smoothedTrack = smoother.clean(track);
 
             //Remember how much work was done (under estimates count because small tracks are thrown out)
             int pointCount = smoothedTrack.map(Track::size).orElse(0);

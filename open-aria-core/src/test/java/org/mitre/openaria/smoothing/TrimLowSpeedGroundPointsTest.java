@@ -72,7 +72,7 @@ public class TrimLowSpeedGroundPointsTest {
     @Test
     public void removeSlowMovingDataAtEndsOfTrack() {
 
-        TrimSlowMovingPointsWithSimilarAltitudes smoother = new TrimSlowMovingPointsWithSimilarAltitudes(
+        TrimSlowMovingPointsWithSimilarAltitudes<NopHit> smoother = new TrimSlowMovingPointsWithSimilarAltitudes<>(
             Speed.of(90, KNOTS),
             Distance.ofFeet(150),
             5
@@ -80,7 +80,7 @@ public class TrimLowSpeedGroundPointsTest {
 
         Track<NopHit> testTrack = trackWithLowSpeedTakeOff();
 
-        Optional<Track> cleanedTrack = smoother.clean(testTrack);
+        Optional<Track<NopHit>> cleanedTrack = smoother.clean(testTrack);
 
         assertThat(cleanedTrack.isPresent(), is(true));
         Track<NopHit> track = cleanedTrack.get();

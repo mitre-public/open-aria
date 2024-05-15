@@ -17,6 +17,16 @@ tasks.named<Test>("test") {
     }
 }
 
+tasks {
+    withType<JavaCompile> {
+        description = "A place to set javac options, e.g -Xlint."
+
+//        options.compilerArgs.add("-Xdoclint:all,-missing")
+//        options.compilerArgs.add("-Xlint:deprecation")
+        options.compilerArgs.add("-Xlint:unchecked")
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
