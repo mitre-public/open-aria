@@ -27,7 +27,7 @@ import org.mitre.openaria.core.TrackPair;
 
 public class AirborneAria {
 
-    private final AirborneAlgorithmDef properties;
+    private final AirborneAlgorithmDef algorithmDef;
 
     /** Events with scores above this threshold are ignored. */
     private final double maxReportableScore;
@@ -47,13 +47,13 @@ public class AirborneAria {
      */
     private final Predicate<AirborneEvent> shouldPublish;
 
-    private AirborneAria(AirborneAlgorithmDef properties) {
-        requireNonNull(properties);
-        this.properties = properties;
-        this.maxReportableScore = properties.maxReportableScore();
-        this.filterByAirspace = properties.filterByAirspace();
-        this.requireDataTag = properties.requireAtLeastOneDataTag();
-        this.dataCleaner = properties.pairCleaner();
+    private AirborneAria(AirborneAlgorithmDef algorithmDef) {
+        requireNonNull(algorithmDef);
+        this.algorithmDef = algorithmDef;
+        this.maxReportableScore = algorithmDef.maxReportableScore();
+        this.filterByAirspace = algorithmDef.filterByAirspace();
+        this.requireDataTag = algorithmDef.requireAtLeastOneDataTag();
+        this.dataCleaner = algorithmDef.pairCleaner();
         this.shouldPublish = new TempShouldPublishPredicate(maxReportableScore, requireDataTag);
     }
 
@@ -62,9 +62,9 @@ public class AirborneAria {
         return new AirborneAria(new AirborneAlgorithmDef());
     }
 
-    /** Create a new AirborneAria algorithm that uses custom properties. */
-    public static AirborneAria airborneAria(AirborneAlgorithmDef properties) {
-        return new AirborneAria(properties);
+    /** Create a new AirborneAria algorithm that uses custom definition. */
+    public static AirborneAria airborneAria(AirborneAlgorithmDef definition) {
+        return new AirborneAria(definition);
     }
 
     public ArrayList<AirborneEvent> findAirborneEvents(TrackPair trackPair) {
@@ -119,8 +119,8 @@ public class AirborneAria {
 
         TrackPairAnalysis tpa = new TrackPairAnalysis(smoothedPair);
 
-        SerializableAnalysis dynamics = properties.publishDynamics()
-            ? tpa.analysis.truncate(properties.dynamicsInclusionRadius()).serializedForm() :
+        SerializableAnalysis dynamics = algorithmDef.publishDynamics()
+            ? tpa.analysis.truncate(algorithmDef.dynamicsInclusionRadius()).serializedForm() :
             null;
 
         AirborneEvent event = newBuilder()
@@ -129,7 +129,7 @@ public class AirborneAria {
             .riskiestMoment(tpa.riskiestMoment)
             .snapshots(extractKeyMoments(smoothedPair, tpa))
             .dynamics(dynamics)
-            .includeTrackData(properties.publishTrackData())
+            .includeTrackData(algorithmDef.publishTrackData())
             .build();
 
         return event;
