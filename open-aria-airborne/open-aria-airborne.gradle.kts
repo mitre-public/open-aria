@@ -23,7 +23,7 @@ tasks {
 
 //        options.compilerArgs.add("-Xdoclint:all,-missing")
 //        options.compilerArgs.add("-Xlint:deprecation")
-        options.compilerArgs.add("-Xlint:unchecked")
+//        options.compilerArgs.add("-Xlint:unchecked")
     }
 }
 

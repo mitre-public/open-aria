@@ -1,28 +1,23 @@
 package org.mitre.openaria.airborne;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.Double.parseDouble;
-import static java.lang.Integer.parseInt;
-import static java.lang.Long.parseLong;
-import static org.mitre.caasd.commons.util.PropertyUtils.loadProperties;
+import static org.mitre.caasd.commons.util.DemotedException.demote;
 import static org.mitre.openaria.airborne.DataCleaning.requireProximity;
 import static org.mitre.openaria.airborne.DataCleaning.requireSeparationFilter;
 import static org.mitre.openaria.smoothing.TrackSmoothing.simpleSmoothing;
 import static org.mitre.openaria.trackpairing.TrackPairFilters.tracksMustOverlapInTime;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.mitre.caasd.commons.CachingCleaner;
 import org.mitre.caasd.commons.CompositeCleaner;
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Speed;
-import org.mitre.caasd.commons.util.ImmutableConfig;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.core.TrackPairCleaner;
@@ -30,97 +25,79 @@ import org.mitre.openaria.smoothing.TrimSlowMovingPointsWithSimilarAltitudes;
 import org.mitre.openaria.trackpairing.IsFormationFlight;
 import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 public class AirborneAlgorithmDef {
-
-    //REQUIRED PROPERTIES -- must be supplied when using the Constructor that accepts a Properties object.
-    //The "default" value for these asProperties are used when calling the "no-arg" constructor
-
-    public static final String HOST_ID = "host.id";
-    public static final String DEFAULT_HOST_ID = "airborne-compute-1";
-
-    public static final String MAX_REPORTABLE_SCORE = "maxReportableScore";
-    public static final String DEFAULT_MAX_REPORTABLE_SCORE = "20";
-
-    public static final String FILTER_BY_AIRSPACES = "filterByAirspace";
-    public static final String DEFAULT_FILTER_BY_AIRSPACES = "true";
-
-    public static final String REQ_DIVERGANCE_IN_NM = "requiredDiverganceDistInNM";
-    public static final String DEFAULT_REQ_DIVERANCE_IN_NM = "0.5";
-
-    public static final String ON_GROUND_SPEED_IN_KNOTS = "onGroundSpeedInKnots";
-    public static final String DEFAULT_ON_GROUND_SPEED_IN_KNOTS = "80.0";
-
-    public static final String REQUIRED_TIME_OVERLAP_IN_MS = "requiredTimeOverlapInMilliSec";
-    public static final String DEFAULT_REQ_TIME_OVERLAP_IN_MS = "7500";
-
-    public static final String FORMATION_FILTERS = "formationFilters";
-    public static final String DEFAULT_FORMATION_FILTERS = "0.5,60,false";
-    //public static final String DEFAULT_FORMATION_FILTERS = "0.5,60,false|0.75,120,false|1.5,300,false";
-
-    //OPTIONAL PROPERTIES -- These asProperties do not need to be specified when using the Constructor that accepts a Properties object.
-    public static final String REQUIRE_PROXIMITY = "requiredProximityInNM";
-    public static final String DEFAULT_REQUIRED_PROXIMITY = "7.5";
-
-    public static final String TRACK_SMOOTHING_CACHE_SIZE = "sizeOfTrackSmoothingCache";
-    public static final String DEFAULT_TRACK_CACHE_SIZE = "500";
-
-    public static final String TRACK_SMOOTHING_CACHE_EXPIRATION_SEC = "trackSmoothingExpirationSec";
-    public static final String DEFAULT_TRACK_CACHE_EXPIRATION_SEC = "120";
-
-    public static final String LOG_DUPLICATE_TRACKS = "logDuplicateTracks";
-    public static final String DEFAULT_LOG_DUPLICATE_TRACKS = "false";
-
-    public static final String VERBOSE_KEY = "verbose";
-    public static final String DEFAULT_VERBOSE = "false";
-
-    //turning off smoothing is necessary for integration with TDP -- where Tracks are already smoothed
-    public static final String APPLY_SMOOTHING = "applySmoothing";
-    public static final String DEFAULT_APPLY_SMOOTHING = "true";
-
-    //this is a requirement of the ARIA program -- but it can be turned off
-    public static final String REQUIRE_A_DATA_TAG = "requireDataTag";
-    public static final String DEFAULT_REQUIRE_A_DATA_TAG = "true";
-
-    public static final String PUBLISH_AIRBORNE_DYNAMICS = "publishAirborneDynamics";
-    public static final String DEFAULT_PUBLISH_AIRBORNE_DYNAMICS = "false";
-
-    public static final String DYNAMICS_INCLUSION_DISTANCE_NM = "airborne.dynamics.radius.nm";
-    public static final String DEFAULT_DYNAMICS_DISTANCE_NM = "15.0";
-
-    public static final String PUBLISH_TRACK_DATA = "publishTrackData";
-    public static final String DEFAULT_PUBLISH_TRACK_DATA = "false";
-
-    public static final String LOG_FILE_DIRECTORY = "logFileDirectory";
-    public static final String DEFAULT_LOG_FILE_DIRECTORY = "logs";
-
-    public static final List<String> REQUIRED_PROPS = newArrayList(
-        HOST_ID,
-        MAX_REPORTABLE_SCORE,
-        FILTER_BY_AIRSPACES,
-        REQ_DIVERGANCE_IN_NM,
-        ON_GROUND_SPEED_IN_KNOTS,
-        REQUIRED_TIME_OVERLAP_IN_MS,
-        FORMATION_FILTERS
-    );
 
     private DataCleaner<Track> sharedTrackCleaner;
 
-    private final ImmutableConfig config;
+    private final String hostId;
+    private final double maxReportableScore;
+    private final boolean filterByAirspace;
+    private final double requiredDiverganceDistInNM;
+    private final double onGroundSpeedInKnots;
+    private final long requiredTimeOverlapInMs;
+    private final String formationFilters;
+    private final double requiredProximityInNM;
+    private final int sizeOfTrackSmoothingCache;
+    private final int trackSmoothingExpirationSec;
+    private final boolean logDuplicateTracks;
+    private final boolean applySmoothing;
+    private final boolean requireDataTag;
+    private final boolean publishAirborneDynamics;
+    private final boolean publishTrackData;
+    private final boolean verbose;
+    private final String logFileDirectory;
+    private final double airborneDynamicsRadiusNm;
+
 
     public AirborneAlgorithmDef() {
-        this(defaultProperties());
+        this(defaultBuilder());
     }
 
-    public AirborneAlgorithmDef(Properties props) {
-        this.config = new ImmutableConfig(props, REQUIRED_PROPS);
+    private AirborneAlgorithmDef(Builder builder) {
+        this.hostId = builder.hostId;
+        this.maxReportableScore = builder.maxReportableScore;
+        this.filterByAirspace = builder.filterByAirspace;
+        this.requiredDiverganceDistInNM = builder.requiredDiverganceDistInNM;
+        this.onGroundSpeedInKnots = builder.onGroundSpeedInKnots;
+        this.requiredTimeOverlapInMs = builder.requiredTimeOverlapInMs;
+        this.formationFilters = builder.formationFilters;
+        this.requiredProximityInNM = builder.requiredProximityInNM;
+        this.sizeOfTrackSmoothingCache = builder.sizeOfTrackSmoothingCache;
+        this.trackSmoothingExpirationSec = builder.trackSmoothingExpirationSec;
+        this.logDuplicateTracks = builder.logDuplicateTracks;
+        this.applySmoothing = builder.applySmoothing;
+        this.requireDataTag = builder.requireDataTag;
+        this.publishAirborneDynamics = builder.publishAirborneDynamics;
+        this.publishTrackData = builder.publishTrackData;
+        this.verbose = builder.verbose;
+        this.logFileDirectory = builder.logFileDirectory;
+        this.airborneDynamicsRadiusNm = builder.airborneDynamicsRadiusNm;
     }
 
-    public AirborneAlgorithmDef(File source) {
-        this(loadProperties(source));
+    /** @return The AirborneAlgorithmDef represented by the provided YAML file. */
+    public static AirborneAlgorithmDef specFromYaml(File yamlFile) {
+        return new AirborneAlgorithmDef(parseYaml(yamlFile));
     }
+
+    private static Builder parseYaml(File yamlFile) {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        try {
+            return mapper.readValue(yamlFile, Builder.class);
+        } catch (IOException ioe) {
+            throw demote("Failed to parse yaml file", ioe);
+        }
+    }
+
 
     public String hostId() {
-        return config.getString(HOST_ID);
+        return hostId;
     }
 
     /**
@@ -134,7 +111,7 @@ public class AirborneAlgorithmDef {
      * @return The distance of this parameter in nautical miles
      */
     public double requiredDiverganceDistInNM() {
-        return config.getDouble(REQ_DIVERGANCE_IN_NM);
+        return requiredDiverganceDistInNM;
     }
 
     /**
@@ -147,11 +124,11 @@ public class AirborneAlgorithmDef {
      * @return The speed, in knots, below which we assume aircraft are on the ground.
      */
     public double onGroundSpeedInKnots() {
-        return config.getDouble(ON_GROUND_SPEED_IN_KNOTS);
+        return onGroundSpeedInKnots;
     }
 
     public List<FormationFilterDefinition> formationFilterDefs() {
-        String definition = config.getString(FORMATION_FILTERS);
+        String definition = formationFilters;
         return IsFormationFlight.parseMultipleFilterDefs(definition);
     }
 
@@ -163,8 +140,7 @@ public class AirborneAlgorithmDef {
      *     are written to a dedicated log directory
      */
     public boolean logDuplicateTracks() {
-        return config.getOptionalBoolean(LOG_DUPLICATE_TRACKS)
-            .orElse(parseBoolean(DEFAULT_LOG_DUPLICATE_TRACKS));
+        return logDuplicateTracks;
     }
 
     /**
@@ -172,12 +148,12 @@ public class AirborneAlgorithmDef {
      *     detection.
      */
     public Duration requiredTimeOverlap() {
-        return Duration.ofMillis(config.getInt(REQUIRED_TIME_OVERLAP_IN_MS));
+        return Duration.ofMillis(requiredTimeOverlapInMs);
     }
 
     /** @return The maximum event score that warrants archiving the corresponding event. */
     public double maxReportableScore() {
-        return config.getDouble(MAX_REPORTABLE_SCORE);
+        return maxReportableScore;
     }
 
     /**
@@ -185,8 +161,7 @@ public class AirborneAlgorithmDef {
      *     not set 500 is returned.
      */
     public int trackSmoothingCacheSize() {
-        return config.getOptionalInt(TRACK_SMOOTHING_CACHE_SIZE)
-            .orElse(parseInt(DEFAULT_TRACK_CACHE_SIZE));
+        return sizeOfTrackSmoothingCache;
     }
 
     /**
@@ -194,17 +169,11 @@ public class AirborneAlgorithmDef {
      *     set a Duration of 2 minutes is returned.
      */
     public Duration trackSmoothingCacheExpiration() {
-        long numSec = config.getOptionalLong(TRACK_SMOOTHING_CACHE_EXPIRATION_SEC)
-            .orElse((parseLong(DEFAULT_TRACK_CACHE_EXPIRATION_SEC)));
-
-        return Duration.ofSeconds(numSec);
+        return Duration.ofSeconds(trackSmoothingExpirationSec);
     }
 
     public Distance requiredProximity() {
-        double distInNm = config.getOptionalDouble(REQUIRE_PROXIMITY)
-            .orElse(parseDouble(DEFAULT_REQUIRED_PROXIMITY));
-
-        return Distance.ofNauticalMiles(distInNm);
+        return Distance.ofNauticalMiles(requiredProximityInNM);
     }
 
     /**
@@ -214,7 +183,7 @@ public class AirborneAlgorithmDef {
      * @return The value defined at construction.
      */
     public boolean filterByAirspace() {
-        return config.getBoolean(FILTER_BY_AIRSPACES);
+        return filterByAirspace;
     }
 
     /**
@@ -222,14 +191,11 @@ public class AirborneAlgorithmDef {
      * ARIA is already smoothed.
      */
     public boolean applySmoothing() {
-        return config.getOptionalBoolean(APPLY_SMOOTHING)
-            .orElse(parseBoolean(DEFAULT_APPLY_SMOOTHING));
+        return applySmoothing;
     }
 
     public boolean requireAtLeastOneDataTag() {
-        return config.getOptionalBoolean(REQUIRE_A_DATA_TAG)
-            .orElse(parseBoolean(DEFAULT_REQUIRE_A_DATA_TAG));
-
+        return requireDataTag;
     }
 
     /**
@@ -239,8 +205,7 @@ public class AirborneAlgorithmDef {
      * @return The value of the "verbose" property key.
      */
     public boolean verbose() {
-        return config.getOptionalBoolean(VERBOSE_KEY)
-            .orElse(parseBoolean(DEFAULT_VERBOSE));
+        return verbose;
     }
 
     /**
@@ -324,19 +289,15 @@ public class AirborneAlgorithmDef {
     }
 
     /**
-     * @return {@code true} if {@link AirborneEvent#airborneDynamics()} should be non-null, {@code
-     *     false} otherwise
+     * @return {@code true} if {@link AirborneEvent#airborneDynamics()} should be non-null,
+     *     {@code false} otherwise
      */
     public boolean publishDynamics() {
-        return config.getOptionalBoolean(PUBLISH_AIRBORNE_DYNAMICS)
-            .orElse(parseBoolean(DEFAULT_PUBLISH_AIRBORNE_DYNAMICS));
+        return publishAirborneDynamics;
     }
 
     public Distance dynamicsInclusionRadius() {
-        double nauticalMiles = config.getOptionalDouble(DYNAMICS_INCLUSION_DISTANCE_NM)
-            .orElse(parseDouble(DEFAULT_DYNAMICS_DISTANCE_NM));
-
-        return Distance.ofNauticalMiles(nauticalMiles);
+        return Distance.ofNauticalMiles(airborneDynamicsRadiusNm);
     }
 
     /**
@@ -344,8 +305,7 @@ public class AirborneAlgorithmDef {
      *     AirborneEvents it generates as it processes data.
      */
     public boolean publishTrackData() {
-        return config.getOptionalBoolean(PUBLISH_TRACK_DATA)
-            .orElse(parseBoolean(DEFAULT_PUBLISH_TRACK_DATA));
+        return publishTrackData;
     }
 
     /**
@@ -354,70 +314,66 @@ public class AirborneAlgorithmDef {
      * @return The value of the "logFileDirectory" property key.
      */
     public String logFileDirectory() {
-        return config.getOptionalString(LOG_FILE_DIRECTORY)
-            .orElse(DEFAULT_LOG_FILE_DIRECTORY);
+        return logFileDirectory;
     }
 
-    /**
-     * @return a Properties object which contains the default asProperties for the Airborne ARIA
-     *     algorithm. This configuration is returned as a mutable Properties object to aid creating
-     *     custom configurations. For example, it will often be easier to use these default
-     *     asProperties and change a single cherry-picked property rather than manually setting 12
-     *     or more asProperties when only 1 or two of them will change.
-     */
-    private static Properties defaultProperties() {
-
-        Properties props = new Properties();
-
-        //require asProperties
-        props.setProperty(HOST_ID, DEFAULT_HOST_ID);
-        props.setProperty(MAX_REPORTABLE_SCORE, DEFAULT_MAX_REPORTABLE_SCORE);
-        props.setProperty(FILTER_BY_AIRSPACES, DEFAULT_FILTER_BY_AIRSPACES);
-
-        props.setProperty(REQ_DIVERGANCE_IN_NM, DEFAULT_REQ_DIVERANCE_IN_NM);
-        props.setProperty(ON_GROUND_SPEED_IN_KNOTS, DEFAULT_ON_GROUND_SPEED_IN_KNOTS);
-        props.setProperty(REQUIRED_TIME_OVERLAP_IN_MS, DEFAULT_REQ_TIME_OVERLAP_IN_MS);
-        props.setProperty(FORMATION_FILTERS, DEFAULT_FORMATION_FILTERS);
-
-        //optional asProperties
-        props.setProperty(REQUIRE_PROXIMITY, DEFAULT_REQUIRED_PROXIMITY);
-        props.setProperty(TRACK_SMOOTHING_CACHE_SIZE, DEFAULT_TRACK_CACHE_SIZE);
-        props.setProperty(TRACK_SMOOTHING_CACHE_EXPIRATION_SEC, DEFAULT_TRACK_CACHE_EXPIRATION_SEC);
-        props.setProperty(LOG_DUPLICATE_TRACKS, DEFAULT_LOG_DUPLICATE_TRACKS);
-        props.setProperty(APPLY_SMOOTHING, DEFAULT_APPLY_SMOOTHING);
-        props.setProperty(REQUIRE_A_DATA_TAG, DEFAULT_REQUIRE_A_DATA_TAG);
-        props.setProperty(PUBLISH_AIRBORNE_DYNAMICS, DEFAULT_PUBLISH_AIRBORNE_DYNAMICS);
-        props.setProperty(PUBLISH_TRACK_DATA, DEFAULT_PUBLISH_TRACK_DATA);
-        props.setProperty(VERBOSE_KEY, DEFAULT_VERBOSE);
-        props.setProperty(LOG_FILE_DIRECTORY, DEFAULT_LOG_FILE_DIRECTORY);
-
-        return props;
-    }
 
     public static Builder defaultBuilder() {
         return new Builder();
     }
 
+    /**
+     * This class is designed to be instantiated ONLY via parsing a YAML file.
+     * <p>
+     * In this case (where the configuration is very simple) we could probably skip using a dedicate
+     * Builder object. But if the Object we want to build is complicated using YAML to instantiate a
+     * Builder is useful. This means the Builder can build the complicated thing and we don't have
+     * to alter the "complicated target object" to make it YAML-friendly.
+     */
     public static class Builder {
 
-        private String hostId = "airborne-compute-1";
-        private double maxReportableScore = 20.0;
-        private boolean filterByAirspace = true;
-        private double requiredDiverganceDistInNM = 0.5;
-        private double onGroundSpeedInKnots = 80.0;
-        private long requiredTimeOverlapInMs = 7500L;
-        private String formationFilters = "0.005,60,false";  //"0.5,60,false|0.75,120,false|1.5,300,false";
-        private double requiredProximityInNM = 7.5;
-        private int sizeOfTrackSmoothingCache = 500;
-        private int trackSmoothingExpirationSec = 120;
-        private boolean logDuplicateTracks = false;
-        private boolean applySmoothing = true;
-        private boolean requireDataTag = true;
-        private boolean publishAirborneDynamics = true;
-        private boolean publishTrackData = false;
-        private boolean verbose = false;
-        private String logFileDirectory = "logs";
-        private double airborneDynamicsRadiusNm = 15.0;
+        private String hostId;
+        private double maxReportableScore;
+        private boolean filterByAirspace;
+        private double requiredDiverganceDistInNM;
+        private double onGroundSpeedInKnots;
+        private long requiredTimeOverlapInMs;
+        private String formationFilters;
+        private double requiredProximityInNM;
+        private int sizeOfTrackSmoothingCache;
+        private int trackSmoothingExpirationSec;
+        private boolean logDuplicateTracks;
+        private boolean applySmoothing;
+        private boolean requireDataTag;
+        private boolean publishAirborneDynamics;
+        private boolean publishTrackData;
+        private boolean verbose;
+        private String logFileDirectory;
+        private double airborneDynamicsRadiusNm;
+
+
+        private Builder() {
+            //exists to enable automatic YAML parsing with Jackson library
+            this.hostId = "airborne-compute-1";
+            this.maxReportableScore = 20.0;
+            this.filterByAirspace = true;
+            this.requiredDiverganceDistInNM = 0.5;
+            this.onGroundSpeedInKnots = 80.0;
+            this.requiredTimeOverlapInMs = 7500L;
+            this.formationFilters = "0.5,60,false";  //"0.5,60,false|0.75,120,false|1.5,300,false";
+            this.requiredProximityInNM = 7.5;
+            this.sizeOfTrackSmoothingCache = 500;
+            this.trackSmoothingExpirationSec = 120;
+            this.logDuplicateTracks = false;
+            this.applySmoothing = true;
+            this.requireDataTag = true;
+            this.publishAirborneDynamics = true;
+            this.publishTrackData = false;
+            this.verbose = false;
+            this.logFileDirectory = "logs";
+            this.airborneDynamicsRadiusNm = 15.0;
+        }
+
 
         public Builder maxReportableScore(double score) {
             this.maxReportableScore = score;
@@ -454,35 +410,8 @@ public class AirborneAlgorithmDef {
             return this;
         }
 
-
         public AirborneAlgorithmDef build() {
-
-            Properties props = new Properties();
-
-            //require asProperties
-            props.setProperty(HOST_ID, hostId);
-            props.setProperty(MAX_REPORTABLE_SCORE, Double.toString(maxReportableScore));
-            props.setProperty(FILTER_BY_AIRSPACES, Boolean.toString(filterByAirspace));
-
-            props.setProperty(REQ_DIVERGANCE_IN_NM, Double.toString(requiredDiverganceDistInNM));
-            props.setProperty(ON_GROUND_SPEED_IN_KNOTS, Double.toString(onGroundSpeedInKnots));
-            props.setProperty(REQUIRED_TIME_OVERLAP_IN_MS, Long.toString(requiredTimeOverlapInMs));
-            props.setProperty(FORMATION_FILTERS, formationFilters);
-
-            //optional asProperties
-            props.setProperty(REQUIRE_PROXIMITY, Double.toString(requiredProximityInNM));
-            props.setProperty(TRACK_SMOOTHING_CACHE_SIZE, Integer.toString(sizeOfTrackSmoothingCache));
-            props.setProperty(TRACK_SMOOTHING_CACHE_EXPIRATION_SEC, Integer.toString(trackSmoothingExpirationSec));
-            props.setProperty(LOG_DUPLICATE_TRACKS, Boolean.toString(logDuplicateTracks));
-            props.setProperty(APPLY_SMOOTHING, Boolean.toString(applySmoothing));
-            props.setProperty(REQUIRE_A_DATA_TAG, Boolean.toString(requireDataTag));
-            props.setProperty(PUBLISH_AIRBORNE_DYNAMICS, Boolean.toString(publishAirborneDynamics));
-            props.setProperty(PUBLISH_TRACK_DATA, Boolean.toString(publishTrackData));
-            props.setProperty(VERBOSE_KEY, Boolean.toString(verbose));
-            props.setProperty(LOG_FILE_DIRECTORY, logFileDirectory);
-            props.setProperty(DYNAMICS_INCLUSION_DISTANCE_NM, Double.toString(airborneDynamicsRadiusNm));
-
-            return new AirborneAlgorithmDef(props);
+            return new AirborneAlgorithmDef(this);
         }
     }
 }
