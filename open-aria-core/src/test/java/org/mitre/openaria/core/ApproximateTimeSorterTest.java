@@ -70,7 +70,7 @@ public class ApproximateTimeSorterTest {
     /**
      * This consumer verifies that CommonPoints passed to it are received in time-sorted order
      */
-    class TimeOrderVerifyingConsumer implements Consumer<TimePojo> {
+    static class TimeOrderVerifyingConsumer implements Consumer<TimePojo> {
 
         LinkedList<TimePojo> timePojos = new LinkedList<>();
 

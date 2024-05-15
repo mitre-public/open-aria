@@ -132,7 +132,7 @@ public class PointPairTest {
     }
 
     @Test
-    public void testMagnitudeOfVelocityDelta_oneStationary() throws Exception {
+    public void testMagnitudeOfVelocityDelta_oneStationary() {
         Point p1 = Point.builder().speedInKnots(0.0).courseInDegrees(100.0)
             .latLong(0.0, 0.0)
             .time(EPOCH)

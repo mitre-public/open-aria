@@ -45,7 +45,7 @@ public class StrictTimeSortEnforcerTest {
     /**
      * This consumer verifies that CommonPoints passed to it are received in time-sorted order
      */
-    class TestConsumer implements Consumer<Point> {
+    static class TestConsumer implements Consumer<Point> {
 
         LinkedList<Point> points = new LinkedList<>();
 
