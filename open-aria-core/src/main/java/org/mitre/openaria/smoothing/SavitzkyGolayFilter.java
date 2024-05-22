@@ -205,7 +205,7 @@ public class SavitzkyGolayFilter implements FixedStepDigitalFilter {
         }
 
         double[] z = new double[windowSize];
-        double offset = (1 - windowSize) / 2;
+        double offset = (1 - windowSize) / 2.0;
 
         for (int i = 0; i < windowSize; i++) {
             z[i] = i + offset;

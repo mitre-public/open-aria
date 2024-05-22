@@ -170,7 +170,7 @@ public class VerticalOutlierDetector<T> implements DataCleaner<Track<T>> {
      * Create a Linear Regression that from all these input points except for the testPoint.
      *
      * @param localPoints A set of points that are near the test point
-     * @param testPoint   A point that will be exclude from the regression
+     * @param testPoint   A point that will be excluded from the regression
      *
      * @return A simple linear regression that regresses altitude vs. time from the points supplied.
      */

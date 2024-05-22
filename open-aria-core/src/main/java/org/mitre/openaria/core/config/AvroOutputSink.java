@@ -1,20 +1,21 @@
 package org.mitre.openaria.core.config;
 
 import static java.util.Objects.requireNonNull;
-import static org.mitre.openaria.core.config.YamlUtils.requireMapKeys;
 import static org.mitre.caasd.commons.util.DemotedException.demote;
+import static org.mitre.openaria.core.config.YamlUtils.requireMapKeys;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.mitre.caasd.commons.out.OutputSink;
+
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.avro.reflect.ReflectDatumWriter;
-import org.mitre.caasd.commons.out.OutputSink;
 
 
 /**
@@ -41,7 +42,7 @@ public class AvroOutputSink<T> implements OutputSink<T> {
         );
         //Hard coding the codec like this is bad.  This should be moved to a config option...
         CodecFactory cf = CodecFactory.deflateCodec(CodecFactory.DEFAULT_DEFLATE_LEVEL);
-        requireNonNull(cf, "Codec could not be found");  //Using snappy compression without adding Snappy to the classpath produces a NPE here..
+        requireNonNull(cf, "Codec could not be found");  //Using snappy compression without adding Snappy to the classpath produces a NPE here
         dataFileWriter.setCodec(cf);
     }
 

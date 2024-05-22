@@ -85,7 +85,7 @@ public class FillMissingAltitudes<T> implements DataCleaner<Track<T>> {
         return points.stream().filter(hasNullAltitude).findFirst();
     }
 
-    /** For each point that is missing an altitude create a "patched point. */
+    /** For each point that is missing an altitude create a "patched point". */
     private TreeSet<Point<T>> extrapolateAltitudes(SortedSet<Point<T>> missingAltitudePoints, Point<T> referencePoint) {
 
         Distance referenceAltitude = referencePoint.altitude();

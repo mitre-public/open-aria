@@ -1,14 +1,12 @@
 
 package org.mitre.openaria.core;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static com.google.common.collect.Lists.newLinkedList;
 import static java.util.Arrays.binarySearch;
-import static org.mitre.openaria.core.Interpolate.interpolate;
 import static org.mitre.caasd.commons.CollectionUtils.zip;
 import static org.mitre.caasd.commons.Time.confirmTimeOrdering;
+import static org.mitre.openaria.core.Interpolate.interpolate;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -17,7 +15,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.Pair;
@@ -97,20 +94,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
         Instant startTime = overlap.start();
         Instant endTime = overlap.end();
 
-        class Triple {
-
-            Instant time;
-
-            Distance horizontal;
-
-            Distance vertical;
-
-            Triple(Instant time, Distance horizontal, Distance vertical) {
-                this.time = time;
-                this.horizontal = horizontal;
-                this.vertical = vertical;
-            }
-        }
+        record Triple(Instant time, Distance horizontal, Distance vertical) {}
 
         LinkedList<Triple> triples = newLinkedList();
 
@@ -141,17 +125,17 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
 
         Instant[] times = triples.stream()
             .map(triple -> triple.time)
-            .collect(Collectors.toList())
+            .toList()
             .toArray(new Instant[0]);
 
         Distance[] vertical = triples.stream()
             .map(triple -> triple.vertical)
-            .collect(Collectors.toList())
+            .toList()
             .toArray(new Distance[0]);
 
         Distance[] horizontal = triples.stream()
             .map(triple -> triple.horizontal)
-            .collect(Collectors.toList())
+            .toList()
             .toArray(new Distance[0]);
 
         return new SeparationTimeSeries(times, vertical, horizontal);
@@ -186,7 +170,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
     /**
      * Lookup (and typically interpolate) the vertical separation at a particular moment in time.
      *
-     * @param time An instant in time on the time line of these time series
+     * @param time An instant in time on the timeline of these time series
      *
      * @return The vertical separation at this moment in time
      */
@@ -197,7 +181,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
     /**
      * Lookup (and typically interpolate) the horizontal separation at a particular moment in time.
      *
-     * @param time An instant in time on the time line of these time series
+     * @param time An instant in time on the timeline of these time series
      *
      * @return The horizontal separation at this moment in time
      */
@@ -247,7 +231,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
     /**
      * The Speed at which the Vertical Separation is changing at a particular moment in time.
      *
-     * @param time An instant in time on the time line of these time series
+     * @param time An instant in time on the timeline of these time series
      *
      * @return A positive speed if the separation is getting smaller, a negative speed the
      *     separation is getting larger.
@@ -260,7 +244,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
     /**
      * The Speed at which the Horizontal Separation is changing at a particular moment in time.
      *
-     * @param time An instant in time on the time line of these time series
+     * @param time An instant in time on the timeline of these time series
      *
      * @return A positive speed if the separation is getting smaller, a negative speed the
      *     separation is getting larger.
@@ -303,7 +287,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
      * Given the vertical separation and vertical closure rate at this instant in time estimate the
      * amount of time it will take for the vertical separation to shrink to zero.
      *
-     * @param time An instant in time on the time line of these time series
+     * @param time An instant in time on the timeline of these time series
      *
      * @return An estimate of how long it will take for the vertical separation to be zero. This
      *     assumes vertical separation is going decreasing at this moment in time. Return null if
@@ -318,7 +302,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
      * Given the horizontal separation and horizontal closure rate at this instant in time estimate
      * the amount of time it will take for the horizontal separation to shrink to zero.
      *
-     * @param time An instant in time on the time line of these time series
+     * @param time An instant in time on the timeline of these time series
      *
      * @return An estimate of how long it will take for the vertical separation to be zero. This
      *     assumes vertical separation is going decreasing at this moment in time. Return null if

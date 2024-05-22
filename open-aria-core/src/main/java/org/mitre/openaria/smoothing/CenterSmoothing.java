@@ -2,6 +2,7 @@
 package org.mitre.openaria.smoothing;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Objects.nonNull;
 
 import java.util.HashSet;
 
@@ -25,9 +26,9 @@ public class CenterSmoothing {
 
         String cmsFieldValue = centerRh.cmsField153A();
 
-        return (cmsFieldValue == null)
-            ? false
-            : CENTER_COASTED_FLAGS.contains(cmsFieldValue);
+        return nonNull(cmsFieldValue)
+            ? CENTER_COASTED_FLAGS.contains(cmsFieldValue)
+            : false;
     }
 
     public static boolean isCoastedPoint(NopHit centerPoint) {

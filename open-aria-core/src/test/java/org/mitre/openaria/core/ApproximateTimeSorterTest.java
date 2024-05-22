@@ -179,7 +179,7 @@ public class ApproximateTimeSorterTest {
          * continuously providing older and older points.
          */
 
-        Duration maxLag = Duration.ofSeconds(3);  //an extremely small sorting window
+        Duration maxLag = Duration.ofSeconds(3);  //a very small sorting window
 
         ConsumingArrayList<TimePojo> downstreamConsumer = newConsumingArrayList();
 

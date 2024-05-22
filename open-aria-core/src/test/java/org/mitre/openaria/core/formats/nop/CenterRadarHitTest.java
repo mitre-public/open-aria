@@ -34,7 +34,7 @@ public class CenterRadarHitTest {
             instance.facility()
         );
         assertEquals(
-            1468131383000L + 0L,//computed at:  http://www.epochconverter.com/
+            1468131383000L,//computed at:  http://www.epochconverter.com/
             instance.time().toEpochMilli()
         );
         assertEquals(
