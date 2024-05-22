@@ -3,6 +3,8 @@ package org.mitre.openaria.core;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.time.Instant.EPOCH;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -57,8 +59,8 @@ public class TrackPairCleanerTest {
         Optional<TrackPair> result = instance.clean(TrackPair.of(track1, track2));
 
         assertTrue(result.isPresent());
-        assertTrue(result.get().track1() == track1);
-        assertTrue(result.get().track2() == track2);
+        assertThat(result.get().track1(), is(track1));
+        assertThat(result.get().track2(), is(track2));
     }
 
     private Track<String> testTrack(int numPoints) {

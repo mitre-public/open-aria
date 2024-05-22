@@ -45,7 +45,7 @@ public class NopEncoder {
      *     Radar Hit (RH) Messages. This method relies on each contained Point object to provide the
      *     best possible "nop representation" of itself.
      */
-    public String asRawNop(Collection<Point<?>> points) {
+    public <T> String asRawNop(Collection<Point<T>> points) {
 
         String combinedString = points.stream()
             .map(p -> asRawNop(p))
@@ -54,7 +54,7 @@ public class NopEncoder {
         return combinedString + "\n";
     }
 
-    public String asRawNop(Track track) {
+    public <T> String asRawNop(Track<T> track) {
         return asRawNop(track.points());
     }
 
@@ -71,7 +71,7 @@ public class NopEncoder {
      *     "lossy" conversion because the Point interface does not include all the information that
      *     is available in any of the NOP formats (AGW, CENTER, or STARS)
      */
-    public String asRawNop(Point<?> p) {
+    public <T> String asRawNop(Point<T> p) {
 
         if(p.rawData() instanceof NopHit nop) {
             return nop.rawMessage().rawMessage();
@@ -171,20 +171,19 @@ public class NopEncoder {
             : String.format("%.4f", xOrY);  //use exactly 4 decimal points
     }
 
-    private String formatSpeed(Point p) {
+    private <T> String formatSpeed(Point<T> p) {
         return (p.speed() == null)
             ? ""
             : Integer.toString((int) p.speed().inKnots());
     }
 
-    private String formatCourse(Point p) {
+    private <T> String formatCourse(Point<T> p) {
         return (p.course()) == null
             ? ""
             : Integer.toString((int) p.course().inDegrees());
     }
 
-    private String formatAltitude(Point p) {
-
+    private <T> String formatAltitude(Point<T> p) {
         return (p.altitude()) == null
             ? ""
             : Integer.toString((int) (p.altitude().inFeet() / 100));

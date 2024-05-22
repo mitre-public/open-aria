@@ -4,7 +4,6 @@ package org.mitre.openaria.airborne;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
-import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
 import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
 import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
@@ -25,8 +24,7 @@ public class AirbornePairConsumerTest {
     public void qualifyingEventsAreTracked() {
 
         AirbornePairConsumer consumer = new AirbornePairConsumer(
-            airborneAria(),
-            NO_OP_CONSUMER
+            airborneAria(), ignoreThisItem -> {}
         );
 
         EventSummarizer stats = consumer.getEventSummarizer();
@@ -48,8 +46,7 @@ public class AirbornePairConsumerTest {
 
         //no TrackPairs should generate an event because the score is alway 5 and the ceiling is 2
         AirbornePairConsumer consumer = new AirbornePairConsumer(
-            airborneAria(def),
-            NO_OP_CONSUMER
+            airborneAria(def), ignoreThisItem -> {}
         );
 
         EventSummarizer stats = consumer.getEventSummarizer();

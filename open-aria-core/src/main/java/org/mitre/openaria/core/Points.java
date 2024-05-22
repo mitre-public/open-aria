@@ -223,7 +223,7 @@ public class Points {
         NavigableSet<Point<T>> headset = points.headSet(aPointInTrack, true);
         Iterator<Point<T>> iter = headset.descendingIterator();
         while (iter.hasNext()) {
-            Point pt = iter.next();
+            Point<T> pt = iter.next();
             if (subsetWindow.contains(pt.time())) {
                 outputSubset.add(pt);
             }

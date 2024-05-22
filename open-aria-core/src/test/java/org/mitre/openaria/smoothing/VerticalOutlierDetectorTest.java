@@ -2,7 +2,6 @@
 package org.mitre.openaria.smoothing;
 
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -226,13 +225,13 @@ public class VerticalOutlierDetectorTest {
             .map(p -> nopEncoder.asRawNop(p)) //get the "lossy" Strings
             .collect(toCollection(HashSet::new)); //in a HashSet
 
-        Collection<Point> outlieingPoints = foundOutliers.stream()
+        Collection<Point<NopHit>> outlieingPoints = foundOutliers.stream()
             .map(analysisResult -> analysisResult.originalPoint())
-            .collect(toList());
+            .toList();
 
         assertThat(foundOutliers.size(), is(expectedOutliters.length));
 
-        for (Point foundOutlier : outlieingPoints) {
+        for (Point<NopHit> foundOutlier : outlieingPoints) {
             assertTrue(knownOutliers.contains(nopEncoder.asRawNop(foundOutlier)));
         }
 

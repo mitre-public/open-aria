@@ -13,21 +13,21 @@ import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
 import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
-public class CoastedPointRemover implements DataCleaner<Track> {
+public class CoastedPointRemover<T> implements DataCleaner<Track<T>> {
 
     @Override
-    public Optional<Track> clean(Track track) {
+    public Optional<Track<T>> clean(Track<T> track) {
 
-        TreeSet<Point> points = newTreeSet(track.points());
+        TreeSet<Point<T>> points = newTreeSet(track.points());
 
         points.removeIf(p -> isCoasted(p));
 
         return (points.isEmpty())
             ? Optional.empty()
-            : Optional.of(Track.of((TreeSet) points));
+            : Optional.of(Track.of(points));
     }
 
-    public static boolean isCoasted(Point p) {
+    public static <T> boolean isCoasted(Point<T> p) {
 
         if (p.rawData() instanceof NopHit nop) {
             if (nop.rawMessage() instanceof CenterRadarHit crh) {

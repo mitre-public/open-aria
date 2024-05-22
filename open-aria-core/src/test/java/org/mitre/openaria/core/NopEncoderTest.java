@@ -54,7 +54,7 @@ public class NopEncoderTest {
     public void testAgw2() {
         String realAgwMessage = "[RH],AGW,CHS,10/18/2016,00:00:08.281,,,,1200,015,93,170,033.14390,-080.22537,147,,-7.8,16.91,,,,CHS,,,,,???,,,,,7464,???,,00,,,1,,0,,72.2,97.84,{RH}";
         Point<NopHit>  firstPoint = NopHit.from(realAgwMessage);
-        Point secondPoint = encodeAndReparse(firstPoint);
+        Point<NopHit> secondPoint = encodeAndReparse(firstPoint);
 
         verifyPointFieldsAreEqual(firstPoint, secondPoint);
     }
@@ -74,8 +74,8 @@ public class NopEncoderTest {
         String syntheticMessage1 = "[RH],STARS,D21,07/08/2017,18:42:01.774,,,,1200,0,0,,42.80514,-83.00373,415,0,16.5832,35.5480,,,,D21,,,,,,,IFR,,,,,,,,,,,,{RH}";
         String syntheticMessage2 = "[RH],STARS,D21,07/08/2017,18:42:06.334,,,,1200,18,122,191,42.80260,-83.00445,415,0,16.5520,35.3957,,,,D21,,,,,,,IFR,,,,,,,,,,,,{RH}";
 
-        Point firstPoint = NopHit.from(syntheticMessage1);
-        Point secondPoint = NopHit.from(syntheticMessage2);
+        Point<NopHit> firstPoint = NopHit.from(syntheticMessage1);
+        Point<NopHit> secondPoint = NopHit.from(syntheticMessage2);
 
         assertEquals(
             firstPoint.trackId(), secondPoint.trackId()
@@ -137,7 +137,7 @@ public class NopEncoderTest {
         }
     }
 
-    private Point<NopHit> encodeAndReparse(Point p) {
+    private <T> Point<NopHit> encodeAndReparse(Point<T> p) {
         String pointAsRawString = (new NopEncoder()).asRawNop(p);
         NopMessage secondMessage = NopMessageType.parse(pointAsRawString);
         return NopHit.from(secondMessage);
