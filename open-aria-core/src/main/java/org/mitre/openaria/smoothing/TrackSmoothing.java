@@ -9,8 +9,8 @@ import org.mitre.caasd.commons.Functions.ToStringFunction;
 import org.mitre.caasd.commons.util.ExceptionHandler;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
 import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.formats.NopEncoder;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 public class TrackSmoothing {
 

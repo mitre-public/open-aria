@@ -7,7 +7,7 @@ import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
 
 import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
 
 public class AirborneTestUtils {
 

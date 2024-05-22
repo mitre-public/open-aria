@@ -21,8 +21,8 @@ import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.formats.NopEncoder;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 

@@ -5,8 +5,9 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.NopToCsv;
 import org.mitre.openaria.core.formats.ariacsv.AriaCsvHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 

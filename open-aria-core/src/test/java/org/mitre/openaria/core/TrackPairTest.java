@@ -7,7 +7,7 @@ import static org.mitre.openaria.core.TrackPairs.overlapInTime;
 
 import java.util.ArrayList;
 
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 

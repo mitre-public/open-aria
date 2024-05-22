@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Iterator;
 
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.NopMessage;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.core.formats.nop.NopRadarHit;

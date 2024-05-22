@@ -1,4 +1,4 @@
-package org.mitre.openaria.core.temp;
+package org.mitre.openaria.core.formats;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 /**
  * This is a "temporary class that we'll use to convert NOP data to CsvPoint data.

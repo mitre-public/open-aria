@@ -16,7 +16,7 @@ import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.ClosestPointOfApproach;
 import org.mitre.openaria.core.PointPair;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
 
 /**
  * A AirborneSeparationPredication takes two instantaneous aircraft trajectories and predicts: (1)

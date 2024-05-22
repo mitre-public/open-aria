@@ -1,5 +1,5 @@
 
-package org.mitre.openaria.core.formats;
+package org.mitre.openaria.core.formats.nop;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;

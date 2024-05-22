@@ -4,7 +4,7 @@ package org.mitre.openaria.core;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.openaria.core.IfrVfrStatus.VFR;
 
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 

@@ -18,7 +18,7 @@ import java.util.Optional;
 import org.mitre.caasd.commons.Time;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.fileutil.FileUtils;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 
 /**

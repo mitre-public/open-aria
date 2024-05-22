@@ -1,4 +1,4 @@
-package org.mitre.openaria.core.formats;
+package org.mitre.openaria.core.formats.nop;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -17,13 +17,6 @@ import org.mitre.caasd.commons.Position;
 import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Velocity;
-import org.mitre.openaria.core.formats.nop.AgwRadarHit;
-import org.mitre.openaria.core.formats.nop.CenterRadarHit;
-import org.mitre.openaria.core.formats.nop.MeartsRadarHit;
-import org.mitre.openaria.core.formats.nop.NopMessage;
-import org.mitre.openaria.core.formats.nop.NopMessageType;
-import org.mitre.openaria.core.formats.nop.NopRadarHit;
-import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasFlightRules;

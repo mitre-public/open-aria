@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mitre.openaria.core.formats.nop.NopMessageType.parse;
 
-import org.mitre.openaria.core.formats.NopHit;
 import org.mitre.openaria.core.formats.nop.CenterRadarHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 
