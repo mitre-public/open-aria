@@ -14,8 +14,8 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
-import org.mitre.openaria.core.formats.NopEncoder;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.temp.Extras.AircraftDetails;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 

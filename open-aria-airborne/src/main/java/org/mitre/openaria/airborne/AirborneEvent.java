@@ -37,7 +37,7 @@ import org.mitre.openaria.core.PointPair;
 import org.mitre.openaria.core.ScoredInstant;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
 import org.mitre.openaria.core.output.HashUtils;
 import org.mitre.openaria.core.utils.ConflictAngle;
 

@@ -13,7 +13,7 @@ import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.StreamingTimeSorter;
 import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.threading.TrackMaker;
 

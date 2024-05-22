@@ -15,7 +15,7 @@ import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.util.SequentialFileWriter;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.formats.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
 import org.mitre.openaria.trackpairing.IsFormationFlight;
 import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
 

@@ -3,7 +3,7 @@ package org.mitre.openaria.smoothing;
 
 import java.util.HashSet;
 
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.StarsRadarHit;
 
 import com.google.common.collect.Sets;

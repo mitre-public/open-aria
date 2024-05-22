@@ -20,7 +20,7 @@ import java.util.NavigableSet;
 import java.util.Optional;
 
 import org.mitre.caasd.commons.TimeWindow;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 

@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Duration;
 import java.time.Instant;
 
-import org.mitre.openaria.core.formats.NopEncoder;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.NopMessage;
 import org.mitre.openaria.core.formats.nop.NopMessageType;
 import org.mitre.openaria.core.formats.nop.NopParsingUtils;

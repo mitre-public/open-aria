@@ -15,7 +15,7 @@ import org.mitre.caasd.commons.maps.MapFeature;
 import org.mitre.caasd.commons.maps.MapFeatures;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import com.google.common.io.Files;
 

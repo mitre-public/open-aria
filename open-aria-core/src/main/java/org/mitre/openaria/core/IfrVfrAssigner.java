@@ -9,8 +9,8 @@ import static org.mitre.openaria.core.IfrVfrStatus.VFR;
 import java.time.Instant;
 import java.util.Collection;
 
-import org.mitre.openaria.core.formats.NopEncoder;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import com.google.common.collect.EnumMultiset;
 import com.google.common.collect.Range;

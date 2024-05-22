@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.openaria.core.Track;
-import org.mitre.openaria.core.formats.NopHit;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 
