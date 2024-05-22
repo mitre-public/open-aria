@@ -36,11 +36,12 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build shadowJar
 
+    # Make the resulting shadowJar (i.e., uber jar) Accessible via GitHub Packages
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Package
-        path: build/libs
+        path: open-aria-deploy/build/libs
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
