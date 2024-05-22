@@ -38,8 +38,10 @@ import org.mitre.openaria.core.Track;
  *
  * <p>Warning: TrackMaker is not thread-safe. It is a mistake to call "accept(Point)" in one
  * thread and "flushAllTracks()" in another thread.
+ *
+ * @param <T> The type of raw data backing the Points
  */
-public class TrackMaker implements Consumer<Point> {
+public class TrackMaker<T> implements Consumer<Point<T>> {
 
     /** The default maximum amount of time allowed between two points of the same track. */
     private static final Duration DEFAULT_MAX_TIME_DELTA = Duration.ofSeconds(45);
@@ -75,7 +77,7 @@ public class TrackMaker implements Consumer<Point> {
      */
     private final LinkedHashMap<String, TrackUnderConstruction> tracksUnderConstruction;
 
-    private final Consumer<Track> outputMechanism;
+    private final Consumer<Track<T>> outputMechanism;
 
     private int currentSize = 0;
 
@@ -105,7 +107,7 @@ public class TrackMaker implements Consumer<Point> {
      * @param outputMechanism      Where complete tracks are sent to after being removed from this
      *                             Object
      */
-    public TrackMaker(Duration maxTimeBetweenPoints, Duration maxTrackAge, Consumer<Track> outputMechanism) {
+    public TrackMaker(Duration maxTimeBetweenPoints, Duration maxTrackAge, Consumer<Track<T>> outputMechanism) {
         this.maxTimeBetweenTrackPoints = checkNotNull(maxTimeBetweenPoints);
         this.forcedTrackClosureAge = checkNotNull(maxTrackAge);
         checkArgument(theDuration(maxTrackAge).isGreaterThan(maxTimeBetweenPoints));
@@ -124,7 +126,7 @@ public class TrackMaker implements Consumer<Point> {
      * @param outputMechanism      Where complete tracks are sent to after being removed from this
      *                             Object
      */
-    public TrackMaker(Duration maxTimeBetweenPoints, Consumer<Track> outputMechanism) {
+    public TrackMaker(Duration maxTimeBetweenPoints, Consumer<Track<T>> outputMechanism) {
         this(maxTimeBetweenPoints, DEFAULT_TRACK_CLOSURE_AGE, outputMechanism);
     }
 
@@ -135,7 +137,7 @@ public class TrackMaker implements Consumer<Point> {
      * @param outputMechanism Where complete tracks are sent to after being removed from this
      *                        Object
      */
-    public TrackMaker(Consumer<Track> outputMechanism) {
+    public TrackMaker(Consumer<Track<T>> outputMechanism) {
         this(DEFAULT_MAX_TIME_DELTA, DEFAULT_TRACK_CLOSURE_AGE, outputMechanism);
     }
 

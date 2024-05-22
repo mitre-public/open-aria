@@ -15,6 +15,7 @@ import org.mitre.caasd.commons.maps.MapFeature;
 import org.mitre.caasd.commons.maps.MapFeatures;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.NopHit;
 
 import com.google.common.io.Files;
 
@@ -53,7 +54,7 @@ public class PlotTracksOnMap {
     private static void runDemo(File dataFile) {
 
         //hopefully collecting all data into memory doesn't blow-out memory!
-        ConsumingArrayList<Track> tracks = makeTracksFromNopData(dataFile);
+        ConsumingArrayList<Track<NopHit>> tracks = makeTracksFromNopData(dataFile);
 
         plotMap(tracks, Files.getNameWithoutExtension(dataFile.getName()));
     }
@@ -64,7 +65,7 @@ public class PlotTracksOnMap {
      * @param tracks           A list of Tracks
      * @param outputFilePrefix Piece for output filename (e.g. "ROA" --> "map-of-ROA.png")
      */
-    public static void plotMap(ArrayList<Track> tracks, String outputFilePrefix) {
+    public static <T> void plotMap(ArrayList<Track<T>> tracks, String outputFilePrefix) {
 
         MapBuilder.newMapBuilder()
             .mapBoxDarkMode()
@@ -75,12 +76,12 @@ public class PlotTracksOnMap {
             .toFile(new File("map-of-" + outputFilePrefix + ".png"));
     }
 
-    public static LatLong computeAverageLatLong(ArrayList<Track> tracks) {
+    public static <T> LatLong computeAverageLatLong(ArrayList<Track<T>> tracks) {
 
-        List<LatLong> locations = (List<LatLong>) tracks.stream()
+        List<LatLong> locations = tracks.stream()
             .flatMap(track -> track.points().stream())
             .map(point -> ((Point) point).latLong())
-            .collect(Collectors.toList());
+            .toList();
 
         return LatLong.avgLatLong(locations.toArray(new LatLong[0]));
     }
@@ -89,7 +90,7 @@ public class PlotTracksOnMap {
     public static MapFeature asMapFeature(Track track) {
 
         List<LatLong> locations = (List<LatLong>) track.points().stream()
-            .map(obj -> ((Point)obj).latLong())
+            .map(obj -> ((Point) obj).latLong())
             .collect(Collectors.toList());
 
         return MapFeatures.path(locations, TRACK_COLOR, TRACK_STROKE_WIDTH);

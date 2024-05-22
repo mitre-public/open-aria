@@ -21,12 +21,12 @@ public class TrackPairTest {
     final static Point<NopHit>  P5 = NopHit.from("[RH],STARS,ZOB,06/30/2017,16:41:07.000,N63886,PA27,,1060,73,151,68,39.10140,-79.48670,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
     final static Point<NopHit>  P6 = NopHit.from("[RH],STARS,ZOB,06/30/2017,16:41:19.000,N63886,PA27,,1060,74,151,68,39.10530,-79.47720,755,,,,,,,ZOB_B,,,,,,,IFR,,,,,,,,,,,,{RH}");
 
-    final static Track A_TRACK = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
+    final static Track<NopHit> A_TRACK = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
 
     @Test
     public void testConstructor() {
-        Track track1 = Track.of(newArrayList(P1, P2, P3));
-        Track track2 = Track.of(newArrayList(P4, P5, P6));
+        Track<NopHit> track1 = Track.of(newArrayList(P1, P2, P3));
+        Track<NopHit> track2 = Track.of(newArrayList(P4, P5, P6));
 
         TrackPair pair = new TrackPair(track1, track2);
         assertEquals(pair.track1(), track1);
@@ -36,8 +36,8 @@ public class TrackPairTest {
     @Test
     public void testOf() {
 
-        Track track1 = Track.of(newArrayList(P1, P2, P3));
-        Track track2 = Track.of(newArrayList(P4, P5, P6));
+        Track<NopHit> track1 = Track.of(newArrayList(P1, P2, P3));
+        Track<NopHit> track2 = Track.of(newArrayList(P4, P5, P6));
 
         TrackPair pair = TrackPair.of(track1, track2);
         assertEquals(pair.track1(), track1);
@@ -65,10 +65,10 @@ public class TrackPairTest {
     @Test
     public void testOverlapInTime() {
 
-        Track fullTrack = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
-        Track earlyTrack = Track.of(newArrayList(P1, P2, P3));
-        Track endTrack = Track.of(newArrayList(P4, P5, P6));
-        Track endTrack_2 = Track.of(newArrayList(P3, P4, P5, P6));
+        Track<NopHit> fullTrack = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
+        Track<NopHit> earlyTrack = Track.of(newArrayList(P1, P2, P3));
+        Track<NopHit> endTrack = Track.of(newArrayList(P4, P5, P6));
+        Track<NopHit> endTrack_2 = Track.of(newArrayList(P3, P4, P5, P6));
 
         assertTrue(overlapInTime(fullTrack, earlyTrack));
         assertTrue(overlapInTime(earlyTrack, fullTrack));
@@ -86,10 +86,10 @@ public class TrackPairTest {
     @Test
     public void testFromCollection_happyPath() {
 
-        Track earlyTrack = Track.of(newArrayList(P1, P2, P3));
-        Track fullTrack = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
+        Track<NopHit> earlyTrack = Track.of(newArrayList(P1, P2, P3));
+        Track<NopHit> fullTrack = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
 
-        ArrayList<Track> tracks = newArrayList(fullTrack, earlyTrack);
+        ArrayList<Track<NopHit>> tracks = newArrayList(fullTrack, earlyTrack);
 
         TrackPair pair = TrackPair.from(tracks);
 
@@ -101,9 +101,9 @@ public class TrackPairTest {
     @Test
     public void testFromCollection_tooFewTracks() {
 
-        Track oneTrack = Track.of(newArrayList(P1, P2, P3));
+        Track<NopHit> oneTrack = Track.of(newArrayList(P1, P2, P3));
 
-        ArrayList<Track> tracks = newArrayList(oneTrack);
+        ArrayList<Track<NopHit>> tracks = newArrayList(oneTrack);
 
         assertThrows(
             IllegalArgumentException.class,
@@ -115,11 +115,11 @@ public class TrackPairTest {
     @Test
     public void testFromCollection_tooManyTracks() {
 
-        Track track1 = Track.of(newArrayList(P1, P2, P3));
-        Track track2 = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
-        Track track3 = Track.of(newArrayList(P3, P4, P5, P6));
+        Track<NopHit> track1 = Track.of(newArrayList(P1, P2, P3));
+        Track<NopHit> track2 = Track.of(newArrayList(P1, P2, P3, P4, P5, P6));
+        Track<NopHit> track3 = Track.of(newArrayList(P3, P4, P5, P6));
 
-        ArrayList<Track> tracks = newArrayList(track1, track2, track3);
+        ArrayList<Track<NopHit>> tracks = newArrayList(track1, track2, track3);
 
         assertThrows(
             IllegalArgumentException.class,

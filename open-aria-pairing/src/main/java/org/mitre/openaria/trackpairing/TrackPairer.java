@@ -152,7 +152,7 @@ public class TrackPairer implements Consumer<Point> {
         this.keyExtractor = keyExtractor();
 
         //when the internal TrackMaker produces a track call "incorporateNewTrack"
-        this.trackMaker = new TrackMaker(maxTimeBetweenPointsOfSameTrack, this::incorporateNewTrack);
+        this.trackMaker = new TrackMaker<>(maxTimeBetweenPointsOfSameTrack, this::incorporateNewTrack);
 
         //configure a PointPairFinder that notifies this TrackPairMaker whenever "close Pair of Points" is found
         this.pairFinder = new PointPairFinder(pairingProps, this::incorporateNewPointPair);

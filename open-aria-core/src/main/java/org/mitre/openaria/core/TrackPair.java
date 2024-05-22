@@ -48,7 +48,7 @@ public class TrackPair implements Serializable {
      *
      * @return The requested pair
      */
-    public static TrackPair from(Collection<Track> tracks) {
+    public static <T> TrackPair from(Collection<Track<T>> tracks) {
         checkNotNull(tracks);
         checkArgument(tracks.size() == 2, "Input collection must contain exactly two tracks, size = " + tracks.size());
         Track[] array = tracks.toArray(new Track[2]);

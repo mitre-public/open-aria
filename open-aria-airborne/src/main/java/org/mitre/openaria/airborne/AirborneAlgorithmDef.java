@@ -1,6 +1,7 @@
 package org.mitre.openaria.airborne;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Objects.requireNonNull;
 import static org.mitre.caasd.commons.util.DemotedException.demote;
 import static org.mitre.openaria.airborne.DataCleaning.requireProximity;
 import static org.mitre.openaria.airborne.DataCleaning.requireSeparationFilter;
@@ -374,6 +375,11 @@ public class AirborneAlgorithmDef {
             this.airborneDynamicsRadiusNm = 15.0;
         }
 
+        public Builder hostId(String hostId) {
+            requireNonNull(hostId);
+            this.hostId = hostId;
+            return this;
+        }
 
         public Builder maxReportableScore(double score) {
             this.maxReportableScore = score;

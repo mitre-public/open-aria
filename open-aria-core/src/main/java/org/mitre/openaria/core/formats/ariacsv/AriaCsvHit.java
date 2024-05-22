@@ -113,11 +113,21 @@ public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit> 
     /** @return The i_th token in the CSV row. */
     public String token(int index) {
 
+        if (index > commaIndices.length) {
+            throw new ArrayIndexOutOfBoundsException("Requested token " + index + " but there are only " + commaIndices.length + " commas");
+        }
+
         if (index == 0) {
             return rawCsv.substring(0, commaIndices[index]).intern();
-        } else {
-            return rawCsv.substring(commaIndices[index - 1] + 1, commaIndices[index]).intern();
         }
+
+        //if there is text after the last comma we still want to return that text
+        if (index == commaIndices.length) {
+            return rawCsv.substring(commaIndices[index - 1] + 1, rawCsv.length()).intern();
+        }
+
+        return rawCsv.substring(commaIndices[index - 1] + 1, commaIndices[index]).intern();
+
     }
 
     public static AriaCsvHit from(String csvText) {

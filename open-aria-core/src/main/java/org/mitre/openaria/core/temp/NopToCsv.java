@@ -55,4 +55,11 @@ public class NopToCsv {
         points.forEach(pt -> System.out.println(toAriaCsvFormat(pt)));
     }
 
+    public static void main(String[] args) throws IOException {
+
+        File nopData = new File("open-aria-airborne/src/main/resources/scaryTrackData.txt");
+
+        convertFileOfNop(nopData);
+    }
+
 }
