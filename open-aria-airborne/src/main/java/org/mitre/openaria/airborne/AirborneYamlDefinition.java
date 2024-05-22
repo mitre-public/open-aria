@@ -301,9 +301,7 @@ public class AirborneYamlDefinition {
 
     /** @return a DataCleaner that does nothing to the input TrackPair. */
     private DataCleaner<TrackPair> noOpTrackPairCleaner() {
-        return TrackPairCleaner.from(
-            (Track track) -> Optional.of(track)
-        );
+        return TrackPairCleaner.from(track -> Optional.of(track));
     }
 
     /**

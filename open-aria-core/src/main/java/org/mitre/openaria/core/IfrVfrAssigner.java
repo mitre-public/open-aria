@@ -60,7 +60,7 @@ public class IfrVfrAssigner {
         this(DEFAULT_VFR_BEACON_RANGE, DEFAULT_NUM_POINTS);
     }
 
-    public IfrVfrStatus statusOf(Track track, Instant time) {
+    public <T> IfrVfrStatus statusOf(Track<T> track, Instant time) {
         checkNotNull(track);
         checkNotNull(time);
         checkArgument(
@@ -69,9 +69,9 @@ public class IfrVfrAssigner {
         );
 
         EnumMultiset<IfrVfrStatus> counts = EnumMultiset.create(IfrVfrStatus.class);
-        Collection<Point> localPoints = track.kNearestPoints(time, numPointsToConsider);
+        Collection<Point<T>> localPoints = track.kNearestPoints(time, numPointsToConsider);
 
-        for (Point point : localPoints) {
+        for (Point<T> point : localPoints) {
             counts.add(statusOf(point));
         }
         return (counts.count(IFR) > counts.count(VFR)) ? IFR : VFR;

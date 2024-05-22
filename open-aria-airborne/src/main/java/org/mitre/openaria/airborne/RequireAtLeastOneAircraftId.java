@@ -1,6 +1,5 @@
 package org.mitre.openaria.airborne;
 
-import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
 import static org.mitre.openaria.core.TrackPairs.atLeastOneTrackHasAircraftId;
 
 import java.util.function.Consumer;
@@ -13,7 +12,7 @@ public class RequireAtLeastOneAircraftId extends DataFilter<TrackPair> {
 
     /** Create a DataFilter that removes TrackPairs when both Tracks are missing an AircraftId */
     public RequireAtLeastOneAircraftId() {
-        this(NO_OP_CONSUMER);
+        this(ignoreThisTrackPair -> {});
     }
 
     /**

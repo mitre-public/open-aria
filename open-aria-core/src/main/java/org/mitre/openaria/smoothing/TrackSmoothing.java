@@ -20,30 +20,30 @@ public class TrackSmoothing {
     public static DataCleaner<Track<NopHit>> coreSmoothing() {
         return CompositeCleaner.of(
             //removes error prone synthetic "assumed" points from Nop data
-            new CoastedPointRemover(),
+            new CoastedPointRemover<>(),
             //remove both points if any two sequential points are within 500 Milliseconds
-            new HighFrequencyPointRemover(Duration.ofMillis(500)),
+            new HighFrequencyPointRemover<>(Duration.ofMillis(500)),
             //remove tracks with small just a handful of points,
             new SmallTrackRemover(9),
             /*
              * ensure any two sequential points have at least 4 seconds between them (by removing
              * only the trailing points)
              */
-            new TimeDownSampler(Duration.ofMillis(4_000)),
+            new TimeDownSampler<>(Duration.ofMillis(4_000)),
             //removes near-stationary Tracks produces by "radar mirages" off of skyscrapers and such
-            new RemoveLowVariabilityTracks(),
+            new RemoveLowVariabilityTracks<>(),
             //removes near-duplicate points when a track is stationary.
-            new DistanceDownSampler(),
+            new DistanceDownSampler<>(),
             //forces 000 altitudes to null
-            new ZeroAltitudeToNull(),
+            new ZeroAltitudeToNull<>(),
             //correct missing altitude values
-            new FillMissingAltitudes(),
+            new FillMissingAltitudes<>(),
             //correct the altitude values for outlying Points
-            new VerticalOutlierDetector(),
+            new VerticalOutlierDetector<>(),
             //remove points with inconsistent LatLong values
-            new LateralOutlierDetector(),
+            new LateralOutlierDetector<>(),
             //remove radar noise using polynomial fitting
-            new TrackFilter()
+            new TrackFilter<>()
         );
     }
 

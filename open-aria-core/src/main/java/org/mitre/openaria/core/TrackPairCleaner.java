@@ -1,7 +1,7 @@
 
 package org.mitre.openaria.core;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ public class TrackPairCleaner implements DataCleaner<TrackPair> {
     private final DataCleaner<Track> trackSmoother;
 
     public TrackPairCleaner(DataCleaner<Track> trackCleaner) {
-        this.trackSmoother = checkNotNull(trackCleaner);
+        this.trackSmoother = requireNonNull(trackCleaner);
     }
 
     /**
@@ -29,9 +29,9 @@ public class TrackPairCleaner implements DataCleaner<TrackPair> {
      */
     @Override
     public Optional<TrackPair> clean(TrackPair trackPair) {
-        checkNotNull(trackPair, "The input track pair is null");
-        checkNotNull(trackPair.track1(), "trackPair.first() is null");
-        checkNotNull(trackPair.track2(), "trackPair.second() is null");
+        requireNonNull(trackPair, "The input track pair is null");
+        requireNonNull(trackPair.track1(), "trackPair.first() is null");
+        requireNonNull(trackPair.track2(), "trackPair.second() is null");
 
         Optional<Track> smoothedFirst = trackSmoother.clean(trackPair.track1());
         Optional<Track> smoothedSecond = trackSmoother.clean(trackPair.track2());
