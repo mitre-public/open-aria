@@ -57,7 +57,7 @@ public class HashUtils {
      * hash into the JSON object under the field name "uniqueId". The newly inserted field is always
      * the 1st field in the new JSON string and it should copy the formatting of the JSON.
      *
-     * @return An copy of the input with a new row like: "uniqueId": "38c39bafe36332da80002d6c45afd98c"
+     * @return A copy of the input with a new row like: "uniqueId": "38c39bafe36332da80002d6c45afd98c"
      */
     public static String addHash(String json) {
         String hash = hashForJson(json);
@@ -67,7 +67,7 @@ public class HashUtils {
     /**
      * Insert a pre-computed hash into ean existing json object
      *
-     * @return An copy of the input with a new row like: "uniqueId": "38c39bafe36332da80002d6c45afd98c"
+     * @return A copy of the input with a new row like: "uniqueId": "38c39bafe36332da80002d6c45afd98c"
      */
     public static String addHash(String json, String hash) {
         int newLineIndex = json.indexOf("\n");

@@ -73,12 +73,9 @@ public record Point<T>(Position position, Velocity velocity, String trackId,
             return altitudeResult;
         }
 
+        // @todo -- Prefer to sort by this (just after time)
         int trackIdResult = NULLABLE_COMPARATOR.compare(trackId(), other.trackId());
-        if (trackIdResult != 0) {
-            return trackIdResult;
-        }
-
-        return 0;
+        return trackIdResult;
     }
 
 

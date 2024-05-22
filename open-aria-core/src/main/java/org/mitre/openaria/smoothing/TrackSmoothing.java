@@ -19,7 +19,7 @@ public class TrackSmoothing {
      */
     public static DataCleaner<Track<NopHit>> coreSmoothing() {
         return CompositeCleaner.of(
-            //removes error prone synthetic "assumed" points from Nop data
+            //removes error-prone synthetic "assumed" points from Nop data
             new CoastedPointRemover<>(),
             //remove both points if any two sequential points are within 500 Milliseconds
             new HighFrequencyPointRemover<>(Duration.ofMillis(500)),

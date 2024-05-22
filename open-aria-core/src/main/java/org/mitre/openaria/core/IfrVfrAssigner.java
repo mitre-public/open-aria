@@ -33,7 +33,7 @@ public class IfrVfrAssigner {
      * Examine this many points to make a determination about if a flight is VFR or IFR at a
      * particular point in time.
      */
-    private int numPointsToConsider;
+    private final int numPointsToConsider;
 
     /** Converts Points into NopPoints so that we can access the toString(). */
     private final NopEncoder nopEncoder = new NopEncoder();

@@ -19,7 +19,7 @@ public class EventRecords {
 
     /**
      * @param time An Instant written as a String in the format that is used in EventRecords. This
-     *             String should be (A) human readable and (B) compatible with Property Files.
+     *             String should be (A) human-readable and (B) compatible with Property Files.
      *
      * @return The corresponding Instant
      */

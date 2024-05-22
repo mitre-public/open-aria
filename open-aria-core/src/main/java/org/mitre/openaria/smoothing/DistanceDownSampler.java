@@ -22,7 +22,7 @@ import org.mitre.openaria.core.Track;
  * the aircraft being tracked is stationary. Reducing the number/frequency of points can be
  * important for some analytics or processes that are bogged down by high point density.
  * <p>
- * (This is ARIA's replacement for StationaryPointFilter which is compute intensive)
+ * (This is ARIA's replacement for the compute intensive StationaryPointFilter)
  */
 public class DistanceDownSampler<T> implements DataCleaner<Track<T>> {
 

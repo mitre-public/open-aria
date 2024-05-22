@@ -66,7 +66,7 @@ public class TrackPair implements Serializable {
     /**
      * @return A SeparationTimeSeries object that describes (A) the separation between the two
      *     aircraft and (B) how that separation is changing over time. For the sake of efficiency
-     *     this information is computed exactly once. By default the methodology used will use a
+     *     this information is computed exactly once. By default, the methodology used will use a
      *     time-step that shrinks as the aircraft get closer together. If a fixed-time step is
      *     desired then manually call computeFixedTimeStepSeparationTimeSeries(Duration)
      */
@@ -96,7 +96,7 @@ public class TrackPair implements Serializable {
     /**
      * Compute, and cache, A SeparationTimeSeries that uses a dynamic time step that depends on the
      * separation between the aircraft. As the aircraft gets closer the times series resolution gets
-     * finer. But, when the aircraft are far apart the time series a uses big steps on the time-axis
+     * finer. But, when the aircraft are far apart the time series uses big steps on the time-axis
      * for efficient computation.
      */
     public void computeDynamicSeparationTimeSeries() {

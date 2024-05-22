@@ -8,17 +8,13 @@ import static java.util.Objects.isNull;
  */
 public class Extras {
 
-    /** A Mixin (i.e., Trait) interface for declaring that a TrackId is available. */
-    @FunctionalInterface
-    public interface HasTrackId {
-        String trackId();
-    }
-
+    /** A Mixin (i.e., Trait) interface for declaring that Sensor and Facility are available. */
     @FunctionalInterface
     public interface HasSourceDetails {
         SourceDetails sourceDetails();
     }
 
+    /** A Mixin (i.e., Trait) interface for declaring that callsign and aircraftType are available. */
     @FunctionalInterface
     public interface HasAircraftDetails {
         AircraftDetails acDetails();
@@ -40,6 +36,7 @@ public class Extras {
         }
     }
 
+    /** A Mixin (i.e., Trait) interface for declaring that IFR/VFR is available. */
     @FunctionalInterface
     public interface HasFlightRules {
         String flightRules();

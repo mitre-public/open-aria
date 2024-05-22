@@ -29,7 +29,7 @@ public class TrimLowSpeedGroundPointsTest {
      *
      * The data below was extracted from that event where the 1200 code aircaft too off at 6200ft
      * and 66knots. He jumps to 86 knots for one point, then the aircraft starts gaining altitude.
-     * He gets to 7000ft (800AGL) before he reaching 80 knots.
+     * He gets to 7000ft (800AGL) before he reaches 80 knots.
      */
     String[] rawNopPoints = new String[]{
         "[RH],STARS,D01,08/27/2021,13:19:43.135,,,,1200,062,066,180,039.56437,-104.85220,3600,0000,76.3563,22.4852,,,,D01,,,,,,ACT,IFR,,00000,A2A0BB,,,,,,1,,0,{RH}",

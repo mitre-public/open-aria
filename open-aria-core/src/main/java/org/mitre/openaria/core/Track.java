@@ -91,7 +91,7 @@ public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
     }
 
     /**
-     * @return The minimum TimeWindow that contains all Points within this Track."
+     * @return The minimum TimeWindow that contains all Points within this Track.
      */
     public TimeWindow asTimeWindow() {
         return TimeWindow.of(

@@ -26,7 +26,7 @@ public class VerticalOutlierDetectorTest {
     @Test
     public void testNoOutlier() {
         /*
-         * Confirm that a flat altitude profile with a single 100 foot deviation (i.e. the minimum
+         * Confirm that a flat altitude profile with a single 100-foot deviation (i.e. the minimum
          * possible altitude change) does not create an outlier.
          */
         Track<NopHit> testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "NoAltitudeOutlier_1.txt");
@@ -76,7 +76,7 @@ public class VerticalOutlierDetectorTest {
     @Test
     public void testNoOutlier_2() {
         /*
-         * Confirm that a flat altitude profile with a single 300 foot deviation (i.e. 3 times the
+         * Confirm that a flat altitude profile with a single 300-foot deviation (i.e. 3 times the
          * minimum possible altitude change) does not create an outlier.
          */
         Track<NopHit> testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "NoAltitudeOutlier_2.txt");
@@ -92,7 +92,7 @@ public class VerticalOutlierDetectorTest {
     @Test
     public void testMinimumOutlier() {
         /*
-         * Confirm that a flat altitude profile with a single 400 foot deviation (i.e. 4 times the
+         * Confirm that a flat altitude profile with a single 400-foot deviation (i.e. 4 times the
          * minimum possible altitude change) DOES create an outlier.
          */
         Track<NopHit> testTrack2 = createTrackFromResource(VerticalOutlierDetector.class, "MinimumAltitudeOutlier.txt");
@@ -154,7 +154,7 @@ public class VerticalOutlierDetectorTest {
         /*
          * This is another mode C swap test.
          *
-         * This test contains a much much smaller change (from 1k to 0 instead of from 22k to 0).
+         * This test contains a much smaller change (from 1k to 0 instead of from 22k to 0).
          * This test data also has a missing altitude value at the very front of the track.
          */
 
@@ -174,7 +174,7 @@ public class VerticalOutlierDetectorTest {
         /*
          * This is another mode C swap test.
          *
-         * This test contains a much much smaller change (from 1k to 0 instead of from 22k to 0).
+         * This test contains a much smaller change (from 1k to 0 instead of from 22k to 0).
          * This test data also has a missing altitude value at the very front of the track.
          */
         Track<NopHit> testTrack = createTrackFromResource(
@@ -194,7 +194,7 @@ public class VerticalOutlierDetectorTest {
     @Test
     public void testBuggedOutlier() {
         /*
-         * This track contains a "outlier" that shouldn't really be an outlier. This test ensure
+         * This track contains an "outlier" that shouldn't really be an outlier. This test ensure
          * that future editions of VerticalOutlierDetector do not flag this track.
          */
         Track<NopHit> testTrack = createTrackFromResource(

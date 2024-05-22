@@ -22,7 +22,7 @@ public class TrackPairCleaner implements DataCleaner<TrackPair> {
      * Clean both the Tracks in this TrackPair using the {@literal DataCleaner<Track>} provided at
      * construction.
      *
-     * @param trackPair A pair of tracks that need need to be cleaned.
+     * @param trackPair A pair of tracks that will be cleaned.
      *
      * @return An Optional TrackPair if and only if both Track in the original Pair would cleaned
      *     successfully.
