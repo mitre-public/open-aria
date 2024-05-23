@@ -54,18 +54,25 @@ location data.
 
 ## Building from Source
 
-- First clone the project: `git clone git@github.com:mitre-public/open-aria.git`
-- Navigate to project directory `cd {PATH_TO_REPOSITORY}/open-aria`
-- Run: `./gradlew shadowJar`
-    - This command launches a build plugin that collects all the compiled code and software dependencies into a single
-      jar file
-- Find the resulting jar in the `open-aria-deploy` module's `build` directory
-    - e.g., `PATH_TO_REPOSITORY/open-aria/open-aria-deploy/build/libs/open-aria-0.1.0-SNAPSHOT-uber.jar`
+1. First clone the project: `git clone git@github.com:mitre-public/open-aria.git`
+2. Navigate to project directory `cd {PATH_TO_REPOSITORY}/open-aria`
+3. Run: `./gradlew shadowJar`
+    - This command launches a build plugin that collects all compiled code and dependencies into a single
+      jar (aka _uber jar_, _shadow jar_, or _fat jar_)
+4. Find the _uber jar_ in: 
+    - `{PATH_TO_REPOSITORY}/open-aria/open-aria-deploy/libs/build`
+    - The _uber jar_ will have a name like: `open-aria-0.1.0-SNAPSHOT-uber.jar`
 
-## Downloading Compiled Artifact
-- **Coming Soon!** 
-- A closed-source software dependency (e.g. missing software dependency) was just removed from the build.
-- CI/CD is on the way (finally).  
+## Downloading Pre-Built Artifact
+There are 2 places to simply download a pre-built artifact
+1. Download a full release from [here](https://github.com/mitre-public/open-aria/releases)
+   - **Coming soon** (ETA = June 1st)
+2. Download the artifact produced during a recent execution of the CI/CD system.
+   - Click [here](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml) to see the list of recent builds
+   - Click on any build from the last 90 days (GitHub stores build artifacts for 90-days)
+   - Download the Artifact named: `Deployable-Uber-Jar`
+
+- [ ] TODO: Publish full releases to Maven Central.
 
 ---
 
