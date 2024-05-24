@@ -2,6 +2,7 @@
 ![aria logo picture](./docs/assets/DFW-Airspace-Graph.gif)
 
 [![Java CI with Gradle](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml/badge.svg)](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml)
+[![License](https://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # Welcome to OpenARIA
 

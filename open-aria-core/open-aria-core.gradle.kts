@@ -1,3 +1,7 @@
+plugins {
+    id("jacoco")
+}
+
 dependencies {
 
     testImplementation("nl.jqno.equalsverifier:equalsverifier:3.15.2")
