@@ -116,6 +116,12 @@ First of all, **Welcome to the community!**
 - We may write a _"contributing guidelines"_ document in the future should the need arise. But for now, our focus will
   be on making high-quality, high-value improvements to the code (not policy documents).
 
+### Contributing as a Data Provider
+
+- OpenARIA is **extremely** interested in collecting shareable aircraft position datasets. Publicly available datasets
+  can become the benchmarks dataset by which OpenARIA algorithms are measured and optimized. Read more [here](docs/shared-datasets.md) about
+  the fundamental project need.
+
 ---
 
 # Near-Term Project RoadMap
