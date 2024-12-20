@@ -1,6 +1,7 @@
 package org.mitre.openaria.core.formats;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
@@ -52,7 +53,24 @@ public class NopToCsv {
             .map((String s) -> NopHit.from(s))
             .collect(Collectors.toList());
 
-        points.forEach(pt -> System.out.println(toAriaCsvFormat(pt)));
+
+//        points.forEach(pt -> System.out.println(toAriaCsvFormat(pt)));
+
+        writeFile(points, new File("convertedNop.txt"));
+    }
+
+    private static void writeFile(List<Point<NopHit>> points, File targetFile) throws IOException {
+
+        try (FileWriter fw = new FileWriter(targetFile)) {
+
+            points.forEach(pt -> {
+                try {
+                    fw.write(toAriaCsvFormat(pt) + "\n");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
     public static void main(String[] args) throws IOException {
