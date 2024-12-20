@@ -2,6 +2,7 @@
 ![aria logo picture](./docs/assets/DFW-Airspace-Graph.gif)
 
 [![Java CI with Gradle](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml/badge.svg)](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml)
+[![License](https://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # Welcome to OpenARIA
 
@@ -114,6 +115,12 @@ First of all, **Welcome to the community!**
   to submit issues, fix issues, and submit PRs.
 - We may write a _"contributing guidelines"_ document in the future should the need arise. But for now, our focus will
   be on making high-quality, high-value improvements to the code (not policy documents).
+
+### Contributing as a Data Provider
+
+- OpenARIA is **extremely** interested in collecting shareable aircraft position datasets. Publicly available datasets
+  can become the benchmarks dataset by which OpenARIA algorithms are measured and optimized. Read more [here](docs/shared-datasets.md) about
+  the fundamental project need.
 
 ---
 
