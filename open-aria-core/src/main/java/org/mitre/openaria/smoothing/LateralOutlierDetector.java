@@ -1,7 +1,7 @@
 
 package org.mitre.openaria.smoothing;
 
-import static org.apache.commons.math3.util.FastMath.sqrt;
+import static org.apache.commons.math3.util.FastMath.*;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -26,6 +26,7 @@ public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
      * Point's location can be deemed an outlier.
      */
     private final Distance MIN_QUALIFYING_ERROR = Distance.ofNauticalMiles(0.05);
+//    private final Distance MIN_QUALIFYING_ERROR = Distance.ofNauticalMiles(0.025);
 
     /**
      * Find the Points in the input track with outlying latitude-longitude locations;
@@ -82,6 +83,32 @@ public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
 
         LateralRegression<T> localRegression = new LateralRegression<T>(pointsNearby, testPoint);
 
+//        return oldMethod(localRegression, testPoint);
+        return newMethod(localRegression, testPoint);
+    }
+
+    private LateralAnalysisResult newMethod(LateralRegression<T> localRegression, Point<T> testPoint) {
+
+        double outlier_y_ness = localRegression.semiStudentizedResidual(testPoint.latLong(), testPoint.time());
+        LatLong predictedLocation = localRegression.predictLocation(testPoint.time());
+        Distance locationError = predictedLocation.distanceTo(testPoint.latLong());
+
+        boolean isOutlier = outlier_y_ness > 15 && locationError.isGreaterThan(MIN_QUALIFYING_ERROR);
+
+//        if (isOutlier) {
+//            System.out.println("\nlocationError: " + locationError.inFeet());
+//            System.out.println("  outlier_y_ness: " + outlier_y_ness);
+//            System.out.println("  " + (new NopEncoder()).asRawNop(testPoint));
+//            System.out.println("  predictedLocation: " + predictedLocation);
+//            System.out.println("  isOutlier: " + isOutlier);
+//        }
+
+        return new LateralAnalysisResult(isOutlier);
+
+    }
+
+    private LateralAnalysisResult oldMethod(LateralRegression<T> localRegression, Point<T> testPoint) {
+
         LatLong predictedLocation = localRegression.predictLocation(testPoint.time());
         Distance locationError = predictedLocation.distanceTo(testPoint.latLong());
 
@@ -103,6 +130,14 @@ public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
         boolean largeDropInR = combinedRSquareWithout - combinedRSquareWith > 0.3;
 
         boolean isOutlier = largeDropInR && locationError.isGreaterThan(MIN_QUALIFYING_ERROR);
+
+//        if (isOutlier) {
+//            System.out.println("\nlocationError: " + locationError.inFeet());
+//            System.out.println("  drop_in_R: " + (combinedRSquareWithout - combinedRSquareWith));
+//            System.out.println("  " + (new NopEncoder()).asRawNop(testPoint));
+//            System.out.println("  predictedLocation: " + predictedLocation);
+//            System.out.println("  isOutlier: " + isOutlier);
+//        }
 
         return new LateralAnalysisResult(isOutlier);
     }
@@ -182,6 +217,41 @@ public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
                 latRegression.predict(time.toEpochMilli()),
                 longRegression.predict(time.toEpochMilli())
             );
+        }
+
+        /**
+         * Compute the "outlier-y-ness" of a LatLong location
+         *
+         * @param location A LatLong (that usually was NOT used to create these regressions)
+         * @param time     The time that LatLong was observed
+         *
+         * @return The hypotenuse of the "Semi-Studentized Residual" from the Lat & Long fits
+         */
+        private double semiStudentizedResidual(LatLong location, Instant time) {
+
+            //See: https://en.wikipedia.org/wiki/Studentized_residual
+
+            //Related topics: Standardized residuals, Studentized residuals, and Studentized deleted residuals
+
+            double latitudePrediction = latRegression.predict(time.toEpochMilli());
+            double longitudePrediction = longRegression.predict(time.toEpochMilli());
+
+            // The residuals are the differences between the "actual observation" and the regression's prediction
+            double latResidual = location.latitude() - latitudePrediction;
+            double longResidual = location.longitude() - longitudePrediction;
+
+            // Now we rescale these residual so we can decide if the error is "big" or "small"
+
+            // Note: "The residuals, unlike the errors, do not all have the same variance: the
+            // variance decreases as the corresponding x-value gets farther from the average x-value"
+
+            // Technically, this is a "SEMI-studentized Residual" = residual_i / sqrt(mse)
+            // IF! we accounted for the sample's leverage we'd have a full "studentized residual"
+            double studentized_lat_residual = abs(latResidual / sqrt(latRegression.getMeanSquareError()));
+            double studentized_long_residual = abs(longResidual / sqrt(longRegression.getMeanSquareError()));
+
+            // using hypot to form a reasonable combination of these student-t tests
+            return hypot(studentized_lat_residual, studentized_long_residual);
         }
     }
 }
