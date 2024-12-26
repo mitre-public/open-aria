@@ -5,20 +5,25 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.time.Instant.EPOCH;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mitre.caasd.commons.Speed.Unit.KNOTS;
+import static org.mitre.caasd.commons.maps.MapFeatures.filledCircle;
 import static org.mitre.openaria.core.Tracks.createTrackFromFile;
 
+import java.awt.Color;
 import java.io.File;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NavigableSet;
 import java.util.Set;
 
 import org.mitre.caasd.commons.Distance;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.Speed;
+import org.mitre.caasd.commons.maps.MapBuilder;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.formats.nop.NopEncoder;
@@ -69,7 +74,8 @@ public class LateralOutlierDetectorTest {
     @Test
     public void testNearPerfectTrackWithMinorJitter() {
 
-        Track<String> testTrack = trackWithVeryMinorJitter();
+        Distance SHIFT_60_FT = Distance.ofNauticalMiles(0.01);
+        Track<String> testTrack = trackWithJitter(SHIFT_60_FT);
 
         LateralOutlierDetector<String> outlierDetector = new LateralOutlierDetector<>();
 
@@ -81,6 +87,23 @@ public class LateralOutlierDetectorTest {
         assertEquals(testTrack.size(), cleanedTrack.size());
     }
 
+    @Test
+    public void testNearPerfectTrackWithMajorJitter() {
+
+        Distance SHIFT_600_FT = Distance.ofNauticalMiles(0.1);
+        Track<String> testTrack = trackWithJitter(SHIFT_600_FT);
+
+        LateralOutlierDetector<String> outlierDetector = new LateralOutlierDetector<>();
+
+        NavigableSet<Point<String>> outliers = outlierDetector.getOutliers(testTrack);
+        assertEquals(1, outliers.size());
+
+        Track<String> cleanedTrack = outlierDetector.clean(testTrack).get();
+
+        assertEquals(testTrack.size(), cleanedTrack.size() + 1);
+    }
+
+
     /**
      * @return A Track with points that travel in a near perfect straight line. One of the points in
      *     this track was shifted by a few feet. This single point breaks the perfect pattern
@@ -89,7 +112,7 @@ public class LateralOutlierDetectorTest {
      *     should be detected even though the error increased "dramatically" (when compared to zero
      *     error))
      */
-    public static Track<String> trackWithVeryMinorJitter() {
+    public static Track<String> trackWithJitter(Distance shiftDistance) {
 
         LinkedList<Point<String>> points = newLinkedList();
 
@@ -113,49 +136,155 @@ public class LateralOutlierDetectorTest {
 
         //manipulate the 15th point very slightly
         Point<String> prior = points.get(14);
-        LatLong newPosition = prior.latLong().projectOut(NORTH_WEST, 0.1); //adjust location 0.01 NM
+        LatLong newPosition = prior.latLong().projectOut(NORTH_WEST, shiftDistance.inNauticalMiles()); //adjust location 0.01 NM
         Point<String> adjustedPoint = Point.builder(prior).latLong(newPosition).build();
         points.set(14, adjustedPoint);
 
         return Track.of(points);
     }
 
+
     @Test
-    public void testRealTrackWithGentalError() {
-
-        // NOT GETTING OUTLIER AT: 21:15:25
-        //THESE ARE REASONABLE OUTLIERS
-        String outlier1 = "[RH],STARS,ABE_B,03/25/2018,21:39:54.596,N317A,SR22,,0224,032,161,267,040.49013,-075.64892,2326,0224,-9.5386,-9.7261,1,D,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
-        String outlier2 = "[RH],STARS,ABE_B,03/25/2018,21:45:18.207,N317A,SR22,,0224,033,170,269,040.48656,-075.97119,2326,0224,-24.2925,-9.8784,0,4,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
-
-        Set<String> knownOutliers = newHashSet(
-            outlier1,
-            outlier2
-        );
+    public void testRealTrackWithGentleError() {
 
         Track<NopHit> testTrack = createTrackFromFile(
-            new File("src/test/resources/trackWithSomeGentalError.txt"));
+            new File("src/test/resources/trackWithSomeGentleError.txt"));
+
+        //THESE ARE REASONABLE OUTLIERS
+        String outlier1 = "[RH],STARS,ABE_B,03/25/2018,21:18:06.882,N317A,SR22,,0224,031,156,341,040.34347,-075.32023,2326,0224,5.5200,-18.5269,1,D,A,ABE,G06,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
+        String outlier2 = "[RH],STARS,ABE_B,03/25/2018,21:18:54.901,N317A,SR22,,0224,030,157,340,040.37678,-075.33763,2326,0224,4.7192,-16.5308,1,D,A,ABE,G06,PTW,ABE,2114,ABE,ACT,IFR,,00957,,,,,,S,1,,0,{RH}";
+        String outlier3 = "[RH],STARS,ABE_B,03/25/2018,21:30:30.911,N317A,SR22,,0224,017,109,053,040.60665,-075.51508,2326,0224,-3.4058,-2.7495,1,A,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,IFR,,00957,,,,,,S,1,,0,{RH}";
+        String outlier4 = "[RH],STARS,ABE_B,03/25/2018,21:38:18.748,N317A,SR22,,0224,031,163,225,040.50022,-075.55797,2326,0224,-5.3745,-9.1284,1,D,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
+        String outlier5 = "[RH],STARS,ABE_B,03/25/2018,21:39:54.596,N317A,SR22,,0224,032,161,267,040.49013,-075.64892,2326,0224,-9.5386,-9.7261,1,D,A,ABE,RDG,PTW,ABE,2114,ABE,ACT,VFR,,00957,,,,,,S,1,,0,{RH}";
+
+        Set<String> knownOutliers = newHashSet(
+            outlier1, outlier2, outlier3, outlier4, outlier5
+        );
 
         LateralOutlierDetector<NopHit> outlierDetector = new LateralOutlierDetector<>();
 
-        NavigableSet<Point<NopHit>> outliers = outlierDetector.getOutliers(testTrack);
+        NavigableSet<Point<NopHit>> foundOutliers = outlierDetector.getOutliers(testTrack);
 
-        assertEquals(2, outliers.size(), "We found exactly 2 outliers");
+//        plotOnMap(testTrack, foundOutliers, 11);
+
+        assertThat(foundOutliers, hasSize(5));
 
         NopEncoder nopEncoder = new NopEncoder();
-
-        //and they are the two shown above
-        for (Point<?> outlier : outliers) {
+        for (Point<?> outlier : foundOutliers) {
             assertTrue(knownOutliers.contains(nopEncoder.asRawNop(outlier)));
         }
 
-        //using the outlierDetector's "clean" method will mutate the input, save the prior state
         int sizeBeforeCleaning = testTrack.size();
 
         Track<NopHit> cleanedTrack = outlierDetector.clean(testTrack).get();
 
-        assertEquals(sizeBeforeCleaning, cleanedTrack.size() + knownOutliers.size());
+        assertThat(sizeBeforeCleaning, is(cleanedTrack.size() + knownOutliers.size()));
+    }
 
-        assertThat(testTrack.size(), is(cleanedTrack.size() + knownOutliers.size()));
+    @Test
+    void testOutlierGetsRemoved() {
+        Track<NopHit> track = createTrackFromFile(
+            new File("src/test/resources/outlier_track_DAL2817_ASA589.txt")
+        );
+
+        // These two points are SERIOUS errors.
+        // Previous outlier detection methods permitted these points to "come through"
+
+        // This point is a "stagnant" point where the same LatLong is used to at 2 timestamps even when the aircraft is moving a 300knots
+        String requiredOutlier_1 = "[RH],Center,ZSE_P,12-05-2024,23:05:13.000,DAL2817,B738,L,6030,360,431,315,42.6639,-114.5178,753,,,,,ZLC/41,,ZSE_P,,,,E2335,SEA,,IFR,,753,35232634,SLC,0016,360//360,,L,1,,,{RH}";
+        // This point is a "shadow" where the LatLong from 50 seconds in the past "reappears" and the aircraft jumps forward
+        String requiredOutlier_2 = "[RH],Center,ZSE_P,12-05-2024,23:57:29.000,DAL2817,B738,L,6030,286,435,305,46.8136,-120.9567,753,,,,,ZSE/31,,ZSE_P,,,,E2335,SEA,,IFR,,753,35267836,SLC,0016,286/120/240,,L,1,,,{RH}";
+
+        Set<String> knownOutliers = newHashSet(requiredOutlier_1, requiredOutlier_2);
+
+        LateralOutlierDetector<NopHit> detector = new LateralOutlierDetector<>();
+        NavigableSet<Point<NopHit>> foundOutliers = detector.getOutliers(track);
+
+        assertThat(foundOutliers.size(), greaterThanOrEqualTo(2));
+
+        NopEncoder nopEncoder = new NopEncoder();
+        List<String> foundAsStr = foundOutliers.stream().map(out -> nopEncoder.asRawNop(out)).toList();
+
+        knownOutliers.forEach(
+            known -> assertThat(foundAsStr.contains(known), is(true))
+        );
+
+//        plotOnMap(track, foundOutliers, 8);
+    }
+
+
+    @Test
+    void testOutlierGetsRemoved_2() {
+        Track<NopHit> track = createTrackFromFile(
+            new File("src/test/resources/outlier_track_FFT1876.txt")
+        );
+
+        // These three points are SERIOUS errors.
+        // Previous outlier detection methods permitted these points to "come through"
+
+        // CLEAR DATA ERROR
+        // This point is a "shadow" where the LatLong from 36 seconds in the past "reappears" and the aircraft jumps backward
+        String requiredOutlier_1 = "[RH],Center,ZLA_P,12-07-2024,08:06:38.000,FFT1876,A321,L,1032,049,229,086,36.1333,-115.0831,808,,,,,/,,ZLA_P,,,,D0804,MCO,,IFR,,808,70396930,LAS,1200,049/190/350,,L,1,,,{RH}";
+
+        // CLEAR DATA ERROR (twin points, possible partial update)
+        // This point is part of a pair of points with the same timestamp.
+        // This point contains the LatLong from 12 seconds ago ... so its LatLong location doesn't fit the regression
+        String requiredOutlier_2 = "[RH],Center,ZLA_P,12-07-2024,08:10:26.000,FFT1876,A321,L,1032,129,312,102,36.1133,-114.6994,808,,,,,ZLA/08,,ZLA_P,,,,D0804,MCO,,IFR,,808,70397875,LAS,1200,129//350,,L,1,,,{RH}";
+
+        // CLEAR DATA ERROR -- Monstrously wrong!
+        // This point is a "shadow" where the LatLong from 36 seconds in the past "reappears" and the aircraft jumps backward
+        // But here the aircraft if flying 446 knots, so the size of the jump is HUGE
+        String requiredOutlier_3 = "[RH],Center,ZLA_P,12-07-2024,08:27:14.000,FFT1876,A321,L,1032,338,446,100,35.7772,-112.3756,808,,,,,ZLA/08,,ZLA_P,,,,E0815,MCO,,IFR,,808,70401634,LAS,1200,338//350,,L,1,,,{RH}";
+
+        Set<String> knownOutliers = newHashSet(requiredOutlier_1, requiredOutlier_2, requiredOutlier_3);
+
+        LateralOutlierDetector<NopHit> detector = new LateralOutlierDetector<>();
+        NavigableSet<Point<NopHit>> foundOutliers = detector.getOutliers(track);
+
+        assertThat(foundOutliers.size(), greaterThanOrEqualTo(3));
+
+        NopEncoder nopEncoder = new NopEncoder();
+        List<String> foundAsStr = foundOutliers.stream().map(out -> nopEncoder.asRawNop(out)).toList();
+
+        knownOutliers.forEach(
+            known -> assertThat(foundAsStr.contains(known), is(true))
+        );
+
+//        plotOnMap(track, foundOutliers, 8);
+    }
+
+    @Test
+    void investigateOutliers() {
+
+        // The purpose of this code is to visually inspect the application of the outlier detector
+        // on ONE of the tracks from "scaryTrackData.txt".  "outlier_track_test.txt" = contains one
+        // of the tracks from this file.
+
+        // This test exists because confusion arose when processing "scaryTrackData.txt" DID NOT
+        // find outliers.  The reason this LateralOutlierDetector did not find outliers was that a
+        // different DataCleaner removed those problematic points (at first I thought I had
+        // uncovered an issue ... thankfully that was not the case)
+
+        Track<NopHit> track = createTrackFromFile(new File("src/test/resources/outlier_track_test.txt"));
+
+        LateralOutlierDetector<NopHit> detector = new LateralOutlierDetector<>();
+        NavigableSet<Point<NopHit>> foundOutliers = detector.getOutliers(track);
+
+        // Visual inspection will show 6 clear outliers
+        assertThat(foundOutliers, hasSize(6));
+//        plotOnMap(track, foundOutliers, 11);
+    }
+
+    void plotOnMap(Track<NopHit> track, Collection<Point<NopHit>> outliers, int zoomLevel) {
+
+        LatLong avgLocation = LatLong.avgLatLong(track.points().stream().map(pt -> pt.latLong()).toList());
+
+        new MapBuilder()
+            .solidBackground(Color.BLACK)
+            .width(3600, zoomLevel)
+            .center(avgLocation)
+            .addFeatures(track.points(), pt -> filledCircle(pt.latLong(), Color.BLUE, 16))
+            .addFeatures(outliers, pt -> filledCircle(pt.latLong(), Color.RED, 16))
+            .toFile(new File("trackOutliers.png"));
     }
 }

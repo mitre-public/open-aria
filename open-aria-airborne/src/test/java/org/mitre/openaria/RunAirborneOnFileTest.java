@@ -60,7 +60,7 @@ public class RunAirborneOnFileTest {
         File eventDir = new File("detectedEvents");
         File[] eventFiles = eventDir.listFiles();
 
-        assertThat(eventFiles.length, is(2));
+        assertThat(eventFiles.length, is(1));
 
         Stream.of(eventFiles).forEach(file -> file.delete());
         Files.deleteIfExists(eventDir.toPath());
@@ -83,7 +83,7 @@ public class RunAirborneOnFileTest {
         File eventDir = new File("detectedEvents");
         File[] eventFiles = eventDir.listFiles();
 
-        assertThat(eventFiles.length, is(2));
+        assertThat(eventFiles.length, is(1));
 
         Stream.of(eventFiles).forEach(file -> file.delete());
         Files.deleteIfExists(eventDir.toPath());
