@@ -38,6 +38,8 @@ location data.
 
 # Getting Started
 
+- To **Inspect a dataset of aircraft location data** see [here](./docs/how-to/inspect-dataset.md)
+- To **Detecting aviation events** see [here](./docs/how-to/detect-encounters.md)
 - Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md)
   and [here](./docs/ADRs/pointInterfaceCritique2.md)
 - Learn about the supported data formats [here](./docs/csv-data-format.md)
@@ -49,7 +51,6 @@ location data.
         3. Refactoring the code so the closed-source dependency is no longer used or required.
         4. Building the project using **only** GitHub Actions and publicly available dependencies
     - You can view the progress of this work by browsing the branches of the project.
-- To begin **detecting aviation events** see [here](./docs/how-to/detect-encounters.md)
 - To begin **archiving and replaying** aircraft location data see [here](./docs/how-to/replay-encounters.md)
 - To begin detecting **and then aggregating** aviation data see [here](./docs/how-to/aggregate-encounters.md)_
 
@@ -61,15 +62,14 @@ location data.
     - This command launches a build plugin that collects all compiled code and dependencies into a single
       jar (aka _uber jar_, _shadow jar_, or _fat jar_)
 4. Find the _uber jar_ in: 
-    - `{PATH_TO_REPOSITORY}/open-aria/open-aria-deploy/libs/build`
+    - `{PATH_TO_REPOSITORY}/open-aria/open-aria-deploy/build/libs`
     - The _uber jar_ will have a name like: `open-aria-0.1.0-SNAPSHOT-uber.jar`
 
 ## Downloading Pre-Built Artifact
 There are 2 places to simply download a pre-built artifact
-1. Download a full release from [here](https://github.com/mitre-public/open-aria/releases)
-   - **Coming soon** (ETA = June 1st)
+1. Download an official full release from [here](https://github.com/mitre-public/open-aria/releases)
 2. Download the artifact produced during a recent execution of the CI/CD system.
-   - Click [here](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml) to see the list of recent builds
+   - The [Github CI/CD executions](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml) list recent builds
    - Click on any build from the last 90 days (GitHub stores build artifacts for 90-days)
    - Download the Artifact named: `Deployable-Uber-Jar`
 

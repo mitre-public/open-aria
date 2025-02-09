@@ -3,11 +3,10 @@ package org.mitre.openaria.system;
 import static java.time.Instant.EPOCH;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mitre.openaria.system.StreamingKpi.IN_MEMORY_SORT_BUFFER_SEC;
 import static org.mitre.openaria.system.SwimLane.OVER_FLOW_FILEPREFIX;
 
 import java.io.File;
-import java.util.Properties;
+import java.time.Duration;
 import java.util.function.Consumer;
 
 import org.mitre.openaria.core.Point;
@@ -21,16 +20,11 @@ public class SwimLaneTest {
 
     /** Create a dummy StreamingKpi. */
     public static StreamingKpi<Consumer<Track>> simpleStreamingKpi() {
-        Properties props = new Properties();
-        props.setProperty(IN_MEMORY_SORT_BUFFER_SEC, "600");
+        Duration sortBuffer = Duration.ofSeconds(600);
 
         Consumer<Track> trackConsumer = (track) -> {};
 
-        return StreamingKpi.trackBasedKpi(
-            trackConsumer,
-            props
-        );
-
+        return StreamingKpi.trackBasedKpi(trackConsumer, sortBuffer);
     }
 
 

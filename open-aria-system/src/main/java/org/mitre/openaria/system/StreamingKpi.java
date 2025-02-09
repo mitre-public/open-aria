@@ -2,12 +2,10 @@ package org.mitre.openaria.system;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static org.mitre.caasd.commons.util.PropertyUtils.getInt;
 
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.function.Consumer;
 
 import org.mitre.openaria.core.Point;
@@ -96,24 +94,24 @@ public class StreamingKpi<T> implements Consumer<Point> {
      * Create a StreamingKpi that can accept a stream of Point data and convert that Point stream
      * into a Stream of Tracks that the trackAnalyzer can operate on.
      *
-     * @param <T>           A class that implements an Event Detection algorithm which operates on
-     *                      Tracks.
-     * @param trackAnalyzer An instance of the Event Detection algorithm. This instantiation is
-     *                      responsible for ensuring that detected events are emitted to some
-     *                      location (i.e. the local file system, a database, or a kafka cluster)
-     *                      for permanent storage.
+     * @param <T>                    A class that implements an Event Detection algorithm which
+     *                               operates on Tracks.
+     * @param trackAnalyzer          An instance of the Event Detection algorithm. This
+     *                               instantiation is responsible for ensuring that detected events
+     *                               are emitted to some location (i.e. the local file system, a
+     *                               database, or a kafka cluster) for permanent storage.
+     * @param inMemorySortBufferSize Controls how much data we buffer in memory before releasing the
+     *                               point data to the TrackMaker.  This corrects out of order
+     *                               data.
      *
      * @return A StreamingKpi that analyzes Tracks.
      */
-    public static <T extends Consumer<Track>> StreamingKpi<T> trackBasedKpi(T trackAnalyzer, Properties properties) {
+    public static <T extends Consumer<Track>> StreamingKpi<T> trackBasedKpi(T trackAnalyzer, Duration inMemorySortBufferSize) {
 
         TrackMaker trackMaker = new TrackMaker(trackAnalyzer);
 
-        int inMemoryBufferSec = getInt(IN_MEMORY_SORT_BUFFER_SEC, properties);
-
         StreamingTimeSorter pointSorter = new StreamingTimeSorter(
-            trackMaker,
-            Duration.ofSeconds(inMemoryBufferSec)
+            trackMaker, inMemorySortBufferSize
         );
 
         return new StreamingKpi<>(trackAnalyzer, trackMaker, pointSorter);
