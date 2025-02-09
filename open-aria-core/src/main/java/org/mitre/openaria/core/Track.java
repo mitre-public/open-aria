@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toCollection;
 import static org.mitre.openaria.core.utils.Misc.mostCommon;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NavigableSet;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
+import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.caasd.commons.out.JsonWritable;
 import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
@@ -57,6 +59,12 @@ public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
     /** @return The Points inside this track (sorted in time order). */
     public NavigableSet<Point<T>> points() {
         return this.points;
+    }
+
+    /** @return The LatLong's of the points inside this track. The returned list is mutable */
+    public List<LatLong> pointLatLongs() {
+        // Intentionally choosing to return a mutable list
+        return points().stream().map(p -> p.latLong()).collect(toCollection(ArrayList::new));
     }
 
     public int size() {

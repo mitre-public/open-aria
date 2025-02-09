@@ -24,10 +24,15 @@ airborneConfig:
   inMemorySortBufferSec: 600
 
   #Add 1 or more OutputSinks here.
-  #Each OutputSink is built by listing a class that implements `Supplier<AvroOutputSink>` and `YamlConfigured`
+  #Each OutputSink is built by listing a class that implements `Supplier<OutputSink>` and `YamlConfigured`
   outputConfig:
     outputSinkSuppliers:
         # This OutputSink places Each AirborneEvent into its own .json file
       - pluginClass: "org.mitre.openaria.airborne.config.AirborneFileSinkSupplier"
         configOptions:
           eventDirectory: "detectedEvents"
+      - pluginClass: "org.mitre.openaria.airborne.config.MapSinkSupplier"
+        configOptions:
+          eventDirectory: "eventMaps"
+          useMapBox: false
+          mapWidthInNauticalMiles: 15.0

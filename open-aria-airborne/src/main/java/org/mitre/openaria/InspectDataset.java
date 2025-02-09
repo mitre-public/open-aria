@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import org.mitre.caasd.commons.ConsumingCollections;
 import org.mitre.caasd.commons.LatLong;
@@ -232,22 +231,15 @@ public class InspectDataset {
     public static <T> LatLong computeAverageLatLong(List<Track> tracks) {
 
         List<LatLong> locations = tracks.stream()
-            .flatMap(track -> asLatLongStream(track))
+            .flatMap(track -> track.pointLatLongs().stream())
             .toList();
 
         return LatLong.avgLatLong(locations.toArray(new LatLong[0]));
     }
 
 
-    public static MapFeature asMapFeature(Track track, Color c) {
-
-        List<LatLong> locations = asLatLongStream(track).toList();
-
-        return MapFeatures.path(locations, c, TRACK_STROKE_WIDTH);
-    }
-
-    private static Stream<LatLong> asLatLongStream(Track<?> track) {
-        return track.points().stream().map(point -> point.latLong());
+    public static MapFeature asMapFeature(Track<?> track, Color c) {
+        return MapFeatures.path(track.pointLatLongs(), c, TRACK_STROKE_WIDTH);
     }
 
 
