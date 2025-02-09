@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.mitre.openaria.core.config.PluginFactory;
 import org.mitre.caasd.commons.out.OutputSink;
+import org.mitre.openaria.core.config.PluginFactory;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -78,8 +78,8 @@ public class OutputConfig {
 
             List<OutputSink<AirborneEvent>> listOfSink = newArrayList();
 
-            for (PluginFactory ifc : outputSinkSuppliers) {
-                Supplier<OutputSink<AirborneEvent>> supplier = ifc.createConfiguredInstance(Supplier.class);
+            for (PluginFactory factory : outputSinkSuppliers) {
+                Supplier<OutputSink<AirborneEvent>> supplier = factory.createConfiguredInstance(Supplier.class);
                 OutputSink<AirborneEvent> sink = supplier.get();
                 listOfSink.add(sink);
             }

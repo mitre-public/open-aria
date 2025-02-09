@@ -8,17 +8,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.mitre.openaria.kafka.KafkaOutputSink;
 import org.mitre.caasd.commons.out.JsonFileSink;
 import org.mitre.caasd.commons.out.OutputSink;
 import org.mitre.caasd.commons.out.PrintStreamSink;
+import org.mitre.openaria.airborne.config.MapSink;
+import org.mitre.openaria.kafka.KafkaOutputSink;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.junit.jupiter.api.Test;
 
 public class OutputConfigTest {
 
@@ -50,5 +51,20 @@ public class OutputConfigTest {
         assertThat(sinks.get(0), instanceOf(PrintStreamSink.class));
         assertThat(sinks.get(1), instanceOf(JsonFileSink.class));
         assertThat(sinks.get(2), instanceOf(KafkaOutputSink.class));
+    }
+
+    @Test
+    public void createCreateFromYaml_withMapSink() throws Exception {
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        File yamlFile = new File(classLoader.getResource("outputConfig_withMapSink.yaml").getFile());
+
+        OutputConfig config = OutputConfig.fromYaml(yamlFile);
+
+        List<OutputSink<AirborneEvent>> sinks = config.sinks();
+
+        assertThat(sinks, hasSize(2));
+        assertThat(sinks.get(0), instanceOf(PrintStreamSink.class));
+        assertThat(sinks.get(1), instanceOf(MapSink.class));
     }
 }

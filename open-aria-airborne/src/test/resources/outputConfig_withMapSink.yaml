@@ -1,0 +1,9 @@
+#This sample OutputConfig creates 2 OutputSink<AirborneEvent> that will be used to route ARIA Events..
+#Each OutputSink is created by 1st creating a single-use, YAML friendly class that implements Supplier<OutputSink>
+outputSinkSuppliers:
+  - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
+  - pluginClass: org.mitre.openaria.airborne.config.MapSinkSupplier
+    configOptions:
+      eventDirectory: eventDirectory
+      useMapBox: true
+      mapWidthInNauticalMiles: 15.0

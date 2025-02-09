@@ -58,12 +58,22 @@ public class RunAirborneOnFileTest {
         );
 
         File eventDir = new File("detectedEvents");
-        File[] eventFiles = eventDir.listFiles();
+        assertThat(eventDir.exists(), is(true));
 
+        File[] eventFiles = eventDir.listFiles();
         assertThat(eventFiles.length, is(1));
 
         Stream.of(eventFiles).forEach(file -> file.delete());
         Files.deleteIfExists(eventDir.toPath());
+
+        File mapDir = new File("eventMaps");
+        assertThat(mapDir.exists(), is(true));
+
+        File[] mapFiles = mapDir.listFiles();
+        assertThat(mapFiles.length, is(1));
+
+        Stream.of(mapFiles).forEach(file -> file.delete());
+        Files.deleteIfExists(mapDir.toPath());
     }
 
 
