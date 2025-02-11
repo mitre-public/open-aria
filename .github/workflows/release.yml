@@ -19,7 +19,6 @@ jobs:
           majorList: feat!
           minorList: feat
           patchList: fix
-          fallbackTag: 0.1.0
 
       - name: Create GitHub Release
         env:
