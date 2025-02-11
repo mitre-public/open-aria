@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: version
+        uses: ietf-tools/semver-action@v1.9.0
+        with:
+          token: ${{ github.token }}
+          branch: main
+          majorList: feat!
+          minorList: feat
+          patchList: fix
+          fallbackTag: 0.1.0
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.nextStrict }}" --target "${{ github.sha }}" --title "${{steps.version.outputs.nextStrict}}"
+
+      - name: Tag Release
+        env:
+          TAG: ${{ steps.version.outputs.nextStrict }}
+        run: |
+          git tag ${TAG} ${GITHUB_SHA}
+          git push origin ${TAG}
