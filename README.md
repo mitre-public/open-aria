@@ -128,9 +128,25 @@ First of all, **Welcome to the community!**
 
 ![Road Map Figure](docs/assets/OpenARIA-Roadmap.png)
 
-### Version History & Release Notes
+## Release Notes
 
-See [here](docs/version-release-notes.md)
+See [here](./docs/release-notes.md) for a summary of the changes and features included in each release.
+
+## Versioning and Release Process
+
+- The "current version" (e.g. `v1.2.3`) of this project is computed automatically form git tags and the recent commit
+  messages.
+    - The GitHub Action: [ietf-tools/semver-action](https://github.com/ietf-tools/semver-action) does this work.
+- Consequently, we have also adopted [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+    - Commit message like: `feat!: Made breaking change`, `feat: Added feature`, and `fix: patched issue123` result in
+      MAJOR, MINOR, and PATCH version bumps.
+- When it is time for a release the `release.yaml` workflow is run manually.
+    - This workflow computes the correct version number, makes a GitHub release, and adds a tag to the current git hash.
+
+
+- You'll notice the gradle configuration does NOT have a version number. In other words, `version=X.Y.Z` does not exist
+  in the `gradle.properties` file. This is an intentional choice. Official, properly versioned, builds come from CI --
+  not your local build environment.
 
 ### MITRE Public Release
 
