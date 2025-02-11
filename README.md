@@ -39,41 +39,32 @@ location data.
 # Getting Started
 
 - To **Inspect a dataset of aircraft location data** see [here](./docs/how-to/inspect-dataset.md)
-- To **Detecting aviation events** see [here](./docs/how-to/detect-encounters.md)
-- Learn about important ongoing work [here](./docs/ADRs/supportingNewFormats.md)
-  and [here](./docs/ADRs/pointInterfaceCritique2.md)
-- Learn about the supported data formats [here](./docs/csv-data-format.md)
-    - **Important Caveat:** The initial code commit includes a dependency that is not available in the open source
-      domain.
-    - We are working to remove this blocker by:
-        1. Proposing [this](./docs/csv-data-format.md) data format (which will replace the legacy format)
-        2. Adding support for this new data format
-        3. Refactoring the code so the closed-source dependency is no longer used or required.
-        4. Building the project using **only** GitHub Actions and publicly available dependencies
-    - You can view the progress of this work by browsing the branches of the project.
-- To begin **archiving and replaying** aircraft location data see [here](./docs/how-to/replay-encounters.md)
-- To begin detecting **and then aggregating** aviation data see [here](./docs/how-to/aggregate-encounters.md)_
+- To **Detect aviation events** see [here](./docs/how-to/detect-encounters.md)
+
+
+- Learn about the [supported data formats](./docs/csv-data-format.md)
+- Learn about the ongoing work to support new data formats [here](./docs/ADRs/supportingNewFormats.md)
+
+--- 
+
+# Coming Soon ...
+
+- Coming soon ... _**archiving and replaying aircraft location data**_ 
+- Coming soon ... _**detecting and aggregating aviation events**_
+
+---
 
 ## Building from Source
 
-1. First clone the project: `git clone git@github.com:mitre-public/open-aria.git`
-2. Navigate to project directory `cd {PATH_TO_REPOSITORY}/open-aria`
-3. Run: `./gradlew shadowJar`
-    - This command launches a build plugin that collects all compiled code and dependencies into a single
-      jar (aka _uber jar_, _shadow jar_, or _fat jar_)
-4. Find the _uber jar_ in:
-    - `{PATH_TO_REPOSITORY}/open-aria/open-aria-deploy/build/libs`
-    - The _uber jar_ will have a name like: `open-aria-0.1.0-SNAPSHOT-uber.jar`
+- Instruction on building from source are [here](./docs/how-to/build-from-source.md)
 
 ## Downloading Pre-Built Artifact
-There are 2 places to simply download a pre-built artifact
+There are 2 places to download a pre-built artifacts:
 1. Download an official full release from [here](https://github.com/mitre-public/open-aria/releases)
 2. Download the artifact produced during a recent execution of the CI/CD system.
     - The [Github CI/CD executions](https://github.com/mitre-public/open-aria/actions/workflows/gradle.yml) list recent builds
     - Click on any build from the last 90 days (GitHub stores build artifacts for 90-days)
     - Download the Artifact named: `Deployable-Uber-Jar`
-
-- [ ] TODO: Publish full releases to Maven Central.
 
 ---
 

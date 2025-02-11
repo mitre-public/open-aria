@@ -45,9 +45,7 @@
 
 ### Step 2: Download a sample dataset
 
--
-
-Download [sampleData.txt.gz](https://github.com/mitre-public/open-aria/blob/main/open-aria-airborne/src/test/resources/sampleData.txt.gz)
+- Download [sampleData.txt.gz](https://github.com/mitre-public/open-aria/blob/main/open-aria-airborne/src/test/resources/sampleData.txt.gz)
 from the repo's directory of test assets.
 - Use the "Download raw file" button in the upper right hand corner
 
