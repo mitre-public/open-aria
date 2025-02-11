@@ -122,12 +122,9 @@ public class InspectDataset {
 
         while (bucketTimes.hasNext()) {
             Instant bucketTime = bucketTimes.next();
-            System.out.println(bucketTime + ": " + pointsPerTimeBucket.get(bucketTime) + " points");
+            System.out.println(bucketTime + ": " + pointsPerTimeBucket.get(bucketTime));
         }
 
-//        pointsPerTimeBucket.keySet().stream()
-//            .sorted()
-//            .forEach(bucketTime -> System.out.println(bucketTime + ": " + pointsPerTimeBucket.get(bucketTime) + " points"));
         System.out.println();
     }
 
