@@ -3,6 +3,7 @@ package org.mitre.openaria;
 import static com.google.common.base.Preconditions.checkState;
 import static org.mitre.caasd.commons.util.DemotedException.demote;
 import static org.mitre.openaria.core.config.YamlUtils.parseYaml;
+import static org.mitre.openaria.core.utils.Misc.downCastPointIter;
 
 import java.io.File;
 import java.util.Iterator;
@@ -10,6 +11,7 @@ import java.util.Iterator;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointIterator;
+import org.mitre.openaria.core.formats.Format;
 import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.system.StreamingKpi;
@@ -44,10 +46,13 @@ public class RunAirborneOnFile {
 
     static void execute(File dataFile, Config config) {
 
-        Iterator<Point<NopHit>> pointIterator = iteratorFor(dataFile);
+        AirborneFactory factory = config.airborneFactory();
+        Format<?> format = factory.format();
 
         //Pass null because we don't need the AirborneFactory to keep a KPI-to-Facility mapping
         StreamingKpi<AirbornePairConsumer> streamingKpi = (config.airborneFactory()).createKpi(null);
+
+        Iterator<Point<?>> pointIterator = downCastPointIter(format.parseFile(dataFile));
 
         System.out.println("Starting ARIA system.  Input File = " + dataFile.getName());
         pointIterator.forEachRemaining(streamingKpi);
@@ -85,8 +90,6 @@ public class RunAirborneOnFile {
      * additional config options.
      */
     static class Config {
-
-        // @TODO -- FORMAT GOES HERE
 
         AirborneFactory.Builder airborneConfig;
 

@@ -22,6 +22,8 @@ import org.mitre.caasd.commons.Speed;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.core.TrackPairCleaner;
+import org.mitre.openaria.core.formats.Format;
+import org.mitre.openaria.core.formats.Formats;
 import org.mitre.openaria.smoothing.TrimSlowMovingPointsWithSimilarAltitudes;
 import org.mitre.openaria.trackpairing.IsFormationFlight;
 import org.mitre.openaria.trackpairing.IsFormationFlight.FormationFilterDefinition;
@@ -35,6 +37,9 @@ public class AirborneAlgorithmDef {
 
     private DataCleaner<Track> sharedTrackCleaner;
 
+    // dataFormat must be "nop" or "csv" until additional formats are supported.
+    // See also: org.mitre.openaria.core.formats;  (in open-aria-core module)
+    private final String dataFormat;
     private final String hostId;
     private final double maxReportableScore;
     private final boolean filterByAirspace;
@@ -60,6 +65,7 @@ public class AirborneAlgorithmDef {
     }
 
     private AirborneAlgorithmDef(Builder builder) {
+        this.dataFormat = builder.dataFormat;
         this.hostId = builder.hostId;
         this.maxReportableScore = builder.maxReportableScore;
         this.filterByAirspace = builder.filterByAirspace;
@@ -96,6 +102,9 @@ public class AirborneAlgorithmDef {
         }
     }
 
+    public Format<?> dataFormat() {
+        return Formats.getFormat(dataFormat);
+    }
 
     public String hostId() {
         return hostId;
@@ -331,6 +340,7 @@ public class AirborneAlgorithmDef {
      */
     public static class Builder {
 
+        private String dataFormat;
         private String hostId;
         private double maxReportableScore;
         private boolean filterByAirspace;
@@ -353,6 +363,7 @@ public class AirborneAlgorithmDef {
 
         private Builder() {
             //exists to enable automatic YAML parsing with Jackson library
+            this.dataFormat = "csv";
             this.hostId = "airborne-compute-1";
             this.maxReportableScore = 20.0;
             this.filterByAirspace = true;
@@ -371,6 +382,13 @@ public class AirborneAlgorithmDef {
             this.verbose = false;
             this.logFileDirectory = "logs";
             this.airborneDynamicsRadiusNm = 15.0;
+        }
+
+        public Builder dataFormat(String dataFormat) {
+            requireNonNull(dataFormat, "AirborneAlgorithmDef's dataFormat must be set");
+            Formats.getFormat(dataFormat); // eagerly pull the Format to fail early
+            this.dataFormat = dataFormat;
+            return this;
         }
 
         public Builder hostId(String hostId) {
