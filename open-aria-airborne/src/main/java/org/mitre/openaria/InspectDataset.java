@@ -3,6 +3,7 @@ package org.mitre.openaria;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Integer.MIN_VALUE;
+import static java.util.Objects.isNull;
 import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
 import static org.mitre.openaria.core.utils.Misc.downCastPointIter;
 
@@ -25,12 +26,10 @@ import org.mitre.caasd.commons.maps.TileServer;
 import org.mitre.openaria.airborne.tools.TimeDensityAuditor;
 import org.mitre.openaria.airborne.tools.TrackStatCollector;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
+import org.mitre.openaria.core.formats.Formats;
 import org.mitre.openaria.core.formats.ariacsv.AriaCsvHit;
-import org.mitre.openaria.core.formats.ariacsv.AriaCsvParser;
 import org.mitre.openaria.core.formats.nop.NopHit;
-import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.system.StreamingKpi;
 
 import com.beust.jcommander.JCommander;
@@ -47,6 +46,11 @@ public class InspectDataset {
     // stats on time-difference-btw-radar-hits
     // @todo -- add "trackStroke" to command line args
     // @todo -- add "lat" and "lon" to command line args (to set map center)
+
+    // @todo -- remove/ignore CSV headers
+
+    // @todo -- Add altitude profile audit
+
 
     static int MAP_WIDTH_IN_PIXELS = 1280;
     static float TRACK_STROKE_WIDTH = 2.0f;
@@ -122,7 +126,9 @@ public class InspectDataset {
 
         while (bucketTimes.hasNext()) {
             Instant bucketTime = bucketTimes.next();
-            System.out.println(bucketTime + ": " + pointsPerTimeBucket.get(bucketTime));
+            Integer count = pointsPerTimeBucket.get(bucketTime);
+            String sCount = isNull(count) ? "0" : count.toString();
+            System.out.println(bucketTime + ": " + sCount);
         }
 
         System.out.println();
@@ -164,11 +170,12 @@ public class InspectDataset {
     private static Iterator<Point<?>> pointIteratorFor(CommandLineArgs args) {
 
         if (args.parseNop) {
-            Iterator<Point<NopHit>> dataIterator = new PointIterator(new NopParser(args.dataFile));
+            Iterator<Point<NopHit>> dataIterator = Formats.nop().parseFile(args.dataFile);
             return downCastPointIter(dataIterator);
         }
+
         if (args.parseCsv) {
-            Iterator<Point<AriaCsvHit>> dataIterator = new AriaCsvParser(args.dataFile);
+            Iterator<Point<AriaCsvHit>> dataIterator = Formats.csv().parseFile(args.dataFile);
             return downCastPointIter(dataIterator);
         }
 
@@ -177,6 +184,11 @@ public class InspectDataset {
 
 
     private static void makeMapOfPoints(CommandLineArgs args) {
+
+        if (!args.shouldDrawMap) {
+            // Do nothing when a map is not requested.
+            return;
+        }
 
         // Intentionally not using the same point iterator -- want independent results
         Iterator<Point<?>> pointIterator = pointIteratorFor(args);
@@ -206,7 +218,7 @@ public class InspectDataset {
      * @param tracks           A list of Tracks
      * @param outputFilePrefix Piece for output filename (e.g. "ROA" --> "map-of-ROA.png")
      */
-    public static <T> void plotMap(List<Track> tracks, String outputFilePrefix, CommandLineArgs args) {
+    static <T> void plotMap(List<Track> tracks, String outputFilePrefix, CommandLineArgs args) {
 
         if (tracks.isEmpty()) {
             System.out.println("No tracks to Plot on Map");

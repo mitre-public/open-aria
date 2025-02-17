@@ -29,6 +29,15 @@ class InspectDatasetTest {
         }
     }
 
+    @Test
+    void demoCsvAudit() {
+        String[] args = new String[]{"-f", "src/main/resources/convertedNop.txt.gz", "--csv"};
+
+        assertDoesNotThrow(
+            () -> InspectDataset.main(args)
+        );
+    }
+
 
     @Disabled
     @Test
