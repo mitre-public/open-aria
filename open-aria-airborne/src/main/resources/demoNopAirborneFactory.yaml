@@ -1,0 +1,34 @@
+---
+algorithmDef:
+  dataFormat: "nop"
+  hostId: "airborne-compute-2"
+  maxReportableScore: 15.0
+  filterByAirspace: true
+  publishAirborneDynamics: true
+  publishTrackData: true
+  requiredDiverganceDistInNM: 0.5
+  onGroundSpeedInKnots: 80.0
+  requiredTimeOverlapInMs: 7500
+  formationFilters: "0.5,60,false"
+  requiredProximityInNM: 7.5
+  sizeOfTrackSmoothingCache: 500
+  trackSmoothingExpirationSec: 120
+  logDuplicateTracks: false
+  applySmoothing: true
+  requireDataTag: false
+  logFileDirectory: "logs"
+  airborneDynamicsRadiusNm: 15.0
+  verbose: true
+
+trackPairingDistanceInNM: 8.33
+inMemorySortBufferSec: 600
+
+#This sample OutputConfig creates 2 OutputSink<AirborneEvent> that will be used to route ARIA Events..
+#Each OutputSink is create by 1st Creating a class that implements Supplier<OutputSink>
+outputConfig:
+  outputSinkSuppliers:
+    - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
+# REMOVE THIS COMMENT TO ADD A 2nd OUTPUT SINK THAT WRITES THE JSON EVENTS TO DISK
+#    - pluginClass: org.mitre.openaria.airborne.config.AirborneFileSinkSupplier
+#      configOptions:
+#        eventDirectory: myEventsGoHere

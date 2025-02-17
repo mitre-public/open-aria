@@ -9,9 +9,8 @@ import java.util.Iterator;
 import org.mitre.openaria.AirborneFactory;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointIterator;
+import org.mitre.openaria.core.formats.Format;
 import org.mitre.openaria.core.formats.nop.NopHit;
-import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.system.StreamingKpi;
 
 /**
@@ -24,7 +23,7 @@ public class DemoProcessingNopData {
     public static void main(String[] args) throws IOException {
 
         // --- Convert a YAML configuration file to a "data processing pipeline" ---
-        File yamlConfig = new File("open-aria-airborne/src/main/resources/demoAirborneFactory.yaml");
+        File yamlConfig = new File("open-aria-airborne/src/main/resources/demoNopAirborneFactory.yaml");
         AirborneFactory.Builder builder = parseYaml(yamlConfig, AirborneFactory.Builder.class);
         AirborneFactory airborneFactory = builder.build();
         StreamingKpi<AirbornePairConsumer> dataProcessor = airborneFactory.createKpi(null);
@@ -34,7 +33,10 @@ public class DemoProcessingNopData {
         // This file contains about 20 minutes of radar data (33,500 radar hits)
         // This file contains observations describing 470 different aircraft
         File dataFile = new File("open-aria-airborne/src/main/resources/sample_from_D21.txt.gz");
-        Iterator<Point<NopHit>> dataIterator = new PointIterator(new NopParser(dataFile));
+
+        @SuppressWarnings("unchecked") // This cast elicits a warning -- need to improve how Generics are handled
+        Format<NopHit> format = (Format<NopHit>) airborneFactory.format();
+        Iterator<Point<NopHit>> dataIterator = format.parseFile(dataFile);
 
         // --- Process the data
         System.out.println("Starting OpenARIA system.  Input File = " + dataFile.getName());

@@ -9,10 +9,9 @@ import java.util.Iterator;
 import org.mitre.openaria.AirborneFactory;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.formats.Format;
 import org.mitre.openaria.core.formats.ariacsv.AriaCsvHit;
-import org.mitre.openaria.core.formats.ariacsv.AriaCsvParser;
 import org.mitre.openaria.system.StreamingKpi;
-
 
 /**
  * This Demo show the simplest code for processing raw location data encoded in OpenARIA CSV data.
@@ -24,7 +23,7 @@ public class DemoProcessingCsvData {
     public static void main(String[] args) throws IOException {
 
         // --- Convert a YAML configuration file to a "data processing pipeline" ---
-        File yamlConfig = new File("open-aria-airborne/src/main/resources/demoAirborneFactory.yaml");
+        File yamlConfig = new File("open-aria-airborne/src/main/resources/demoCsvAirborneFactory.yaml");
         AirborneFactory.Builder builder = parseYaml(yamlConfig, AirborneFactory.Builder.class);
         AirborneFactory airborneFactory = builder.build();
         StreamingKpi<AirbornePairConsumer> dataProcessor = airborneFactory.createKpi(null);
@@ -35,7 +34,9 @@ public class DemoProcessingCsvData {
         // This file contains observations describing 470 different aircraft
         File dataFile = new File("open-aria-airborne/src/main/resources/convertedNop.txt.gz");
 
-        Iterator<Point<AriaCsvHit>> dataIterator = new AriaCsvParser(dataFile);
+        @SuppressWarnings("unchecked") // This cast elicits a warning -- need to improve how Generics are handled
+        Format<AriaCsvHit> format = (Format<AriaCsvHit>) airborneFactory.format();
+        Iterator<Point<AriaCsvHit>> dataIterator = format.parseFile(dataFile);
 
         // --- Process the data
         System.out.println("Starting OpenARIA system.  Input File = " + dataFile.getName());

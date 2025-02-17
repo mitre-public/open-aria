@@ -1,6 +1,7 @@
 ---
 airborneConfig:
   algorithmDef:
+    dataFormat: "nop"
     hostId: "airborne-compute-1"
     maxReportableScore: 30.0
     filterByAirspace: true

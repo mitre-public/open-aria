@@ -1,5 +1,6 @@
 ---
 algorithmDef:
+  dataFormat: "csv"
   hostId: "airborne-compute-2"
   maxReportableScore: 15.0
   filterByAirspace: true

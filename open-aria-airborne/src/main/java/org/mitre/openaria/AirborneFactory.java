@@ -13,6 +13,7 @@ import org.mitre.openaria.airborne.AirborneAlgorithmDef;
 import org.mitre.openaria.airborne.AirborneEvent;
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.airborne.OutputConfig;
+import org.mitre.openaria.core.formats.Format;
 import org.mitre.openaria.core.formats.nop.Facility;
 import org.mitre.openaria.pointpairing.PairingConfig;
 import org.mitre.openaria.system.KpiFactory;
@@ -85,6 +86,11 @@ public class AirborneFactory implements KpiFactory<Facility> {
 
     public Map<Facility, StreamingKpi<AirbornePairConsumer>> streamingKpis() {
         return kpisCreated;
+    }
+
+    public Format<?> format() {
+        // @todo -- Can we make this whole class Generic in the DataFormat type?
+        return this.algorithmDef.dataFormat();
     }
 
     public String hostId() {
