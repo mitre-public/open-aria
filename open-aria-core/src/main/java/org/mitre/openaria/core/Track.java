@@ -45,17 +45,6 @@ public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
         return new Track<>(unmodifiableNavigableSet(pts));
     }
 
-    @Deprecated
-    public static Track ofRaw(Collection<Point> points) {
-        TreeSet<Point> tree = new TreeSet<>(points);
-        return new Track(tree);
-    }
-
-    @Deprecated
-    public static Track ofRaw(TreeSet<Point> points) {
-        return new Track(unmodifiableNavigableSet(points));
-    }
-
     /** @return The Points inside this track (sorted in time order). */
     public NavigableSet<Point<T>> points() {
         return this.points;
@@ -113,7 +102,7 @@ public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
      *
      * @return An Optional containing the overlap (in time) between these two Tracks.
      */
-    public Optional<TimeWindow> getOverlapWith(Track otherTrack) {
+    public Optional<TimeWindow> getOverlapWith(Track<T> otherTrack) {
         return asTimeWindow().getOverlapWith(otherTrack.asTimeWindow());
     }
 
@@ -199,7 +188,7 @@ public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
      * This method is optimized to take advantage of time ordering of the points to speed up this
      * time-based query.
      *
-     * @param window
+     * @param window The sampling window
      *
      * @return A completely distinct collection of Points.
      */
@@ -215,8 +204,8 @@ public record Track<T>(NavigableSet<Point<T>> points) implements JsonWritable {
      * This method is optimized to take advantage of time ordering of the points to speed up this
      * time-based query.
      *
-     * @param startTime
-     * @param endTime
+     * @param startTime The start of the sampling window
+     * @param endTime The end of the sampling window
      *
      * @return A completely distinct collection of Points.
      */

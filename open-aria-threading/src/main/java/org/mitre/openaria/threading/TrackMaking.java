@@ -31,7 +31,7 @@ public class TrackMaking {
      *
      * @return A TrackPair
      */
-    public static TrackPair makeTrackPairFromNopData(File nopFile) {
+    public static TrackPair<NopHit> makeTrackPairFromNopData(File nopFile) {
         try {
             return TrackPair.from(makeTracksFromNopData(nopFile));
         } catch (IllegalArgumentException iae) {
@@ -47,13 +47,6 @@ public class TrackMaking {
         return tracks.iterator().next();
     }
 
-    /**
-     * Apply the
-     *
-     * @param nopFile
-     *
-     * @return
-     */
     public static ConsumingArrayList<Track<NopHit>> makeTracksFromNopData(File nopFile) {
 
         checkNotNull(nopFile, "The input file cannot be null");

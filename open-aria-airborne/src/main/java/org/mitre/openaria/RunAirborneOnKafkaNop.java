@@ -41,7 +41,7 @@ public class RunAirborneOnKafkaNop {
         KafkaIngestor<String, Facility> system = new KafkaIngestor<>(
             config.options(),
             config.inputKafkaProps(),
-            factory::createKpi,
+            factory,
             config.partitionMap(),
             nopPlugin(),
             DataLatencySummarizer.byPartitionSummarizer(),

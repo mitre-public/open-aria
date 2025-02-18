@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -23,22 +24,24 @@ import org.mitre.caasd.commons.TimeWindow;
  * TrackPair contains exactly two non-null Tracks. This class provides two main benefits. It helps
  * simplify the signatures of methods and classes that operate on Track Pairs. This class also
  * provides a location for common TrackPair operations like "maxDistanceBetween" and "timeOverlap".
+ *
+ * @param <T> The data format the Tracks in the TrackPair are built from.
  */
-public class TrackPair implements Serializable {
+public class TrackPair<T> implements Serializable {
 
-    private final Track track1;
+    private final Track<T> track1;
 
-    private final Track track2;
+    private final Track<T> track2;
 
     private transient SeparationTimeSeries sepInfo;
 
-    public TrackPair(Track track1, Track track2) {
+    public TrackPair(Track<T> track1, Track<T> track2) {
         this.track1 = checkNotNull(track1);
         this.track2 = checkNotNull(track2);
     }
 
-    public static TrackPair of(Track track1, Track track2) {
-        return new TrackPair(track1, track2);
+    public static <T> TrackPair<T> of(Track<T> track1, Track<T> track2) {
+        return new TrackPair<>(track1, track2);
     }
 
     /**
@@ -48,18 +51,19 @@ public class TrackPair implements Serializable {
      *
      * @return The requested pair
      */
-    public static <T> TrackPair from(Collection<Track<T>> tracks) {
+    public static <T> TrackPair<T> from(Collection<Track<T>> tracks) {
         checkNotNull(tracks);
         checkArgument(tracks.size() == 2, "Input collection must contain exactly two tracks, size = " + tracks.size());
-        Track[] array = tracks.toArray(new Track[2]);
-        return new TrackPair(array[0], array[1]);
+
+        List<Track<T>> list = tracks.stream().toList();
+        return TrackPair.of(list.get(0), list.get(1));
     }
 
-    public Track track1() {
+    public Track<T> track1() {
         return track1;
     }
 
-    public Track track2() {
+    public Track<T> track2() {
         return track2;
     }
 
@@ -182,8 +186,8 @@ public class TrackPair implements Serializable {
         Instant currentTime = overlap.start();
         while (currentTime.isBefore(endTime)) {
 
-            Optional<Point> opt1 = track1.interpolatedPoint(currentTime);
-            Optional<Point> opt2 = track2.interpolatedPoint(currentTime);
+            Optional<Point<T>> opt1 = track1.interpolatedPoint(currentTime);
+            Optional<Point<T>> opt2 = track2.interpolatedPoint(currentTime);
 
             //set the "isClose" variable
             if (!opt1.isPresent() || !opt2.isPresent()) {

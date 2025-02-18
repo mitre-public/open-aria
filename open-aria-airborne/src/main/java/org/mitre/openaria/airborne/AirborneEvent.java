@@ -200,7 +200,7 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
      *
      * @return True of false
      */
-    private static boolean isLevelOffEvent(Instant eventTime, Duration timeToCpa, TrackPair smoothedSource) {
+    private static boolean isLevelOffEvent(Instant eventTime, Duration timeToCpa, TrackPair<?> smoothedSource) {
 
         //the test we want to run doesn't work because "eventTime.plus(timeToCpa)" is outside the overlap)
         TimeWindow overlap = smoothedSource.timeOverlap().get();

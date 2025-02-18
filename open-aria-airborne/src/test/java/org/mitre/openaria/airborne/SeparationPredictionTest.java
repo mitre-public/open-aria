@@ -3,15 +3,17 @@ package org.mitre.openaria.airborne;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.airborne.SeparationPrediction.format;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 
 import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.Test;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopHit;
+
+import org.junit.jupiter.api.Test;
 
 public class SeparationPredictionTest {
 
@@ -26,8 +28,8 @@ public class SeparationPredictionTest {
          * vertical separation is different there.
          */
 
-        TrackPair trackPair1 = getTrackPair1();
-        TrackPair trackPair2 = getTrackPair2();
+        TrackPair<?> trackPair1 = getTrackPair1();
+        TrackPair<?> trackPair2 = getTrackPair2();
 
         Instant startTime = trackPair1.timeOverlap().get().start();
 
@@ -40,7 +42,7 @@ public class SeparationPredictionTest {
         );
     }
 
-    private TrackPair getTrackPair1() {
+    private TrackPair<NopHit> getTrackPair1() {
         return makeTrackPairFromNopData(getResourceFile("verticalSeparationTrackData1.txt"));
     }
 

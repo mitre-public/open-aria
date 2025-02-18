@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 public class SingleAircraftRecordTest {
 
-    static final TrackPair TEST_TRACKS = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+    static final TrackPair<NopHit> TEST_TRACKS = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
 
     static final Track<NopHit> TRACK_1 = smooth(TEST_TRACKS.track1());
     static final Track<NopHit> TRACK_2 = smooth(TEST_TRACKS.track2());
@@ -28,7 +28,7 @@ public class SingleAircraftRecordTest {
     //smooth the test tracks to correct missing values..
     private static Track<NopHit> smooth(Track<NopHit> rawTrack) {
         DataCleaner<Track<NopHit>> cleaner = coreSmoothing();
-        return cleaner.clean(rawTrack).get();
+        return cleaner.clean(rawTrack).orElseThrow();
     }
 
     @Test
