@@ -326,8 +326,18 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
 
     @Override
     public String asJson() {
-        String asJson = GSON_CONVERTER.toJson(this);
-        return HashUtils.removeArrayWhiteSpace(asJson); //do not let the arrays in the dynamics bork readability with too many newLine chars
+        String asJson = GSON_CONVERTER.toJson(this); //regular pretty printed JSON
+
+        // Adjust some number arrays so the output isn't so "tall"
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "epochMsTime");
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "trueVerticalFt");
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "trueLateralNm");
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "estTimeToCpaMs");
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "estVerticalAtCpaFt");
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "estLateralAtCpaNm");
+        asJson = HashUtils.removeWhiteSpaceFromNamedArray(asJson, "score");
+
+        return asJson;
     }
 
     private String computeUniqueId() {

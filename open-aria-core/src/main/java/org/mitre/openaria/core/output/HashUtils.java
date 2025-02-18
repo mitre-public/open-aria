@@ -142,6 +142,36 @@ public class HashUtils {
         return workingCopy.toString();
     }
 
+
+    /**
+     * Find a specific named array in a JSON record, remove the whitespace (e.g., new line
+     * characters) from that array text.  This reduces the vertical space used when listing an array
+     * of numbers.
+     */
+    public static String removeWhiteSpaceFromNamedArray(String json, String jsonArrayName) {
+
+        // e.g. Search for:  {{"epochMsTime":[}}  (starts with " and ends with [ characters)
+        String VERTICAL_ARRAY = "\"" + jsonArrayName + "\": [\n";  //appears at the beginning of an array that is printed one entry per line
+
+        StringBuilder workingCopy = new StringBuilder(json);
+
+        int arrayStart = workingCopy.indexOf(VERTICAL_ARRAY, 0);
+
+        while (arrayStart > 0) {
+            int arrayEnd = workingCopy.indexOf("]", arrayStart);
+
+            String excerpt = workingCopy.substring(arrayStart, arrayEnd);
+
+            excerpt = excerpt.replaceAll("\\s+", "");
+
+            workingCopy.replace(arrayStart, arrayEnd, excerpt);
+
+            arrayStart = workingCopy.indexOf(VERTICAL_ARRAY, arrayStart); //iterate forward
+        }
+
+        return workingCopy.toString();
+    }
+
     /** Intentionally hiding the implementation of the hashing function. */
     private static String computeHashFor(String s) {
 
