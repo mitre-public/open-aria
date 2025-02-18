@@ -10,10 +10,7 @@ import java.util.Iterator;
 
 import org.mitre.openaria.airborne.AirbornePairConsumer;
 import org.mitre.openaria.core.Point;
-import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.formats.Format;
-import org.mitre.openaria.core.formats.nop.NopHit;
-import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.system.StreamingKpi;
 
 import com.beust.jcommander.JCommander;
@@ -60,21 +57,10 @@ public class RunAirborneOnFile {
         System.out.println("DONE PROCESSING: " + dataFile.getName());
     }
 
-    private static Iterator<Point<NopHit>> iteratorFor(File dataFile) {
-        return new PointIterator(new NopParser(dataFile));
-    }
 
     private static Config configFromYaml(File yamlFile) {
         try {
             return parseYaml(yamlFile, RunAirborneOnFile.Config.class);
-        } catch (Exception ex) {
-            throw demote(ex);
-        }
-    }
-
-    static Config configFromYaml(String yamlContent) {
-        try {
-            return parseYaml(yamlContent, RunAirborneOnFile.Config.class);
         } catch (Exception ex) {
             throw demote(ex);
         }
@@ -121,8 +107,8 @@ public class RunAirborneOnFile {
             this.yamlConfig = new File(configFileArg);
             this.dataFile = new File(fileCmdLineArg);
 
-            checkState(dataFile.isFile());
-            checkState(dataFile.exists());
+            checkState(dataFile.isFile(), dataFile.getAbsolutePath() + " is not a file");
+            checkState(dataFile.exists(), dataFile.getAbsolutePath() + " does not exist");
         }
     }
 

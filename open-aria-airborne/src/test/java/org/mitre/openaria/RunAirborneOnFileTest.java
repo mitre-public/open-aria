@@ -49,8 +49,8 @@ public class RunAirborneOnFileTest {
         // Verify the "detected-encounters.md" demo works
 
         String[] args = new String[]{
-            "-c", "src/test/resources/sampleConfig.yaml",
-            "-f", "src/test/resources/sampleData.txt.gz"
+            "-c", "src/main/resources/sampleNopConfig.yaml",
+            "-f", "src/main/resources/sampleNopData.txt.gz"
         };
 
         assertDoesNotThrow(
@@ -83,7 +83,7 @@ public class RunAirborneOnFileTest {
 
         String[] args = new String[]{
             "-c", "src/test/resources/sampleConfig2.yaml",
-            "-f", "src/test/resources/sampleData.txt.gz"
+            "-f", "src/main/resources/sampleNopData.txt.gz"
         };
 
         assertDoesNotThrow(

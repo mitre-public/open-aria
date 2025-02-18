@@ -32,7 +32,7 @@ public class DemoProcessingCsvData {
         // --- Convert a .gz file of "OpenARIA CSV data" into an Iterator of Points (aka parse radar data)
         // This file contains about 20 minutes of radar data (33,500 radar hits)
         // This file contains observations describing 470 different aircraft
-        File dataFile = new File("open-aria-airborne/src/main/resources/convertedNop.txt.gz");
+        File dataFile = new File("open-aria-airborne/src/main/resources/sampleCsvData.txt.gz");
 
         @SuppressWarnings("unchecked") // This cast elicits a warning -- need to improve how Generics are handled
         Format<AriaCsvHit> format = (Format<AriaCsvHit>) airborneFactory.format();
