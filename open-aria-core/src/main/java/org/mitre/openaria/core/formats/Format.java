@@ -5,6 +5,7 @@ import java.util.Base64;
 import java.util.Iterator;
 
 import org.mitre.openaria.core.Point;
+import org.mitre.openaria.core.Track;
 
 /**
  * A format allows OpenARIA to convert an arbitrary File of input location data into a sequence of
@@ -37,5 +38,15 @@ public interface Format<T> {
     /** Uses java.util.Base64's unpadded url dencoder to interpret a json-friendly String. */
     static byte[] fromBase64(String base64Encoding) {
         return Base64.getUrlDecoder().decode(base64Encoding);
+    }
+
+    /**
+     * Convert a Track made from location data of type T into an array of Strings.  This
+     * implementation relies on the asRawString(T) method.
+     */
+    default String[] asRawStrings(Track<T> track) {
+        return track.points().stream()
+            .map(pt -> asRawString(pt.rawData()))
+            .toArray(String[]::new);
     }
 }

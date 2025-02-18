@@ -7,7 +7,7 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 
     testLogging {
-        events("PASSED", "SKIPPED", "FAILED")
+        events("SKIPPED", "FAILED") // Options are: "PASSED", "SKIPPED", "FAILED"
     }
 }
 

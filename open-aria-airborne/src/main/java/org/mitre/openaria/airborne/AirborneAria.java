@@ -6,7 +6,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Streams.stream;
 import static java.lang.Math.abs;
 import static java.util.Objects.requireNonNull;
-import static org.mitre.openaria.airborne.AirborneEvent.newBuilder;
 import static org.mitre.openaria.airborne.Snapshot.extractSnapshot;
 import static org.mitre.openaria.airborne.Snapshot.extractSnapshotWithCpa;
 import static org.mitre.openaria.core.SeparationTimeSeries.lateralComparator;
@@ -123,16 +122,15 @@ public class AirborneAria {
             ? tpa.analysis.truncate(algorithmDef.dynamicsInclusionRadius()).serializedForm() :
             null;
 
-        AirborneEvent event = newBuilder()
+        return AirborneEvent.newBuilder()
             .rawTracks(rawPair)
             .smoothedTracks(smoothedPair)
+            .format(algorithmDef.dataFormat())
             .riskiestMoment(tpa.riskiestMoment)
             .snapshots(extractKeyMoments(smoothedPair, tpa))
             .dynamics(dynamics)
             .includeTrackData(algorithmDef.publishTrackData())
             .build();
-
-        return event;
     }
 
     /**

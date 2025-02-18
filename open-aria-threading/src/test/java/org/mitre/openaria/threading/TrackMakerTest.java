@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 public class TrackMakerTest {
 
     /* Counts calls to "accept" */
-    static class TestConsumer implements Consumer<Track> {
+    static class TestConsumer implements Consumer<Track<NopHit>> {
 
         int numCallsToAccept = 0;
 
@@ -32,7 +32,7 @@ public class TrackMakerTest {
         }
     }
 
-    private static Point newPoint(String trackId, Instant pointTime) {
+    private static Point<?> newPoint(String trackId, Instant pointTime) {
 
         return (new PointBuilder())
             .trackId(trackId)
@@ -206,21 +206,21 @@ public class TrackMakerTest {
         Point<NopHit> pt2 = NopHit.from(TWO);
         Point<NopHit> pt2_copy = NopHit.from(TWO);
 
-        ConsumingArrayList<Track> trackConsumer = newConsumingArrayList();
+        ConsumingArrayList<Track<NopHit>> trackConsumer = newConsumingArrayList();
 
-        TrackMaker maker = new TrackMaker(trackConsumer);
+        TrackMaker<NopHit> maker = new TrackMaker<>(trackConsumer);
 
         maker.accept(pt1);
-        assertEquals(maker.currentPointCount(), 1);
-        assertEquals(maker.numTracksUnderConstruction(), 1);
+        assertThat(maker.currentPointCount(), is(1));
+        assertThat(maker.numTracksUnderConstruction(), is(1));
         maker.accept(pt2);
-        assertEquals(maker.currentPointCount(), 2);
-        assertEquals(maker.numTracksUnderConstruction(), 1);
+        assertThat(maker.currentPointCount(), is(2));
+        assertThat(maker.numTracksUnderConstruction(), is(1));
 
         //the Point count should go up even when we add a duplicate Point...
         maker.accept(pt2_copy);
-        assertEquals(maker.currentPointCount(), 3);
-        assertEquals(maker.numTracksUnderConstruction(), 1);
+        assertThat(maker.currentPointCount(), is(3));
+        assertThat(maker.numTracksUnderConstruction(), is(1));
 
         maker.flushAllTracks();
 
@@ -228,7 +228,7 @@ public class TrackMakerTest {
         assertEquals(1, trackConsumer.size());
 
         //However, the sole Track only had 2 points because the duplicate was dropped
-        Track singleTrack = trackConsumer.get(0);
+        Track<NopHit> singleTrack = trackConsumer.get(0);
         assertEquals(2, singleTrack.size());
     }
 
@@ -243,7 +243,7 @@ public class TrackMakerTest {
         String B = "[RH],STARS,D21_B,03/24/2018,14:42:04.750,N518SP,C172,,5256,032,110,184,042.92457,-083.70999,3473,5256,-14.5847,42.7043,1,Y,A,D21,,POL,ARB,1446,ARB,ACT,VFR,,01500,,,,,,S,1,,0,{RH}";
 
         TestConsumer trackConsumer = new TestConsumer();
-        TrackMaker maker = new TrackMaker(trackConsumer);
+        TrackMaker<NopHit> maker = new TrackMaker<>(trackConsumer);
 
         maker.accept(NopHit.from(ONE));
         maker.accept(NopHit.from(A));
@@ -276,7 +276,7 @@ public class TrackMakerTest {
         String p5 = "[RH],Center,ZDV,07-09-2019,02:51:14.000,SWA5423,B737,L,0564,380,414,229,37.2453,-101.9053,638,,,,,ZKC/21,,ZDV,,,,E0256,DEN,,IFR,,638,244061462,BWI,,380//380,,L,1,,,{RH}";
 
         TestConsumer smallCounter = new TestConsumer();
-        TrackMaker smallTrackMaker = new TrackMaker(maxPointDelta, maxTrackAge_small, smallCounter);
+        TrackMaker<NopHit> smallTrackMaker = new TrackMaker<>(maxPointDelta, maxTrackAge_small, smallCounter);
 
         smallTrackMaker.accept(NopHit.from(p1));
         smallTrackMaker.accept(NopHit.from(p2));
@@ -288,7 +288,7 @@ public class TrackMakerTest {
 
         //now do same thing...but with a bigger maxTrackAge
         TestConsumer bigCounter = new TestConsumer();
-        TrackMaker bigTrackMaker = new TrackMaker(maxPointDelta, maxTrackAge_big, bigCounter);
+        TrackMaker<NopHit> bigTrackMaker = new TrackMaker<>(maxPointDelta, maxTrackAge_big, bigCounter);
 
         bigTrackMaker.accept(NopHit.from(p1));
         bigTrackMaker.accept(NopHit.from(p2));
@@ -302,7 +302,7 @@ public class TrackMakerTest {
     @Test
     public void trackClosureAgeReflectsConstructor() {
 
-        TrackMaker trackMaker = new TrackMaker(
+        TrackMaker<NopHit> trackMaker = new TrackMaker<>(
             Duration.ofSeconds(30),
             Duration.ofSeconds(1234),
             new TestConsumer()
@@ -328,8 +328,8 @@ public class TrackMakerTest {
         String p5 = "[RH],STARS,A90,08/28/2020,01:11:28.581,,,,1522,302,524,91,42.74023,-73.28268,2600,0,,,,,,A90,,,,,,,IFR,,,,,,,,,,,,{RH}";
         String p6 = "[RH],STARS,A90,08/28/2020,01:11:33.201,,,,1522,301,524,90,42.74004,-73.26742,2600,0,,,,,,A90,,,,,,,IFR,,,,,,,,,,,,{RH}";
 
-        ConsumingArrayList<Track> sink = new ConsumingArrayList<>();
-        TrackMaker tm = new TrackMaker(maxPointDelta, sink);
+        ConsumingArrayList<Track<NopHit>> sink = new ConsumingArrayList<>();
+        TrackMaker<NopHit> tm = new TrackMaker<>(maxPointDelta, sink);
 
         tm.accept(NopHit.from(p1));
         tm.accept(NopHit.from(p2)); //this 2nd point should evict the "1st track" because that track is "too stale" to accept new points

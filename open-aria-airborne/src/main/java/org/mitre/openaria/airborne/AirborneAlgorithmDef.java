@@ -363,7 +363,7 @@ public class AirborneAlgorithmDef {
 
         private Builder() {
             //exists to enable automatic YAML parsing with Jackson library
-            this.dataFormat = "csv";
+            this.dataFormat = "nop";
             this.hostId = "airborne-compute-1";
             this.maxReportableScore = 20.0;
             this.filterByAirspace = true;
@@ -433,6 +433,7 @@ public class AirborneAlgorithmDef {
         }
 
         public AirborneAlgorithmDef build() {
+            requireNonNull(dataFormat, "AirborneAlgorithmDef's dataFormat must be set");
             return new AirborneAlgorithmDef(this);
         }
     }
