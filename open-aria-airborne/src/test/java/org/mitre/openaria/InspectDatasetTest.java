@@ -17,13 +17,13 @@ class InspectDatasetTest {
 
     @Test
     void demoNopAudit() {
-        String[] args = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--map"};
+        String[] args = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--map"};
 
         assertDoesNotThrow(
             () -> InspectDataset.main(args)
         );
 
-        File targetMapFile = new File("map-of-sampleData.txt.png");
+        File targetMapFile = new File("map-of-sampleNopData.txt.png");
         if (targetMapFile.exists()) {
             targetMapFile.delete();
         }
@@ -31,7 +31,7 @@ class InspectDatasetTest {
 
     @Test
     void demoCsvAudit() {
-        String[] args = new String[]{"-f", "src/main/resources/convertedNop.txt.gz", "--csv"};
+        String[] args = new String[]{"-f", "src/main/resources/sampleCsvData.txt.gz", "--csv"};
 
         assertDoesNotThrow(
             () -> InspectDataset.main(args)
@@ -42,13 +42,13 @@ class InspectDatasetTest {
     @Disabled
     @Test
     void demoNopAudit_custom_color() {
-        String[] args = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--map", "--mapBoxTiles", "--green", "255", "--alpha", "35"};
+        String[] args = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--map", "--mapBoxTiles", "--green", "255", "--alpha", "35"};
 
         assertDoesNotThrow(
             () -> InspectDataset.main(args)
         );
 
-        File targetMapFile = new File("map-of-sampleData.txt.png");
+        File targetMapFile = new File("map-of-sampleNopData.txt.png");
         if (targetMapFile.exists()) {
             targetMapFile.delete();
         }
@@ -59,8 +59,8 @@ class InspectDatasetTest {
     void cliParsesMapFlag() {
 
         // Note: the -f file flag is required and the corresponding file must be real
-        String[] argsWith = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--csv", "--map"};
-        String[] argsWithout = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--csv"};
+        String[] argsWith = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--csv", "--map"};
+        String[] argsWithout = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--csv"};
 
         CommandLineArgs cliArgsWith = parseCommandLineArgs(argsWith);
         CommandLineArgs cliArgsWithout = parseCommandLineArgs(argsWithout);
@@ -73,7 +73,7 @@ class InspectDatasetTest {
     void cliParsesCsv() {
 
         // Note: the -f file flag is required and the corresponding file must be real
-        String[] args = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--csv"};
+        String[] args = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--csv"};
 
         CommandLineArgs cliArgsWith = parseCommandLineArgs(args);
 
@@ -85,7 +85,7 @@ class InspectDatasetTest {
     void cliParsesNop() {
 
         // Note: the -f file flag is required and the corresponding file must be real
-        String[] args = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop"};
+        String[] args = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop"};
 
         CommandLineArgs cliArgsWith = parseCommandLineArgs(args);
 
@@ -97,7 +97,7 @@ class InspectDatasetTest {
     void cliPreventsNopAndCsv() {
 
         // Note: the -f file flag is required and the corresponding file must be real
-        String[] args = new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv"};
+        String[] args = new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv"};
 
         assertThrows(
             IllegalArgumentException.class,
@@ -110,42 +110,42 @@ class InspectDatasetTest {
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--red" , "-1"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--red" , "-1"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--red" , "256"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--red" , "256"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--green" , "-1"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--green" , "-1"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--green" , "256"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--green" , "256"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--blue" , "-1"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--blue" , "-1"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--blue" , "256"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--blue" , "256"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--alpha" , "0"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--alpha" , "0"})
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> parseCommandLineArgs(new String[]{"-f", "src/test/resources/sampleData.txt.gz", "--nop", "--csv", "--alpha" , "256"})
+            () -> parseCommandLineArgs(new String[]{"-f", "src/main/resources/sampleNopData.txt.gz", "--nop", "--csv", "--alpha" , "256"})
         );
     }
 }

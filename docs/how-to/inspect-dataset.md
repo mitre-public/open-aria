@@ -59,7 +59,7 @@ from the repo's directory of test assets.
 
 ### Step 4: Run the `InspectDataset` program
 
-- Run: `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleData.txt.gz --nop`
+- Run: `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop`
 - This command uses `InspectDataset` to describe the data found inside `sampleData.txt.gz`
 - Its output will look like:
     ```
@@ -136,7 +136,7 @@ from the repo's directory of test assets.
 ### Run `InspectDataset` and generate a plain Map
 
 - Add `--map` to the command, and you'll also get a plain map with a black background
-- e.g. Run: `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleData.txt.gz --nop --map`
+- e.g. Run: `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map`
 - The map looks like:
   ![map](./../assets/plain-map-of-sampleData.txt.png)
 
@@ -144,7 +144,7 @@ from the repo's directory of test assets.
 
 - Add `--map --mapBoxTiles` to the command, and you'll also get a map drawn on top of MapBox tiles
 - e.g. Run:
-  `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleData.txt.gz --nop --map --mapBoxTiles`
+  `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map --mapBoxTiles`
 - Using the `--mapBoxTiles` flag requires an API token for the MapBox service.
 - See: the "Map making" documentation in the MITRE Commons
   library [here](https://github.com/mitre-public/commons/blob/main/docs/mapping.md)
@@ -157,6 +157,6 @@ from the repo's directory of test assets.
   0 and 255 (except alpha, it's minimum value is 1)
 - Add `--zoomLevel {VALUE}` where VALUE is between 1 and 15
 - e.g. Run:
-  `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleData.txt.gz --nop --map --green 255 --alpha 35`
+  `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map --green 255 --alpha 35`
 - The map looks like:
   ![map](./../assets/green-map-of-sampleData.txt.png)
