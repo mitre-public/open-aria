@@ -40,7 +40,7 @@ public class Tracks {
      */
     public static <T>  boolean missingAircraftId(Track<T>  track) {
         String acid = aircraftId(track);
-        return acid == null || acid.equals("");
+        return acid == null || acid.isEmpty();
     }
 
     /**
@@ -119,17 +119,17 @@ public class Tracks {
      *
      * @return The smallest possible TimeWindow that contains all input tracks
      */
-    public static TimeWindow windowContaining(Collection<Track<?>> tracks) {
+    public static <T> TimeWindow windowContaining(Collection<Track<T>> tracks) {
         checkNotNull(tracks, "The input Collection of Tracks cannot be null");
         checkArgument(!tracks.isEmpty(), "Cannot compute a TimeWindow for an empty collection of Tracks");
 
-        Track firstTrack = tracks.iterator().next();
+        Track<T> firstTrack = tracks.iterator().next();
         TimeWindow firstTimeWindow = firstTrack.asTimeWindow();
 
         Instant minTime = firstTimeWindow.start();
         Instant maxTime = firstTimeWindow.end();
 
-        for (Track track : tracks) {
+        for (Track<T> track : tracks) {
 
             TimeWindow tw = track.asTimeWindow();
 
@@ -152,7 +152,7 @@ public class Tracks {
 
         Optional<File> trackFile = FileUtils.getResourceAsFile(clazz, fileName);
 
-        if (!trackFile.isPresent()) {
+        if (trackFile.isEmpty()) {
             throw new IllegalStateException("could not find resource: " + fileName);
         }
 
@@ -209,7 +209,7 @@ public class Tracks {
             Optional<Point<T>> opt2 = t2.interpolatedPoint(currentTime);
 
             //set the "isClose" variable
-            if (!opt1.isPresent() || !opt2.isPresent()) {
+            if (opt1.isEmpty() || opt2.isEmpty()) {
                 isClose = false;
             } else {
                 Point<T> p1 = opt1.get();

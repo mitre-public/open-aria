@@ -13,22 +13,23 @@ import java.util.ArrayList;
 
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
 
 public class AirborneAriaTest {
 
-    TrackPair scaryTrackPair() {
+    TrackPair<NopHit> scaryTrackPair() {
         File file = new File("src/test/resources/scaryTrackData.txt");
         return makeTrackPairFromNopData(file);
     }
 
-    TrackPair scaryTrackPairWithoutCallsigns() {
+    TrackPair<NopHit> scaryTrackPairWithoutCallsigns() {
         File file = new File("src/test/resources/scaryTrackData_noCallSign.txt");
         return makeTrackPairFromNopData(file);
     }
 
-    TrackPair safeTrackPair() {
+    TrackPair<NopHit> safeTrackPair() {
         File file = new File("src/test/resources/safeTrackData.txt");
         return makeTrackPairFromNopData(file);
     }

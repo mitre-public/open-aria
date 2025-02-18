@@ -58,7 +58,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
         this.timeWindow = TimeWindow.of(times[0], times[times.length - 1]);
     }
 
-    public SeparationTimeSeries(TrackPair trackPair, Duration timeStep) {
+    public SeparationTimeSeries(TrackPair<?> trackPair, Duration timeStep) {
         checkNotNull(trackPair);
         checkArgument(trackPair.overlapInTime());
         checkNotNull(timeStep);
@@ -81,11 +81,11 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
      * the aircraft are within 10 nautical miles. The time step is largest when the aircraft are
      * further than 50 nautical miles apart.
      *
-     * @param trackPair
+     * @param trackPair Two Tracks
      *
-     * @return
+     * @return The SeparationTimeSeries that describes the interaction btw these two Tracks
      */
-    public static SeparationTimeSeries dynamicTimeStep(TrackPair trackPair) {
+    public static SeparationTimeSeries dynamicTimeStep(TrackPair<?> trackPair) {
         checkNotNull(trackPair);
         checkArgument(trackPair.overlapInTime());
 
@@ -141,11 +141,11 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
         return new SeparationTimeSeries(times, vertical, horizontal);
     }
 
-    private static Distance FIFTEEN_MILES = Distance.ofNauticalMiles(15);
+    private static final Distance FIFTEEN_MILES = Distance.ofNauticalMiles(15);
 
-    private static Distance THIRTY_MILES = Distance.ofNauticalMiles(30);
+    private static final Distance THIRTY_MILES = Distance.ofNauticalMiles(30);
 
-    private static Distance FIFTY_MILES = Distance.ofNauticalMiles(50);
+    private static final Distance FIFTY_MILES = Distance.ofNauticalMiles(50);
 
     private static Duration getDynamicTimeStep(Distance horizontalDist) {
         if (horizontalDist.isLessThan(FIFTEEN_MILES)) {
@@ -220,7 +220,7 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
         );
     }
 
-    private void fillInSeparationTimeSeries(TrackPair trackPair) {
+    private void fillInSeparationTimeSeries(TrackPair<?> trackPair) {
         for (int i = 0; i < times.length; i++) {
             PointPair points = trackPair.interpolatedPointsAt(times[i]);
             verticalDistances[i] = points.altitudeDelta();

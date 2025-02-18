@@ -29,13 +29,13 @@ import org.mitre.openaria.core.formats.nop.NopEncoder;
  */
 public class SeparationPrediction {
 
-    static final CoefficentSet ABOVE_18000_FT = new CoefficentSet(
+    static final CoefficientSet ABOVE_18000_FT = new CoefficientSet(
         1.0 / 0.25, //.25 NM of Horizontal Separation equals 1 score unit
         1.0 / 250.0, //250 ft of Vetical Separation equals 1 score unit
         1.0 / 30_000.0, //30_000 MS of Time Separation equals 1 score unit
         4.0
     );
-    static final CoefficentSet BELOW_18000_FT = new CoefficentSet(
+    static final CoefficientSet BELOW_18000_FT = new CoefficientSet(
         1.0 / 0.25, //.25 NM of Horizontal Separation equals 1 score unit
         1.0 / 150.0, //150 ft of Vetical Separation equals 1 score unit
         1.0 / 30_000.0, //30_000 MS of Time Separation equals 1 score unit
@@ -47,7 +47,7 @@ public class SeparationPrediction {
     //prints the immediate scores if necessary
     public static boolean VERBOSE = false;
 
-    private final TrackPair tracks;
+    private final TrackPair<?> tracks;
 
     private final Instant time;
 
@@ -65,7 +65,7 @@ public class SeparationPrediction {
 
     private final double immediateScore;
 
-    public SeparationPrediction(TrackPair trackPair, Instant time) {
+    public SeparationPrediction(TrackPair<?> trackPair, Instant time) {
         checkNotNull(trackPair);
         checkNotNull(time);
 
@@ -100,7 +100,7 @@ public class SeparationPrediction {
         return computeImmediateScore(determineCoefficients());
     }
 
-    private double computeImmediateScore(CoefficentSet coefs) {
+    private double computeImmediateScore(CoefficientSet coefs) {
 
         double timeScore = coefs.timeCoef * timeUntilCpa.toMillis();
         double horizontalScore = coefs.horizontalCoef * lateralDistanceAtCpa.inNauticalMiles();
@@ -139,7 +139,7 @@ public class SeparationPrediction {
         return immediateScore;
     }
 
-    private CoefficentSet determineCoefficients() {
+    private CoefficientSet determineCoefficients() {
         return (points.avgAltitude().isGreaterThan(Distance.ofFeet(18_000)))
             ? ABOVE_18000_FT
             : BELOW_18000_FT;
@@ -151,7 +151,7 @@ public class SeparationPrediction {
     }
 
     /** Compute a MULTIPLICATIVE penalty to apply when the aircraft ARE NOT converging vertically. */
-    private double computeVerticalPenalty(CoefficentSet coefs) {
+    private double computeVerticalPenalty(CoefficientSet coefs) {
 
         //Penalties should ALWAYS range from 1 to BIG_VALUE
         if (tracksAreBothLevel() || tracksAreDiverging()) {
@@ -185,7 +185,7 @@ public class SeparationPrediction {
         return verticalClosureRate.inFeetPerSecond() < 0.0;
     }
 
-    private double computeLateralPenalty(CoefficentSet coefs) {
+    private double computeLateralPenalty(CoefficientSet coefs) {
 
         //if closing very slowly....OR OUTRIGHT DIVERGING  (3 knots is about a fast walking pace)
         if (lateralClosureRate.inKnots() <= 3.0) {
@@ -226,17 +226,17 @@ public class SeparationPrediction {
     }
 
     /**
-     * CoefficentSets are uses along with the measurements in SeparationPredication to compute a
+     * CoefficientSets are uses along with the measurements in SeparationPredication to compute a
      * risk score at a particular moment in time.
      */
-    static class CoefficentSet {
+    static class CoefficientSet {
 
         final double horizontalCoef;
         final double verticalCoef;
         final double timeCoef;
         final double nonConvergingPenalty;
 
-        CoefficentSet(double horizontal, double vertical, double time, double nonConvergePenalty) {
+        CoefficientSet(double horizontal, double vertical, double time, double nonConvergePenalty) {
             this.horizontalCoef = horizontal;
             this.verticalCoef = vertical;
             this.timeCoef = time;

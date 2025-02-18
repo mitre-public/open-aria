@@ -278,7 +278,7 @@ public class AirborneAria {
      */
     static class TrackPairAnalysis {
 
-        final TrackPair sourcePair;
+        final TrackPair<?> sourcePair;
         final AirborneAnalysis analysis;
         final ArrayList<ScoredInstant> movingSums;
         final ScoredInstant riskiestMoment;
@@ -318,7 +318,7 @@ public class AirborneAria {
      *
      * @return The score at this moment in Time.
      */
-    public double cherryPickScore(TrackPair trackPair, Instant time) {
+    public double cherryPickScore(TrackPair<?> trackPair, Instant time) {
         checkNotNull(trackPair, "Input TrackPair cannot be null");
         checkNotNull(time, "Input Instant cannot be null");
         checkArgument(trackPair.overlapInTime(), "Tracks in TrackPair must overlap in time");

@@ -9,8 +9,9 @@ import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.mitre.openaria.core.TrackPair;
 import org.mitre.caasd.commons.DataFilter;
+import org.mitre.caasd.commons.TimeWindow;
+import org.mitre.openaria.core.TrackPair;
 
 /**
  * This DataFilter removes TrackPair when the they do not overlap in time. This can occur when track
@@ -31,6 +32,6 @@ class TracksMustOverlapInTime extends DataFilter<TrackPair> {
         checkArgument(!minOverlap.isNegative());
         return trackPair
             -> trackPair.overlapInTime()
-            && trackPair.timeOverlap().get().duration().toMillis() > minOverlap.toMillis();
+            && ((TimeWindow) trackPair.timeOverlap().get()).duration().toMillis() > minOverlap.toMillis();
     }
 }
