@@ -6,7 +6,7 @@ airborneConfig:
     maxReportableScore: 30.0
     filterByAirspace: true
     publishAirborneDynamics: true
-    publishTrackData: false
+    publishTrackData: true
     requiredDiverganceDistInNM: 0.5
     onGroundSpeedInKnots: 80.0
     requiredTimeOverlapInMs: 7500
@@ -16,6 +16,7 @@ airborneConfig:
     trackSmoothingExpirationSec: 120
     logDuplicateTracks: false
     applySmoothing: true
+#   This requirement reduces the number of output events
     requireDataTag: true
     logFileDirectory: "logs"
     airborneDynamicsRadiusNm: 15.0

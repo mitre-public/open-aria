@@ -3,19 +3,21 @@ package org.mitre.openaria.airborne;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
+import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
 import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+
+import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.TrackPair;
-import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 
 public class LevelOverflightTest {
 
-    TrackPair testPair = makeTrackPairFromNopData(
+    TrackPair<NopHit> testPair = makeTrackPairFromNopData(
         getResourceFile("ZFW--level-overflight.txt")
     );
 

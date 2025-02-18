@@ -28,7 +28,7 @@ public class TrackPairTest {
         Track<NopHit> track1 = Track.of(newArrayList(P1, P2, P3));
         Track<NopHit> track2 = Track.of(newArrayList(P4, P5, P6));
 
-        TrackPair pair = new TrackPair(track1, track2);
+        TrackPair<NopHit> pair = new TrackPair<>(track1, track2);
         assertEquals(pair.track1(), track1);
         assertEquals(pair.track2(), track2);
     }
@@ -39,7 +39,7 @@ public class TrackPairTest {
         Track<NopHit> track1 = Track.of(newArrayList(P1, P2, P3));
         Track<NopHit> track2 = Track.of(newArrayList(P4, P5, P6));
 
-        TrackPair pair = TrackPair.of(track1, track2);
+        TrackPair<NopHit> pair = TrackPair.of(track1, track2);
         assertEquals(pair.track1(), track1);
         assertEquals(pair.track2(), track2);
     }
@@ -91,7 +91,7 @@ public class TrackPairTest {
 
         ArrayList<Track<NopHit>> tracks = newArrayList(fullTrack, earlyTrack);
 
-        TrackPair pair = TrackPair.from(tracks);
+        TrackPair<NopHit> pair = TrackPair.from(tracks);
 
         assertNotEquals(pair.track1(), pair.track2());
         assertTrue(pair.track1() == earlyTrack || pair.track2() == earlyTrack);

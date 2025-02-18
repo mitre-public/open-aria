@@ -16,6 +16,8 @@ import java.time.Instant;
 
 import org.mitre.openaria.core.ScoredInstant;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.Formats;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -27,7 +29,7 @@ public class AirborneEventTest {
     /** Use of pretty printing in default {@link Gson} messes up the test literals */
     static Gson gson = new Gson();
 
-    static TrackPair SCARY_TRACK_PAIR = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
+    static TrackPair<NopHit> SCARY_TRACK_PAIR = makeTrackPairFromNopData(getResourceFile("scaryTrackData.txt"));
 
     static ScoredInstant SCORED_INSTANT = new ScoredInstant(
         3.0,
@@ -36,7 +38,7 @@ public class AirborneEventTest {
 
     @Test
     public void toJson_fromJson_cycleIsConsistent() {
-        AirborneEvent record = new AirborneEvent(SCARY_TRACK_PAIR, SCORED_INSTANT);
+        AirborneEvent record = new AirborneEvent(SCARY_TRACK_PAIR, Formats.nop(), SCORED_INSTANT);
 
         String json = record.asJson();
 
@@ -82,6 +84,7 @@ public class AirborneEventTest {
     public void ToJson_WithAirborneDynamics_Correct() {
         AirborneEvent record = newBuilder()
             .rawTracks(SCARY_TRACK_PAIR)
+            .format(Formats.nop())
             .riskiestMoment(SCORED_INSTANT)
             .snapshots(new Snapshot[]{null, null, null, null, null, null})
             .dynamics(AirborneDynamicsTest.asObj)
@@ -94,7 +97,7 @@ public class AirborneEventTest {
 
     @Test
     public void ToJson_WithoutAirborneDynamics_Correct() {
-        AirborneEvent record = new AirborneEvent(SCARY_TRACK_PAIR, SCORED_INSTANT);
+        AirborneEvent record = new AirborneEvent(SCARY_TRACK_PAIR, Formats.nop(), SCORED_INSTANT);
 
         String json = gson.toJson(record);
 
@@ -103,7 +106,7 @@ public class AirborneEventTest {
 
     @Test
     public void uuidInJsonSameAsUuidFromMethod() {
-        AirborneEvent record = new AirborneEvent(SCARY_TRACK_PAIR, SCORED_INSTANT);
+        AirborneEvent record = new AirborneEvent(SCARY_TRACK_PAIR, Formats.nop(), SCORED_INSTANT);
 
         String uuidFromApi = record.uuid();
         String hashFromJson = new JsonParser().parse(record.asJson())

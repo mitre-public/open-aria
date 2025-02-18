@@ -1,12 +1,14 @@
 
 package org.mitre.openaria.airborne;
 
+import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.airborne.AirborneTestUtils.confirmNoAirborneEventsAreDetected;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
+
+import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Test;
-import org.mitre.openaria.core.TrackPair;
 
 /**
  * The purpose of this testing suite is to confirm that efforts to filter out duplicate Track
@@ -33,7 +35,7 @@ public class DuplicateCenterTrackFilteringTest {
 
         for (String fileName : examplesOfBuggedBehavior) {
 
-            TrackPair trackPair = makeTrackPairFromNopData(getResourceFile(fileName));
+            TrackPair<NopHit> trackPair = makeTrackPairFromNopData(getResourceFile(fileName));
 
             confirmNoAirborneEventsAreDetected(trackPair);
         }

@@ -16,7 +16,6 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.NavigableSet;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -35,9 +34,8 @@ import org.mitre.openaria.core.PairedIfrVfrStatus;
 import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.PointPair;
 import org.mitre.openaria.core.ScoredInstant;
-import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.Format;
 import org.mitre.openaria.core.output.HashUtils;
 import org.mitre.openaria.core.utils.ConflictAngle;
 
@@ -67,9 +65,12 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
 
     //These fields are marked transient so that they aren't included in the serialized JSON
     //The raw track data appears in the serialized from via the "String[] trackX" fields
-    private final transient TrackPair rawTracks;
+    private final transient TrackPair<?> rawTracks;
     @Nullable
-    private final transient TrackPair smoothedTracks;
+    private final transient TrackPair<?> smoothedTracks;
+
+    // Used to create the "track Strings" we sometime embed in the JSON record
+    private final transient Format<?> format;
 
     private final String uniqueId;
     private final double eventScore;
@@ -108,20 +109,23 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
     @Nullable
     private final SerializableAnalysis airborneDynamics;
 
-    private AirborneEvent(
-        TrackPair rawTracks, 
-        TrackPair smoothedTracks, 
+    private <T> AirborneEvent(
+        TrackPair<T> rawTracks,
+        TrackPair<T> smoothedTracks,
+        Format<T> format,
         ScoredInstant event, 
         Snapshot[] importantMoments,
         SerializableAnalysis dynamics, 
         boolean publishTrackData
     ) {
         checkNotNull(rawTracks);
+        checkNotNull(format);
         checkNotNull(event);
         checkNotNull(importantMoments);
         checkArgument(importantMoments.length == 6);
         this.rawTracks = rawTracks;
         this.smoothedTracks = smoothedTracks;
+        this.format = format;
         this.airborneDynamics = dynamics;
 
         PointPair points = bestAvailableData().interpolatedPointsAt(event.time());
@@ -154,8 +158,8 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         );
 
         //write down the raw track data...
-        String[] trk0 = extractRawTrackData(rawTracks.track1());
-        String[] trk1 = extractRawTrackData(rawTracks.track2());
+        String[] trk0 = format.asRawStrings(rawTracks.track1());
+        String[] trk1 = format.asRawStrings(rawTracks.track2());
 
         this.aircraft_0 = new SingleAircraftRecord(
             bestAvailableData().track1(),
@@ -178,8 +182,8 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         this.uniqueId = computeUniqueId();
     }
 
-    AirborneEvent(TrackPair rawTracks, ScoredInstant event) {
-        this(rawTracks, null, event, new Snapshot[6], null, false);
+    <T> AirborneEvent(TrackPair<T> rawTracks, Format<T> format, ScoredInstant event) {
+        this(rawTracks, null, format, event, new Snapshot[6], null, false);
     }
 
     @Override
@@ -542,17 +546,6 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         return String.format("%05d", daySeconds);  //always use 5 characters for this number
     }
 
-    private String[] extractRawTrackData(Track track) {
-
-        NopEncoder nopEncoder = new NopEncoder(); //assumes NOP encoding..
-
-        // this stream is wonky because Track is a rawType.  Fix Track, get better stream
-        return ((NavigableSet<Point<?>>) track.points())
-            .stream()
-            .map(p -> nopEncoder.asRawNop(p))
-            .toArray(String[]::new);
-    }
-
     static Builder newBuilder() {
         return new Builder();
     }
@@ -561,6 +554,7 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
 
         TrackPair rawTracks;
         TrackPair smoothedTracks;
+        Format format;
         ScoredInstant event;
         Snapshot[] importantMoments;
         @Nullable SerializableAnalysis dynamics;
@@ -573,6 +567,11 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
 
         Builder smoothedTracks(TrackPair smoothedData) {
             this.smoothedTracks = smoothedData;
+            return this;
+        }
+
+        Builder format(Format format) {
+            this.format = format;
             return this;
         }
 
@@ -597,7 +596,7 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
         }
 
         AirborneEvent build() {
-            return new AirborneEvent(rawTracks, smoothedTracks, event, importantMoments, dynamics, publishTrackData);
+            return new AirborneEvent(rawTracks, smoothedTracks, format, event, importantMoments, dynamics, publishTrackData);
         }
     }
 

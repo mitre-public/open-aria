@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.threading.TrackMaking.makeTrackPairFromNopData;
 
-import java.util.NavigableSet;
-
 import org.mitre.caasd.commons.DataCleaner;
 import org.mitre.caasd.commons.Distance;
 import org.mitre.openaria.core.Point;
@@ -36,14 +34,14 @@ public class BadAltitudeDataTest {
         //This is the Track cleaner that is used to
         DataCleaner<Track> cleaner = props.singleTrackCleaner();
 
-        for (TrackPair pair : getTrackPairsContainingAFlawedAltitudePoint()) {
+        for (TrackPair<?> pair : getTrackPairsContainingAFlawedAltitudePoint()) {
             confirmAtLeastOneTrackContainsJumpyAltitudeData(pair);
             confirmTrackContainSmoothAltitudeData(cleaner.clean(pair.track1()).get());
             confirmTrackContainSmoothAltitudeData(cleaner.clean(pair.track2()).get());
         }
     }
 
-    private void confirmAtLeastOneTrackContainsJumpyAltitudeData(TrackPair testCase) {
+    private void confirmAtLeastOneTrackContainsJumpyAltitudeData(TrackPair<?> testCase) {
 
         Distance QUALIFYING_ALTITUDE_JUMP = Distance.ofFeet(400);
 
@@ -54,18 +52,18 @@ public class BadAltitudeDataTest {
         );
     }
 
-    private void confirmTrackContainSmoothAltitudeData(Track track) {
+    private void confirmTrackContainSmoothAltitudeData(Track<?> track) {
 
         Distance QUALIFYING_JUMP = Distance.ofFeet(400);
 
         assertFalse(containsAltitudeJump(track, QUALIFYING_JUMP));
     }
 
-    private boolean containsAltitudeJump(Track track, Distance qualifingJump) {
+    private boolean containsAltitudeJump(Track<?> track, Distance qualifingJump) {
 
-        Point lastPoint = null;
+        Point<?> lastPoint = null;
 
-        for (Point point : (NavigableSet<Point>) track.points()) {
+        for (Point<?> point : track.points()) {
             if (lastPoint == null) {
                 lastPoint = point;
                 continue;

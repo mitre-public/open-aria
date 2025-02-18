@@ -16,7 +16,7 @@ public class AirborneTestUtils {
      *
      * @param pair A test TrackPair
      */
-    public static void confirmNoAirborneEventsAreDetected(TrackPair pair) {
+    public static void confirmNoAirborneEventsAreDetected(TrackPair<?> pair) {
 
         AirborneAlgorithmDef standardConfig = new AirborneAlgorithmDef();
 
@@ -41,7 +41,7 @@ public class AirborneTestUtils {
             NopEncoder nopEncoder = new NopEncoder();
 
             System.out.println(nopEncoder.asRawNop(pair.track1()));
-            System.out.println("");
+            System.out.println();
             System.out.println(nopEncoder.asRawNop(pair.track2()));
         }
 
