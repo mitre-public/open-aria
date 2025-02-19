@@ -11,11 +11,14 @@ import java.awt.Color;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.mitre.caasd.commons.ConsumingCollections;
+import org.mitre.caasd.commons.CountingConsumer;
 import org.mitre.caasd.commons.LatLong;
 import org.mitre.caasd.commons.maps.MapBoxApi;
 import org.mitre.caasd.commons.maps.MapBuilder;
@@ -30,16 +33,24 @@ import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.formats.Formats;
 import org.mitre.openaria.core.formats.ariacsv.AriaCsvHit;
 import org.mitre.openaria.core.formats.nop.NopHit;
+import org.mitre.openaria.core.utils.Misc;
 import org.mitre.openaria.system.StreamingKpi;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Streams;
 import com.google.common.io.Files;
 import com.google.common.math.Stats;
 
 /**
- * This program ingests a file of vehicle position data, and provides statistics that summarize the
+ * This program ingests a file of position data and provides statistics that summarize the location
  * data.
+ * <p>
+ * This program does not replace "data-science friendly" tools like Jupyter Notebooks and R.
+ * However, it is useful to have easy to access commandline tools that can give insight into common
+ * data questions like: "Is there a data outage?", "Where is this data on a map", and "What is the
+ * altitude distribution of this data".
  */
 public class InspectDataset {
 
@@ -48,9 +59,6 @@ public class InspectDataset {
     // @todo -- add "lat" and "lon" to command line args (to set map center)
 
     // @todo -- remove/ignore CSV headers
-
-    // @todo -- Add altitude profile audit
-
 
     static int MAP_WIDTH_IN_PIXELS = 1280;
     static float TRACK_STROKE_WIDTH = 2.0f;
@@ -79,6 +87,10 @@ public class InspectDataset {
         analyzeTracks(args);
 
         // Step 3
+        // Prints a Histogram of Altitudes in 1k altitude bands (First look for initial
+        analyzeAltitudeData(args);
+
+        // Step 4
         // Create a Map of the Point data
         makeMapOfPoints(args);
     }
@@ -115,7 +127,37 @@ public class InspectDataset {
         printSummary(trackStatCollector);
         printSummary(trackStartDensityAuditor, "== Track start times ==");
         printSummary(trackEndDensityAuditor, "== Track end times ==");
+    }
 
+    private static void analyzeAltitudeData(CommandLineArgs args) {
+
+        Iterator<Point<?>> pointIterator = pointIteratorFor(args);
+
+        CountingConsumer<Point<?>> ptCounter = new CountingConsumer<>(x -> {});
+
+        List<Integer> roundedAltitudes = Streams.stream(pointIterator)
+            .peek(ptCounter)
+            .map(pt -> pt.altitude())
+            .filter(Objects::nonNull)
+            .map(dist -> dist.inFeet() / 1000.0)
+            .map(dist -> Math.round(dist))
+            .map(dist -> (int)(dist * 1000))
+            .toList();
+
+        List<Multiset.Entry<Integer>> histogram = Misc.asMultiset(roundedAltitudes);
+        int totalPoints = ptCounter.numCallsToAccept();;
+        int ptsWithAltitudes = histogram.stream().mapToInt(entry -> entry.getCount()).sum();
+        int ptsWithoutAltitudes = totalPoints - ptsWithAltitudes;
+
+        System.out.println("== Altitude Report ==");
+        System.out.println("There were: " + totalPoints + " points");
+        System.out.println(ptsWithAltitudes + " points contained altitude data");
+        System.out.println(ptsWithoutAltitudes + " points contained no altitude data");
+
+        System.out.println("== Observed Point Altitudes (rounded to 1000ft increments) ==");
+        histogram.stream()
+            .sorted(Comparator.comparing(Multiset.Entry::getElement))  //organize report by altitude, not frequency
+            .forEach(msEntry -> System.out.println(msEntry.getElement() + ": " + msEntry.getCount()));
     }
 
     private static void printSummary(TimeDensityAuditor timeDensityAuditor, String titleMessage) {

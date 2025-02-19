@@ -38,17 +38,16 @@
 ### Step 1: Download a recent `OpenARIA` compiled jar
 
 - Navigate to: [OpenARIA's release page](https://github.com/mitre-public/open-aria/releases)
-- Pick a recent release version (e.g. [0.2.0](https://github.com/mitre-public/open-aria/releases/tag/0.2.0))
-- Download the compiled jar (e.g. `open-aria-0.2.0.jar`)
+- Pick a recent release version (e.g. [0.3.0](https://github.com/mitre-public/open-aria/releases/tag/0.3.0))
+- Download the compiled jar (e.g. `open-aria-0.3.0.jar`)
     - This jar contains all needed software assets (including 3rd-party dependencies!) gathered together in one _"
       uber-jar"_.
 
 ### Step 2: Download a sample dataset
 
-- Download [sampleData.txt.gz](https://github.com/mitre-public/open-aria/blob/main/open-aria-airborne/src/test/resources/sampleData.txt.gz)
+- Download [sampleNopData.txt.gz](https://github.com/mitre-public/open-aria/blob/main/open-aria-airborne/src/main/resources/sampleNopData.txt.gz)
 from the repo's directory of test assets.
 - Use the "Download raw file" button in the upper right hand corner
-
 - This file contains about 10 minutes of aircraft location data.
 
 ### Step 3: Co-locate the data and uber-jar
@@ -59,8 +58,8 @@ from the repo's directory of test assets.
 
 ### Step 4: Run the `InspectDataset` program
 
-- Run: `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop`
-- This command uses `InspectDataset` to describe the data found inside `sampleData.txt.gz`
+- Run: `java -cp open-aria-0.3.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop`
+- This command uses `InspectDataset` to describe the data found inside `sampleNopData.txt.gz`
 - Its output will look like:
     ```
     == Histogram of Points per 60sec ==
@@ -129,14 +128,63 @@ from the repo's directory of test assets.
     2018-03-24T15:06:00Z: 22
     2018-03-24T15:07:00Z: 160
   
+    == Altitude Report ==
+    There were: 20000 points
+    20000 points contained altitude data
+    0 points contained no altitude data
+    == Observed Point Altitudes (rounded to 1000ft increments) ==
+    0: 717
+    1000: 1443
+    2000: 2890
+    3000: 2913
+    4000: 2027
+    5000: 1021
+    6000: 675
+    7000: 844
+    8000: 168
+    9000: 185
+    10000: 278
+    11000: 308
+    12000: 372
+    13000: 103
+    14000: 95
+    15000: 259
+    16000: 270
+    17000: 113
+    18000: 142
+    19000: 134
+    20000: 123
+    21000: 92
+    22000: 200
+    23000: 226
+    24000: 348
+    25000: 72
+    26000: 175
+    27000: 166
+    28000: 183
+    29000: 310
+    30000: 259
+    31000: 87
+    32000: 606
+    33000: 261
+    34000: 180
+    35000: 254
+    36000: 493
+    37000: 250
+    38000: 347
+    40000: 1
+    41000: 16
+    43000: 178
+    80000: 60
+    90000: 156
     == Making Map of Input Data ==
-    Map Created, see: map-of-sampleData.txt.png
+    Map Created, see: map-of-sampleNopData.txt.png
     ```
 
 ### Run `InspectDataset` and generate a plain Map
 
 - Add `--map` to the command, and you'll also get a plain map with a black background
-- e.g. Run: `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map`
+- e.g. Run: `java -cp open-aria-0.3.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map`
 - The map looks like:
   ![map](./../assets/plain-map-of-sampleData.txt.png)
 
@@ -144,7 +192,7 @@ from the repo's directory of test assets.
 
 - Add `--map --mapBoxTiles` to the command, and you'll also get a map drawn on top of MapBox tiles
 - e.g. Run:
-  `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map --mapBoxTiles`
+  `java -cp open-aria-0.3.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map --mapBoxTiles`
 - Using the `--mapBoxTiles` flag requires an API token for the MapBox service.
 - See: the "Map making" documentation in the MITRE Commons
   library [here](https://github.com/mitre-public/commons/blob/main/docs/mapping.md)
@@ -157,6 +205,6 @@ from the repo's directory of test assets.
   0 and 255 (except alpha, it's minimum value is 1)
 - Add `--zoomLevel {VALUE}` where VALUE is between 1 and 15
 - e.g. Run:
-  `java -cp open-aria-0.2.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map --green 255 --alpha 35`
+  `java -cp open-aria-0.3.0.jar org.mitre.openaria.InspectDataset -f sampleNopData.txt.gz --nop --map --green 255 --alpha 35`
 - The map looks like:
   ![map](./../assets/green-map-of-sampleData.txt.png)
