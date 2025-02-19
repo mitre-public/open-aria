@@ -41,12 +41,12 @@ subprojects {
         implementation("com.google.code.gson:gson:2.8.9")
 
         implementation("org.apache.commons:commons-math3:3.6.1")
-        implementation("org.apache.avro:avro:1.11.0")
+        implementation("org.apache.avro:avro:1.11.4")
 
-        implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.4")
-        implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
-        implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-        implementation("org.yaml:snakeyaml:1.26")
+        implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
+        implementation("com.fasterxml.jackson.core:jackson-core:2.18.2")
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+        implementation("org.yaml:snakeyaml:2.4")
 
         testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
         testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
