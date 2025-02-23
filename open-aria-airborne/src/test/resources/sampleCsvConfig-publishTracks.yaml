@@ -1,0 +1,35 @@
+---
+airborneConfig:
+  algorithmDef:
+    dataFormat: "csv"
+    hostId: "airborne-compute-1"
+    maxReportableScore: 2.5
+    filterByAirspace: true
+    publishAirborneDynamics: true
+    publishTrackData: true
+    requiredDiverganceDistInNM: 0.5
+    onGroundSpeedInKnots: 80.0
+    requiredTimeOverlapInMs: 7500
+    formationFilters: "0.5,60,false"
+    requiredProximityInNM: 7.5
+    sizeOfTrackSmoothingCache: 500
+    trackSmoothingExpirationSec: 120
+    logDuplicateTracks: false
+    applySmoothing: true
+#   This requirement reduces the number of output events
+    requireDataTag: false
+    logFileDirectory: "logs"
+    airborneDynamicsRadiusNm: 15.0
+    verbose: false
+
+  trackPairingDistanceInNM: 8.33
+  inMemorySortBufferSec: 600
+
+  #Add 1 or more OutputSinks here.
+  #Each OutputSink is built by listing a class that implements `Supplier<OutputSink>` and `YamlConfigured`
+  outputConfig:
+    outputSinkSuppliers:
+        # This OutputSink places Each AirborneEvent into its own .json file
+      - pluginClass: "org.mitre.openaria.airborne.config.AirborneFileSinkSupplier"
+        configOptions:
+          eventDirectory: "csvEvents"
