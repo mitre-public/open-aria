@@ -8,10 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mitre.openaria.core.utils.JsonUtils.reformatJson;
 import static org.mitre.openaria.core.utils.JsonUtils.removeTopLevelField;
 
-import org.junit.jupiter.api.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.junit.jupiter.api.Test;
 
 class JsonUtilsTest {
 
@@ -39,10 +38,11 @@ class JsonUtilsTest {
 
         String unformatedExpectation = "{\"stringField\":\"hello\",\"intField\":5}";
         String formattedExpectation =
-            "{\n"
-                + "  \"stringField\": \"hello\",\n"
-                + "  \"intField\": 5\n"
-                + "}";
+            """
+                {
+                  "stringField": "hello",
+                  "intField": 5
+                }""";
 
         assertThat(unformatted, is(unformatedExpectation));
         assertThat(formatted, is(formattedExpectation));

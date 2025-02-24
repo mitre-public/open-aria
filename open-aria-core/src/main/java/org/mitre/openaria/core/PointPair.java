@@ -23,26 +23,15 @@ import org.mitre.caasd.commons.math.Vector;
  * PointPair wraps two Points to provide a cleaner API for common tasks like computing separation
  * values.
  */
-public class PointPair {
+public record PointPair(Point point1, Point point2) {
 
-    private final Point point1;
-    private final Point point2;
-
-    public PointPair(Point point1, Point point2) {
-        this.point1 = checkNotNull(point1);
-        this.point2 = checkNotNull(point2);
+    public PointPair {
+        checkNotNull(point1);
+        checkNotNull(point2);
     }
 
     public static PointPair of(Point point1, Point point2) {
         return new PointPair(point1, point2);
-    }
-
-    public Point point1() {
-        return point1;
-    }
-
-    public Point point2() {
-        return point2;
     }
 
     public Distance altitudeDelta() {

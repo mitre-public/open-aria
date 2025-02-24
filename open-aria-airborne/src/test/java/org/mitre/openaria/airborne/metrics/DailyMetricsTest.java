@@ -81,12 +81,13 @@ public class DailyMetricsTest {
 
     /** Build sample JSON */
     private static String testExampleAsJson() {
-        return "{\n"
-            + "  \"date\": \"1970-01-02\",\n"
-            + "  \"eventCount\": 1,\n"
-            + "  \"avgEventScore\": 22.0,\n"
-            + "  \"histogram\": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n"
-            + "}";
+        return """
+            {
+              "date": "1970-01-02",
+              "eventCount": 1,
+              "avgEventScore": 22.0,
+              "histogram": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }""";
     }
 
     @Test
@@ -101,11 +102,12 @@ public class DailyMetricsTest {
     public void fromJsonRejectIncompleteJsonRecords() {
 
         //reuse the exampleAsJson() String but drop out a required field (the eventCount field was removed)
-        String incorrectJsonObject = "{\n"
-            + "  \"date\": \"1970-01-02\",\n"
-            + "  \"avgEventScore\": 22.0,\n"
-            + "  \"histogram\": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n"
-            + "}";
+        String incorrectJsonObject = """
+            {
+              "date": "1970-01-02",
+              "avgEventScore": 22.0,
+              "histogram": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }""";
 
         assertThrows(
             Exception.class,
