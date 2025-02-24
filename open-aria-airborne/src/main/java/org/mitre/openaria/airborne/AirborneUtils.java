@@ -33,9 +33,9 @@ public class AirborneUtils {
      * @return True if the track has two or more points in the query TimeWindow AND all those points
      *     have altitudes within a 100ft range.
      */
-    public static boolean isEstablishedAtAltitude(Track track, Instant queryTime, Duration duration) {
+    public static <T> boolean isEstablishedAtAltitude(Track<T> track, Instant queryTime, Duration duration) {
         TimeWindow window = TimeWindow.of(queryTime.minus(duration), queryTime);
-        NavigableSet<Point> recentPoints = (NavigableSet<Point>) track.subset(window);
+        NavigableSet<Point<T>> recentPoints = track.subset(window);
 
         if (recentPoints.isEmpty()) {
             return false;
