@@ -51,7 +51,7 @@ public class HighFrequencyPointRemover<T> implements DataCleaner<Track<T>> {
      * Identify all the Points in a Track that are too close together in time according to the
      * Duration parameter supplied during construction.
      *
-     * @param track
+     * @param track The input track
      *
      * @return All the Points in this Track that are too close together in time.
      */

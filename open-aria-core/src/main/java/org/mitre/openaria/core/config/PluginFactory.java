@@ -96,7 +96,7 @@ public class PluginFactory {
      * calling "YamlConfigured's configure method ONLY IF "pluginClass" implements YamlConfigured.
      *
      * @param expectedInterface An unknown interface "pluginClass" must implement.
-     * @param <C>
+     * @param <C> The class we want to generate.
      *
      * @return An instance of "pluginClass" casted to an "expectedInterface"
      */

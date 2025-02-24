@@ -43,7 +43,7 @@ public class TrackFilter<T> implements DataCleaner<Track<T>> {
      *
      * @param track A Track of mutable points
      *
-     * @return
+     * @return An empty Optional when the filtering process cannot produce an output track, OR the filtered track
      */
     @Override
     public Optional<Track<T>> clean(Track<T> track) {

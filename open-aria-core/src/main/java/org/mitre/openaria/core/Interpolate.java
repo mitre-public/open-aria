@@ -31,7 +31,7 @@ public class Interpolate {
      * @param p2         The later of the two input points
      * @param targetTime The time of the interpolated point.
      *
-     * @return
+     * @return A linearly interpolated Point
      */
     public static <T> Point<T> interpolate(Point<T> p1, Point<T> p2, Instant targetTime) {
         checkNotNull(p1, "Cannot perform interpolation when the first input points is null");
