@@ -17,7 +17,7 @@ import org.mitre.openaria.core.temp.Extras.HasAircraftDetails;
 
 
 public record Point<T>(Position position, Velocity velocity, String trackId,
-                       T rawData) implements HasPosition, HasTime, Comparable<Point> {
+                       T rawData) implements HasPosition, HasTime, Comparable<Point<T>> {
 
     @Override
     public Instant time() {

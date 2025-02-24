@@ -77,12 +77,8 @@ public class NopEncoderTest {
         Point<NopHit> firstPoint = NopHit.from(syntheticMessage1);
         Point<NopHit> secondPoint = NopHit.from(syntheticMessage2);
 
-        assertEquals(
-            firstPoint.trackId(), secondPoint.trackId()
-        );
-        assertEquals(
-            firstPoint.trackId(), "415"
-        );
+        assertThat(firstPoint.trackId(), is(secondPoint.trackId()));
+        assertThat(firstPoint.trackId(), is("415"));
     }
 
     @Test
@@ -143,7 +139,7 @@ public class NopEncoderTest {
         return NopHit.from(secondMessage);
     }
 
-    private void verifyPointFieldsAreEqual(Point point1, Point point2) {
+    private void verifyPointFieldsAreEqual(Point<NopHit> point1, Point<NopHit> point2) {
         assertThat(point1.trackId(), is(point2.trackId()));
         assertThat(point1.latLong(), is(point2.latLong()));
         assertThat(point1.altitude(), is(point2.altitude()));

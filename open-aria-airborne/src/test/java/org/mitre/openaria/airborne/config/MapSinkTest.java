@@ -15,13 +15,14 @@ import java.util.stream.Stream;
 import org.mitre.openaria.airborne.AirborneAria;
 import org.mitre.openaria.airborne.AirborneEvent;
 import org.mitre.openaria.core.TrackPair;
+import org.mitre.openaria.core.formats.nop.NopHit;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class MapSinkTest {
 
-    TrackPair scaryTrackPair() {
+    TrackPair<NopHit> scaryTrackPair() {
         File file = new File("src/test/resources/scaryTrackData.txt");
         return makeTrackPairFromNopData(file);
     }
