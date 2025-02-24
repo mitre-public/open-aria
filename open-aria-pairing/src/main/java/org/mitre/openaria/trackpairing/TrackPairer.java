@@ -184,7 +184,7 @@ public class TrackPairer implements Consumer<Point> {
         /*
          * Determine if any "OpenTrackPairs with no tracks" need to be promoted to "an OpenTrackPair
          * with one track". This promotion process "leaves room" for another OpenTrackPair that will
-         * reuse the same "join key". This is necessary because sometime a long-lived track will
+         * reuse the same "join key". This is necessary because sometimes a long-lived track will
          * need to be pair to multiples tracks that have the same trackId. If we don't promote the
          * "OpenTrackPairs with one track" to a separate list then the duplicates joinkeys will
          * cause a missed pair because one of the tracks will get overwritten.
@@ -270,7 +270,7 @@ public class TrackPairer implements Consumer<Point> {
     }
 
     /**
-     * An OpenTrackPair is a place holder for a Pair<Track, Track> that we want are building on the
+     * An OpenTrackPair is a placeholder for a Pair<Track, Track> that we want are building on the
      * fly.
      * <p>
      * An OpenTrackPair is necessary because we don't yet have the Tracks that will go in this pair.
@@ -309,7 +309,7 @@ public class TrackPairer implements Consumer<Point> {
             /*
              * DO NOT allow "track1" or "track2" to be set twice. This can lead to lost events if
              * one of the Tracks in the pair is a long-lived track and the other track in the pair
-             * is a short lived track. In this case the TrackID of the short-lived track(s) can be
+             * is a short-lived track. In this case the TrackID of the short-lived track(s) can be
              * used multiple times while the long-lived track is still opened.
              *
              * Opting to ALWAYS use the 1st track that has the correct TrackJoinKey can (in very

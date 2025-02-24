@@ -62,7 +62,7 @@ public class OutputConfig {
     }
 
     /**
-     * This Builder is designed to be instantiated via a YAML file.  If necessary the typically
+     * This Builder is designed to be instantiated via a YAML file.  If necessary the typical
      * builder pattern methods can be used (mostly supplied for unit testing)
      */
     public static class Builder {

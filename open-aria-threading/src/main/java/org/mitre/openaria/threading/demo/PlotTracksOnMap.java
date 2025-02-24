@@ -53,7 +53,7 @@ public class PlotTracksOnMap {
 
     private static void runDemo(File dataFile) {
 
-        //hopefully collecting all data into memory doesn't blow-out memory!
+        //hopefully collecting all data into memory doesn't blowout memory!
         ConsumingArrayList<Track<NopHit>> tracks = makeTracksFromNopData(dataFile);
 
         plotMap(tracks, Files.getNameWithoutExtension(dataFile.getName()));

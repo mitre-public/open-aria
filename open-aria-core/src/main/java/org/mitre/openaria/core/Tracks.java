@@ -178,16 +178,16 @@ public class Tracks {
     /**
      * Approximate the total amount of time two Tracks spend within a fixed distance of each other.
      * The result of this method is computed using numeric integration. Providing a smaller time
-     * step is will increase the accuracy of the result but it will also increase the time required
+     * step is will increase the accuracy of the result, but it will also increase the time required
      * to compute the result.
      *
      * @param t1       The 1st track
      * @param t2       The 2nd track
      * @param timeStep How often the tracks are tested to see if they are "close" together. Use a
      *                 smaller value to increase accuracy.
-     * @param distInNm The maximum distance that meets the definition of "in close proximity"
+     * @param distInNm The maximum distance that meets the definition of "in close-proximity"
      *
-     * @return An approximation of the amount of time these two tracks spent in close proximity to
+     * @return An approximation of the amount of time these two tracks spent in close-proximity to
      *     one another.
      */
     public static <T> Duration computeTimeInCloseProximity(Track<T> t1, Track<T> t2, Duration timeStep, double distInNm) {

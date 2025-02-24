@@ -18,7 +18,7 @@ import com.google.common.collect.Range;
 /**
  * An IfrVfrAssigner determines the IFR/VFR status of Track at a given point in Time.
  * <p>
- * This determination is made by examining the meta data available in a Tracks component Points.
+ * This determination is made by examining the metadata available in a Tracks component Points.
  */
 public class IfrVfrAssigner {
 
@@ -54,7 +54,7 @@ public class IfrVfrAssigner {
 
     /**
      * Create an IfrVfrAssigner with a VFR-Range of 1200-1277 (inclusive) that examines the 7
-     * nearest points with making a IFR/VFR determination of a particular point in time.
+     * nearest points with making an IFR/VFR determination of a particular point in time.
      */
     public IfrVfrAssigner() {
         this(DEFAULT_VFR_BEACON_RANGE, DEFAULT_NUM_POINTS);
@@ -79,8 +79,8 @@ public class IfrVfrAssigner {
 
     /**
      * Determine the IFR/VFR status of a Point. This method does not merely return the Flight Rules
-     * field because this piece of meta data is not reliable. Instead, this method examines several
-     * pieces of (more reliable) meta data (callsign and beacon code) to make the determination.
+     * field because this piece of metadata is not reliable. Instead, this method examines several
+     * pieces of (more reliable) metadata (callsign and beacon code) to make the determination.
      *
      * @param point
      *

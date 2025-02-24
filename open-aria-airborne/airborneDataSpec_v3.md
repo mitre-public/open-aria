@@ -101,7 +101,7 @@ conflictAngle                 Derived from `courseDelta`.  Will be `SAME`, `CROS
 courseDelta                   The number of degrees between the heading of the two aircraft
 
 closestTower                  The field only appears when `isNearTower` is true.  It provides the 
-                              tower's three digit code and its type.  Possible types are: `TRACON`,
+                              tower's three-digit code and its type.  Possible types are: `TRACON`,
                               `CTT`, `TOWER`, and `CENTER`
 
 eventDate                     A UTC date for the event in the format "YYYY-MM-DD"
@@ -138,7 +138,7 @@ timeToCpaInMilliSec           The estimated number of milliseconds until the two
                               arrive at their closest point of approach (CPA). This is computed by
                               assuming both aircraft's current speed and direction will not change
 
-title                         A human readable title for an event that includes Facility, 
+title                         A human-readable title for an event that includes Facility, 
                               callsign 1, and callsign 2.  If a callsign is not available
                               the aircraft's beacon code will be used in its place.  Example
                               "SCT--DAL335--N502SX"

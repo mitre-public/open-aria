@@ -70,11 +70,11 @@ public class Distances {
      * projection. The underlying assumption is that altitude should not change much if the newTime
      * is close to the input Point's time. (And this should be the case).
      *
-     * @param point   The reference Point. This point is not altered in anyway
+     * @param point   The reference Point. This point is not altered in any way
      * @param newTime The time of the synthetic "projected" point
      *
      * @return A copy of the input Point that is moved forward or backward (along the direction of
-     *     travel) depending if the newTime is earlier or later than the time of the reference
+     *     travel) depending on if the newTime is earlier or later than the time of the reference
      *     Point.
      */
     static Point projectPointAtNewTime(Point point, Instant newTime) {

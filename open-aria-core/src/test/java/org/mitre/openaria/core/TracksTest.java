@@ -126,7 +126,7 @@ public class TracksTest {
         Optional<Point<NopHit>> p = t1.interpolatedPoint(time);
 
         /*
-         * The interpolated point occurs between these two radar hits..
+         * The interpolated point occurs between these two radar hits:
          *
          * [RH],STARS,GEG,07/08/2017,14:11:03.954,,,,1200,36,130,258,47.59298,-117.61476,655,0,-2.5976,-1.6055,,,,GEG,,,,,,,IFR,,,,,,,,,,,,{RH}
          * [RH],STARS,GEG,07/08/2017,14:11:08.584,,,,1200,36,131,264,47.59259,-117.6188,655,0,-2.7617,-1.6289,,,,GEG,,,,,,,IFR,,,,,,,,,,,,{RH}

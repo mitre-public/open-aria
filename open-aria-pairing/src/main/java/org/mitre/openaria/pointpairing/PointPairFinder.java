@@ -11,12 +11,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.Pair;
 import org.mitre.caasd.commons.Time;
 import org.mitre.caasd.commons.collect.DistanceMetric;
 import org.mitre.caasd.commons.collect.MetricTree;
 import org.mitre.caasd.commons.collect.SearchResult;
+import org.mitre.openaria.core.Point;
 
 /**
  * A PointPairFinder receives Point data from a time-sorted stream of Points. As the Point data
@@ -27,7 +27,7 @@ import org.mitre.caasd.commons.collect.SearchResult;
  * "close together".
  * <p>
  * Anytime a "close Pair of Points" is found it is passed to the consumer provided at construction.
- * This consumer can be configure to suit the user. Possible uses include: (A) consumers that
+ * This consumer can be configured to suit the user. Possible uses include: (A) consumers that
  * perform additional filtering, (B) consumers that perform logging, (C) consumers that publish
  * pairs to a database or other external system, and (D) consumers that are actually a chain of
  * multiple consumers like A->B->C.

@@ -341,7 +341,7 @@ public class InspectDataset {
             checkArgument(0 <= blue && blue <= 255 || blue == MIN_VALUE, "Blue must be between 0 and 255");
             checkArgument(0 <= alpha && alpha <= 255 || alpha == MIN_VALUE, "Alpha must be between 0 and 255");
 
-            //if no "map color info is given use sensible default "Red with middling alpha value"
+            //if no map color info is given use sensible default "Red with middling alpha value"
             if (green == MIN_VALUE && red == MIN_VALUE && blue == MIN_VALUE && alpha == MIN_VALUE) {
                 red = 255;
                 green = 0;

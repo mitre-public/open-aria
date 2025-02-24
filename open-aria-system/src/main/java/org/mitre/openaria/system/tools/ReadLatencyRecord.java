@@ -4,11 +4,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.Collection;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.mitre.caasd.commons.out.JsonWritable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 /**
  * A ReadLatencyRecord keeps track of how much time passed between (1) a message being written to
@@ -101,7 +101,7 @@ public class ReadLatencyRecord implements JsonWritable {
 
         //IDEALLY, WE WOULD KEEP TRACK OF SOME SORT OF LATENCY HERE
         //DELTA BETWEEN KAFKA WRITE TIME AND KAFKA PROCESS TIME
-        //DELTA BETWEEN POINT TIME AND KAFKA WRITE TIME..
+        //DELTA BETWEEN POINT TIME AND KAFKA WRITE TIME...
     }
 
     public ReadLatencyRecord(ReadLatencyRecord prior, ConsumerRecord<?, ?> newRecord, long latencyInSec) {

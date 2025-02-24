@@ -187,7 +187,7 @@ public class AirborneAlgorithmDef {
     }
 
     /**
-     * When this is true the stream of Airborne Events WILL NOT contain events that occur outside of
+     * When this is true the stream of Airborne Events WILL NOT contain events that occur outside
      * a NOP Facility's airspace.
      *
      * @return The value defined at construction.
@@ -197,7 +197,7 @@ public class AirborneAlgorithmDef {
     }
 
     /**
-     * This property, which is true by default, should be set to false if the data being ingest by
+     * This property, which is true by default, should be set to false if the data being ingested by
      * ARIA is already smoothed.
      */
     public boolean applySmoothing() {
@@ -209,7 +209,7 @@ public class AirborneAlgorithmDef {
     }
 
     /**
-     * This property governs how the Airborne algorithm is configure before it is embedded in the
+     * This property governs how the Airborne algorithm is configured before it is embedded in the
      * TrackPairProcessor provided via the "trackPairProcessor()" method.
      *
      * @return The value of the "verbose" property key.
@@ -317,7 +317,7 @@ public class AirborneAlgorithmDef {
     }
 
     /**
-     * This property specifies the name of the the directory into which logs are written
+     * This property specifies the name of the directory into which logs are written
      *
      * @return The value of the "logFileDirectory" property key.
      */
@@ -335,7 +335,7 @@ public class AirborneAlgorithmDef {
      * <p>
      * In this case (where the configuration is very simple) we could probably skip using a dedicate
      * Builder object. But if the Object we want to build is complicated using YAML to instantiate a
-     * Builder is useful. This means the Builder can build the complicated thing and we don't have
+     * Builder is useful. This means the Builder can build the complicated thing, and we don't have
      * to alter the "complicated target object" to make it YAML-friendly.
      */
     public static class Builder {

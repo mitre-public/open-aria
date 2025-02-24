@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
  * <p>
  * "[Bytes]7884639{Bytes}" <br> "[HB],7/12/2016 19:16:32,EOS:10,{HB}"
  */
+@SuppressWarnings("GrazieInspection")
 public class AgwRadarHit extends NopRadarHit {
 
     public AgwRadarHit(String rawTextInput) {

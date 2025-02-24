@@ -4,15 +4,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.Collection;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.out.JsonWritable;
+import org.mitre.openaria.core.Point;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 /**
- * A WriteLatencyRecord keeps track of how much time passed between (1) an Radar Hit occurring and
+ * A WriteLatencyRecord keeps track of how much time passed between (1) a Radar Hit occurring and
  * (2) its corresponding message being written to Kafka.
  */
 public class WriteLatencyRecord implements JsonWritable {
@@ -106,7 +106,7 @@ public class WriteLatencyRecord implements JsonWritable {
 
         //IDEALLY, WE WOULD KEEP TRACK OF SOME SORT OF LATENCY HERE
         //DELTA BETWEEN KAFKA WRITE TIME AND KAFKA PROCESS TIME
-        //DELTA BETWEEN POINT TIME AND KAFKA WRITE TIME..
+        //DELTA BETWEEN POINT TIME AND KAFKA WRITE TIME
     }
 
     public WriteLatencyRecord(WriteLatencyRecord prior, ConsumerRecord<?, ?> newRecord, Point point) {

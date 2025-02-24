@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public class MissingBeaconCodeTest {
 
     /**
-     * The track data used in this test caused an low-probability Exception during an "at-scale
+     * The track data used in this test caused a low-probability Exception during an "at-scale
      * test". This test ensures that we can make EventRecords when the source data does not have
      * beacon code information.
      */

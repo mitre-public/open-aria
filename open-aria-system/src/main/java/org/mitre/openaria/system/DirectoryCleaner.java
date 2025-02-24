@@ -18,7 +18,7 @@ import org.mitre.caasd.commons.fileutil.FileUtils;
 /**
  * A DirectoryCleaner is a Runnable designed to be run at a regular interval. When repeatedly run a
  * DirectoryCleaner will "watch" a specific directory looking for files that have reached a stagnant
- * size. When stagnant files are found they are passed to an file consumer (which can launch
+ * size. When stagnant files are found they are passed to a file consumer (which can launch
  * external processing/logging logic) and then deleted.
  */
 public class DirectoryCleaner implements Runnable {

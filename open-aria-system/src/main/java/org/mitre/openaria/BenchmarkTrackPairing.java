@@ -16,7 +16,7 @@ import org.mitre.openaria.trackpairing.TrackPairer;
  * The purpose of this program is to Benchmark the TrackPairing code.
  * <p>
  * Measuring this step is particularly important now that the Track Pairing distance has been
- * increased to 10 NM (up from from 1 NM).
+ * increased to 10 NM (up from 1 NM).
  */
 public class BenchmarkTrackPairing {
 

@@ -28,14 +28,14 @@ import com.google.gson.GsonBuilder;
  * (e.g.
  * How many points were processed, How many Events were found, How many points were dropped, etc.)
  * The recent change in these important data streams is computed, bundled into JsonWritable objects,
- * and then emitted to external targets (e.g. Flat Log Files, Kafka Topics, Databases, etc).
+ * and then emitted to external targets (e.g. Flat Log Files, Kafka Topics, Databases, etc.).
  */
 public class KpiLogger implements Runnable {
 
     //The sources of log data, all KPIs must be defined at construction time.
     private final Map<Facility, StreamingKpi<AirbornePairConsumer>> dataSources;
 
-    //Where Log information gets written to..(after getting converted to JSON Strings)
+    //Where Log information gets written to...(after getting converted to JSON Strings)
     private final Consumer<String> logDestination;
 
     //Values retained from the last time this logger was executed

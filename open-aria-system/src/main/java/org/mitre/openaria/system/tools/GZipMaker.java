@@ -61,10 +61,10 @@ public class GZipMaker implements Consumer<File> {
          * obtained by calling Files.toByteArray(file)), gets written very quickly. BUT that large
          * byte[] will also stay in memory for a some time. I strongly suspect this is because the
          * GZIPOutputStream's inner Deflater object assumes each byte[] it receives is a relatively
-         * small byte buffer, not an entire file. Consequently the Deflater leaves a copy of the
+         * small byte buffer, not an entire file. Consequently, the Deflater leaves a copy of the
          * last byte[] it ingested in *NATIVE* memory.
          *
-         * TAKEAWAY: writing large byte[] to the gzOut is very fast but it also places that byte[]
+         * TAKEAWAY: writing large byte[] to the gzOut is very fast, but it also places that byte[]
          * in memory (probably until the gzOut adds another byte[]).
          *
          * DECISION: I have decided to add complete files to the gzOut because:

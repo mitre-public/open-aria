@@ -59,7 +59,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
     /**
      * This KafkaConsumer is configured to retrieve data for multiple Facilities at once. Retrieving
      * Point data in "larger requests" (that polls data for multiple facilities) is more efficient
-     * than making many "smaller requests". (Within reason! Kafka will timeout when data requests
+     * than making many "smaller requests". (Within reason! Kafka will time out when data requests
      * get too big to deliver quickly)
      */
     private final KafkaConsumer<String, KAFKA_VAL> kafkaConsumer;
@@ -87,7 +87,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
      * @param converter        Converts Kafka ConsumerRecords to Points that are route to SwimLanes
      * @param ingestSummarizer Collects data latency measurements that can be periodically written
      *                         to log files
-     * @param exceptionHandler The shared exception handling behavior used whenever a Exception
+     * @param exceptionHandler The shared exception handling behavior used whenever an Exception
      *                         arises within one of the repeatable tasks.
      */
     public KafkaIngestor(
@@ -200,7 +200,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
     }
 
     /*
-     * Put a task that pulls data from Kafka in the executor. This task reruns with a N-second gap
+     * Put a task that pulls data from Kafka in the executor. This task reruns with an N-second gap
      * between each execution.
      */
     private void scheduleDataPullingTask() {
@@ -208,7 +208,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
         /*
          * IMPORTANT: DO NOT use executor.scheduleAtFixedRate(task, initDelay, Period, TimeUnit)
          *
-         * Fixed rate scheduling allows sequential executions of a long running task to begin
+         * Fixed rate scheduling allows sequential executions of a long-running task to begin
          * overlapping. Overlapping executions (A) waste resources and (B) introduces the very real
          * possibility of bugs caused by uninteded parallelism.
          */
@@ -298,15 +298,15 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
 
             /*
              * IMPORTANT: DO NOT use executor.scheduleAtFixedRate(task, initialDelay, Period,
-             * TimeUnit). Fixed rate scheduling allows sequential executions of a long running task
+             * TimeUnit). Fixed rate scheduling allows sequential executions of a long-running task
              * to begin overlapping. Overlapping executions (A) cause a cascade of wasted resources
              * and (B) introduces the very real possibility of bugs caused by uninteded parallelism.
              *
              *
-             * ALSO IMPORTANT: The small (100ms) delay between subsequent executions of the same
+             * IMPORTANT: The small (100ms) delay between subsequent executions of the same
              * task is intended to ensure worker threads will be FULLY saturated with data (assuming
              * data is available to be pulled and processed). If you want to prevent ARIA from fully
-             * saturating every CPUs on the host machine set the number of worker threads to be less
+             * saturating every CPU on the host machine set the number of worker threads to be less
              * than the number of host CPUs.
              */
             serviceAssets.mainExecutor().scheduleWithFixedDelay(
@@ -512,7 +512,7 @@ public class KafkaIngestor<KAFKA_VAL, PK> {
 
 
     /**
-     * This Options class is part of a multi-step refactor to transition from Properties to YAML.
+     * This Options class is part of a multistep refactor to transition from Properties to YAML.
      * This class can be built by extracting values from a Properties object OR by parsing a YAML
      * file.
      *

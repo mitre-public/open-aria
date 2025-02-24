@@ -66,7 +66,7 @@ public class NopParsingUtils {
 
     /*
      * This method makes it more obvious when a NOP message does not contain any information in its
-     * comma delimited form. We don't want anyone assume an aircraftId of "" is valid.
+     * comma-delimited form. We don't want anyone assume an aircraftId of "" is valid.
      */
     public static String parseString(String token) {
         if (token.equals("")) {

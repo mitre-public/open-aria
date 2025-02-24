@@ -28,7 +28,7 @@ public class Interpolate {
      * the times of the two input points.
      *
      * @param p1         The earlier of the two input point
-     * @param p2         The later of the two input points
+     * @param p2         The latter of the two input points
      * @param targetTime The time of the interpolated point.
      *
      * @return A linearly interpolated Point

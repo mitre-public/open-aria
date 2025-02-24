@@ -206,7 +206,7 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
      */
     private static boolean isLevelOffEvent(Instant eventTime, Duration timeToCpa, TrackPair<?> smoothedSource) {
 
-        //the test we want to run doesn't work because "eventTime.plus(timeToCpa)" is outside the overlap)
+        //the test we want to run doesn't work because "eventTime.plus(timeToCpa)" is outside the overlap
         TimeWindow overlap = smoothedSource.timeOverlap().get();
         Instant approxCpaTime = eventTime.plus(timeToCpa);
         if (!overlap.contains(approxCpaTime)) {
@@ -231,7 +231,7 @@ public final class AirborneEvent implements AriaEvent<AirborneEvent> {
             //the second aircraft has the biggest (in absolute value) climbrate...
             laterClimbRate = laterClimbRates.second();
         }
-        //if the "primary altitude changer STOPPED changing altitude...we have a level off riskiestMoment
+        //if the primary altitude changer STOPPED changing altitude...we have a level off riskiestMoment
         return laterClimbRate.isZero();
     }
 

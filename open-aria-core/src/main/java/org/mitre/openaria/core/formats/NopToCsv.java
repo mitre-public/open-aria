@@ -12,7 +12,7 @@ import org.mitre.openaria.core.Point;
 import org.mitre.openaria.core.formats.nop.NopHit;
 
 /**
- * This is a "temporary class that we'll use to convert NOP data to CsvPoint data.
+ * This is a temporary class that we'll use to convert NOP data to CsvPoint data.
  */
 public class NopToCsv {
 

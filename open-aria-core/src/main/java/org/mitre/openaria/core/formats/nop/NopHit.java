@@ -78,7 +78,7 @@ public class NopHit implements HasSourceDetails, HasAircraftDetails, HasFlightRu
 
     /**
      * This is a wrapped version of the other static factory methods. This factory method catches
-     * any parsing exceptions and returns an empty Optional rather than throwing a Exception.
+     * any parsing exceptions and returns an empty Optional rather than throwing an Exception.
      */
     public static Optional<Point<NopHit>> parseSafely(String rhMessage) {
         try {
@@ -173,7 +173,7 @@ public class NopHit implements HasSourceDetails, HasAircraftDetails, HasFlightRu
     }
 
     public Distance altitude() {
-        //NopRadarHit list altitude in increments of 100.  Thus 300 = 30,000ft
+        //NopRadarHit list altitude in increments of 100 (i.e., 300 = 30,000ft)
         return Distance.ofFeet(rhMessage.altitudeInHundredsOfFeet() * 100.0);
     }
 

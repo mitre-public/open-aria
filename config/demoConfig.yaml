@@ -31,9 +31,9 @@ airborneConfig:
   trackPairingDistanceInNM: 8.33
   inMemorySortBufferSec: 600
 
-  #This sample OutputConfig creates 3 OutputSink<AirborneEvent> that will be used to route ARIA Events..
-  #Each OutputSink is create by 1st Creating a class that implements Supplier<OutputSink>
-  outputConfig:
+#This sample OutputConfig creates 3 OutputSink<AirborneEvent> that will be used to route ARIA Events
+#Each OutputSink is created by 1st creating a class that implements Supplier<OutputSink>
+outputConfig:
     outputSinkSuppliers:
       - pluginClass: org.mitre.openaria.airborne.config.StdOutSinkSupplier
       - pluginClass: org.mitre.openaria.airborne.config.AirborneFileSinkSupplier

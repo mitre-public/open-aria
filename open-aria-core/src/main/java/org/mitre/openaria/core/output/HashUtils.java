@@ -55,7 +55,7 @@ public class HashUtils {
     /**
      * Computes a unique hash for this JSON String (see hashForJson(String)) and then inserts the
      * hash into the JSON object under the field name "uniqueId". The newly inserted field is always
-     * the 1st field in the new JSON string and it should copy the formatting of the JSON.
+     * the 1st field in the new JSON string, and it should copy the formatting of the JSON.
      *
      * @return A copy of the input with a new row like: "uniqueId": "38c39bafe36332da80002d6c45afd98c"
      */
@@ -88,7 +88,7 @@ public class HashUtils {
     private static String addHashToMultiLineJson(String json, String hash) {
         checkArgument(json.indexOf('{') == 0);
 
-        //copy the formatting of the 1st field in the json, maybe it uses tabs, spaces, etc..
+        //copy the formatting of the 1st field in the json, maybe it uses tabs, spaces, etc ...
         String whitespace = json.substring(1, json.indexOf("\""));
 
         StringBuilder sb = new StringBuilder(json);

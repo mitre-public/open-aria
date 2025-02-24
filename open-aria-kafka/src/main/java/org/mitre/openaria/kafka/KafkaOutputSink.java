@@ -19,13 +19,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.function.Supplier;
 
+import org.mitre.caasd.commons.out.JsonWritable;
+import org.mitre.caasd.commons.out.OutputSink;
+
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.KafkaException;
-import org.mitre.caasd.commons.out.JsonWritable;
-import org.mitre.caasd.commons.out.OutputSink;
 
 /**
  * A KafkaOutputSink converts incoming items to String (typically JSON) and sends them to a Kafka
@@ -96,7 +97,7 @@ public class KafkaOutputSink<T extends JsonWritable> implements OutputSink<T> {
      * A KafkaProducer can use this Callback function via the "kafkaProducer.send(ProducerRecord,
      * Callback)" method. This method ensures failures to write to a Kafka log are noticed. Failing
      * writes to Kafka WILL go unnoticed unless either (A) a callback is used or (B) the Future
-     * returned by the send(ProducerRecord) method is queried.
+     * returned by send(ProducerRecord) is queried.
      */
     private static class WarnIfSendFails implements Callback {
 

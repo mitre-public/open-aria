@@ -13,7 +13,7 @@ import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.openaria.core.TrackPair;
 
 /**
- * This DataFilter removes TrackPair when the they do not overlap in time. This can occur when track
+ * This DataFilter removes TrackPair when they do not overlap in time. This can occur when track
  * smoothing removes points in a Track (usually due to removing low-speed or coasted points).
  */
 class TracksMustOverlapInTime extends DataFilter<TrackPair> {

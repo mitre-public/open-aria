@@ -61,7 +61,7 @@ public class NopEncoder {
     /**
      * Note: Consider using a Point's "asNop()" method directly. It is possible the implementing
      * class can provide a better NOP encoding than a NopEncoder can generate. The NopEncoder must
-     * compute the NOP encoding using only data available from the Point interface where as the
+     * compute the NOP encoding using only data available from the Point interface whereas the
      * implementing class may have access to more data and therefore might be able to provide a more
      * complete NOP encoding.
      *
@@ -129,8 +129,8 @@ public class NopEncoder {
             .append(DELIMITER) //token 16-AGW/STARS:X
             .append(DELIMITER) //token 17-AGW/STARS:Y
             .append(DELIMITER) //token 18-AGW/STARS:keyboard
-            .append(DELIMITER) //token 19-AGW/STARS:positionSymbol, CENTER:controllingFacilitySector)
-            .append(DELIMITER) //token 20-AGW/STARS:arrivalDepartureStatus lost here)
+            .append(DELIMITER) //token 19-AGW/STARS:positionSymbol, CENTER:controllingFacilitySector
+            .append(DELIMITER) //token 20-AGW/STARS:arrivalDepartureStatus lost here
             .append(sensor).append(DELIMITER) //token 21???
             .append(DELIMITER) //token 22-AGW/STARS:scratchpad1
             .append(DELIMITER) //token 23-AGW/STARS:entryFix
@@ -146,8 +146,8 @@ public class NopEncoder {
             .append(DELIMITER) //token 33-CENTER:eta
             .append(DELIMITER) //token 34-CENTER:reportInterimAssignAltitude, AGW:sensor
             .append(DELIMITER) //token 35-AGW:scratchpad2
-            .append(DELIMITER) //token 36-NOP heavyLargeOrSmall is lost here)
-            .append(DELIMITER) //token 37-NOP onActiveSensor is lost here)
+            .append(DELIMITER) //token 36-NOP heavyLargeOrSmall is lost here
+            .append(DELIMITER) //token 37-NOP onActiveSensor is lost here
             .append(DELIMITER) //token 38-AGW:additionalFacilityAlphaChar
             .append(DELIMITER) //token 39 is unused
             .append("{RH}");

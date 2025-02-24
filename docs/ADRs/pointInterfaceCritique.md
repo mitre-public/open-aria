@@ -38,7 +38,7 @@ This page describes `org.mitre.openaria.core.Point` and `org.mitre.openaria.core
 
 ### Potential Refactors
 1. Refactor `Point` into a generic composite object (similar to `Map.Entry<K,V>`) where "part A" is the location data and "part B" is the aircaft metadata
-1. Refactor `Track` into a generic interface that exposes the underlying Point's metadata class. This would look similar to how a `TreeMap<K,V>` exposes the Value class of `Map.Entry<K,V>`.
+2. Refactor `Track` into a generic interface that exposes the underlying Point's metadata class. This would look similar to how a `TreeMap<K,V>` exposes the Value class of `Map.Entry<K,V>`.
 
 ### Not a high priority fix
 

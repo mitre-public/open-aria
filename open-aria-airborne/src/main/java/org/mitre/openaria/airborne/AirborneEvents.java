@@ -88,7 +88,7 @@ public class AirborneEvents {
 
     /**
      * Fetch ALL the AirborneEvents from kafka that pass the provided predicate. Be careful, this
-     * call can easily blow-out memory if you request too many events.
+     * call can easily blow out memory if you request too many events.
      *
      * @param kafkaProperties The properties file is used to set of a Kafka Consumer
      * @param includeThese    This predicate is filters which events are returned.

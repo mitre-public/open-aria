@@ -63,7 +63,7 @@ public class PluginFactoryTest {
         assertThat(ic.configOptions().get("keyA"), is("hello"));
         assertThat(ic.configOptions().get("keyB"), is(5));
 
-        //Use the PluginFactory to actually build the Plugin we want..
+        //Use the PluginFactory to actually build the Plugin we want...
         SimplePlugin plugin = (SimplePlugin) ic.createConfiguredInstance(InterfacePluginBuildersMustImplement.class);
 
         assertThat(plugin, instanceOf(SimplePlugin.class));

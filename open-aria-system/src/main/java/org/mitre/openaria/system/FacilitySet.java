@@ -27,8 +27,8 @@ public class FacilitySet implements Iterable<Facility> {
     private final ImmutableSet<Facility> facilities;
 
     /**
-     * Create a FacilitySet from a set of Properties. Each facility can have it's property set to
-     * "ON" or "OFF" (not case sensitive). If a facility does not have a corresponding value that
+     * Create a FacilitySet from a set of Properties. Each facility can have its property set to
+     * "ON" or "OFF" (not case-sensitive). If a facility does not have a corresponding value that
      * facility is set to "OFF" meaning that the facility is not included in the set.
      *
      * @param props A set of properties.
@@ -63,7 +63,7 @@ public class FacilitySet implements Iterable<Facility> {
 
     /**
      * Create a FacilitySet from the Properties found in a particular file. Each facility can have
-     * it's property set to "ON" or "OFF" (not case sensitive). If a facility does not have a
+     * its property set to "ON" or "OFF" (not case-sensitive). If a facility does not have a
      * corresponding value that facility is set to "OFF" meaning that the facility is not included
      * in the set.
      *

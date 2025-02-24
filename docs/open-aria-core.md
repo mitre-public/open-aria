@@ -18,7 +18,7 @@ The purpose of this module is to:
 - `Point` This interface is essentially a radar hit that can come from NOP or ASDEX
 - `CommonPoint` A concrete implementation of Point. This implementation is immutable
 - `EphemeralPoint` A Mutable implementation of Point whose underlying data can be changed
-- `AriaEvent` this interface is extends by AirborneEvent, SurfaceEvent, and CfitEvent
+- `AriaEvent` this interface is extended by AirborneEvent, SurfaceEvent, and CfitEvent
 - `PointPair` = Two Points with the same timestamp. This pre-requisite allows the collision risk between the aircraft to be calculated.
 - `StrictTimeSortEnforcer`, `ApproximateTimeSorter`, and `StreamingTimeSorter` together, these classes allow ARIA algorithms to assume all input data is in time order (which simplifies their implementation)
 - `ClosestPointOfApproach` is a **prediction** of how long it will take for two aircraft to arrive at their closest proximity (given current locations, speeds, and directions).  Learn more about the computation [here](./cpaComputation.md)

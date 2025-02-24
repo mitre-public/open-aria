@@ -9,8 +9,8 @@ This module:
 
 ### Important Classes within this Module
 
-- `PointPairFinder` Efficiently finds points that are in close proximity.
-- `TrackPairer` This class uses `PointPairFinder` to create `TrackPairs`. All Track creation, and Track pairing occurs in **IN A SINGLE PASS THROUGH THE DATA**
+- `PointPairFinder` Efficiently finds points that are close.
+- `TrackPairer` This class uses `PointPairFinder` to create `TrackPairs`. All Track creation, and Track pairing occurs **IN A SINGLE PASS THROUGH THE DATA**
 
 ### Main methods & Launch Points
 

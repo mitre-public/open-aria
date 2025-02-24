@@ -25,7 +25,7 @@ public class AirborneTestUtils {
         //create a consumer that collects all the number RiskMetricEventSummary objects it receives
         ConsumingArrayList<AirborneEvent> foundEvents = newConsumingArrayList();
 
-        //setup a RiskMetricTrackPairConsumer that pipes event summaries to the above aggegator
+        //set up a RiskMetricTrackPairConsumer that pipes event summaries to the above aggegator
         AirbornePairConsumer consumer = new AirbornePairConsumer(
             tpp,
             foundEvents
