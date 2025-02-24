@@ -157,7 +157,7 @@ public class Points {
         public int compare(Comparable o1, Comparable o2) {
 
             if (o1 != null && o2 != null) {
-                //when both are not null return the comparision
+                //when both are not null return the comparison
                 return o1.compareTo(o2);
             } else if (o1 == null && o2 == null) {
                 //when both are null return 0

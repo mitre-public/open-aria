@@ -60,7 +60,7 @@ public class MapSink implements OutputSink<AirborneEvent> {
         prepareTargetDir();
 
         // get track data... make map ...
-        TrackPair tracks = airborneEvent.rawTracks();
+        TrackPair<?> tracks = airborneEvent.rawTracks();
 
         // Create an unfinished MapBuilder ... configure the tile server and tile caching ...
         MapBuilder partialBuilder = useMapBox
