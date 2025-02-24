@@ -26,7 +26,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * <p>Once created, an PluginFactory can manufacture fully-configured instances of the
  * "plugin class".
  *
- * <p>In summary, the pattern supported here is: (1) parse a Application-wide YAML, (2) get an
+ * <p>In summary, the pattern supported here is: (1) parse an Application-wide YAML, (2) get an
  * PluginFactory for a pluggable component of your application, (3) use the PluginFactory to create
  * configured instances of that component, (4) pass that component into the application.
  */
@@ -98,7 +98,7 @@ public class PluginFactory {
      * @param expectedInterface An unknown interface "pluginClass" must implement.
      * @param <C> The class we want to generate.
      *
-     * @return An instance of "pluginClass" casted to an "expectedInterface"
+     * @return An instance of "pluginClass" cast to an "expectedInterface"
      */
     public <C> C createConfiguredInstance(Class<C> expectedInterface) {
         //implementation adapted from: org.apache.kafka.common.config.AbstractConfig.getConfiguredInstance(Object klass, Class<T> t, Map<String, Object> configPairs)

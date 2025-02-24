@@ -103,7 +103,7 @@ public enum NopMessageType {
      *
      * @param line A Line of text which should match the NOP Message formatting rules
      *
-     * @return A instance of a NopMessage class
+     * @return An instance of a NopMessage class
      * @throws NopParsingException when the input line either cannot be matched to a NopMessageType
      *                             OR when after matching to a specific NopMessageType the input
      *                             could not be parsed by the corresponding concrete class

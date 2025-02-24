@@ -20,17 +20,14 @@ location data.
 1. Provide a publicly available solution for **detecting aviation risks** within aircraft location data.
     - This tangible working solution can be critiqued by the community and improved as necessary.
 
-
 2. Provide a publicly available solution for detecting **and then aggregating** aviation risks for bulk
    analysis.
     - Someone operating `OpenARIA` for a day will have one day's worth of output
     - Someone operating `OpenARIA` for a year will have a year's worth of output.
     - We must facilitate capturing and utilizing large amounts of output data.
 
-
 3. Provide a publicly available solution for **archiving and replaying** aircraft location data
     - E.g., when `OpenARIA` detects _an event_, we will want to be able to replay the event to understand what happened.
-
 
 4. Provide solutions that work with near-real time data streams as well as archival data.
 

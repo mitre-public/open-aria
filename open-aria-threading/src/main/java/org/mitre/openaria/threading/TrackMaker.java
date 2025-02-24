@@ -65,7 +65,7 @@ public class TrackMaker<T> implements Consumer<Point<T>> {
      */
     private final Duration maxTimeBetweenTrackPoints;
 
-    /** This time only increases. Thus, the currentTime is also the "time high water mark" */
+    /** This time only increases. Thus, the currentTime is also the "time high-water mark" */
     private Instant currentTime;
 
     /** Makes "join keys" that group individual Points into groups of Points that become Tracks. */
@@ -322,7 +322,7 @@ public class TrackMaker<T> implements Consumer<Point<T>> {
 
     /**
      * Forcibly push all "tracks under construction" to the outputMechanism. This method is
-     * generally used when a data source reaches its ends and we don't want important data (i.e.
+     * generally used when a data source reaches its end, and we don't want important data (i.e.
      * unclosed tracks) stranded in the innards of this TrackMaker.
      *
      * <p>Calling this method in parallel with "accept(Point)" or a 2nd call to "flushAllTracks()"

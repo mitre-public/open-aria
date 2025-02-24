@@ -66,8 +66,7 @@ public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
      * @param testPoint A single point within the track
      * @param track     The source track
      *
-     * @return A LateralAnalysisResult object that describes whether or not the testPoint is an
-     *     outlier.
+     * @return A LateralAnalysisResult object that tells us if the testPoint is an outlier.
      */
     private LateralAnalysisResult analyzePoint(Point<T> testPoint, Track<T> track) {
 

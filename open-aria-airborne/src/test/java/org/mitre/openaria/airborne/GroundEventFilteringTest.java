@@ -4,18 +4,19 @@ package org.mitre.openaria.airborne;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
+import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
+import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 import static org.mitre.openaria.airborne.AirborneAlgorithmDef.defaultBuilder;
 import static org.mitre.openaria.airborne.AirborneAria.airborneAria;
 import static org.mitre.openaria.airborne.AirborneTestUtils.confirmNoAirborneEventsAreDetected;
-import static org.mitre.caasd.commons.ConsumingCollections.newConsumingArrayList;
-import static org.mitre.caasd.commons.fileutil.FileUtils.getResourceFile;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.threading.TrackMaking;
-import org.mitre.caasd.commons.ConsumingCollections.ConsumingArrayList;
+
+import org.junit.jupiter.api.Test;
 
 public class GroundEventFilteringTest {
 
@@ -86,7 +87,7 @@ public class GroundEventFilteringTest {
         //create a consumer that collects all the number RiskMetricEventSummary objects it receives
         ConsumingArrayList<AirborneEvent> foundEvents = newConsumingArrayList();
 
-        //setup a RiskMetricTrackPairConsumer that pipes event summaries to the above aggegator
+        //set up a RiskMetricTrackPairConsumer that pipes event summaries to the above aggegator
         AirbornePairConsumer consumer = new AirbornePairConsumer(
             tpp,
             foundEvents

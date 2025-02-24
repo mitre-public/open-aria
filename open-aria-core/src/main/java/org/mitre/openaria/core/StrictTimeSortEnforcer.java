@@ -30,7 +30,7 @@ import com.google.common.math.StatsAccumulator;
  */
 public class StrictTimeSortEnforcer<T extends HasTime> implements Consumer<T> {
 
-    /** This time only increases, thus, currentTime is actually the "time high water mark" */
+    /** This time only increases, thus, currentTime is actually the "time high-water mark" */
     protected Instant currentTime;
 
     private T lastDroppedPoint;

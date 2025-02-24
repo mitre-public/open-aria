@@ -3,9 +3,9 @@ package org.mitre.openaria.pointpairing;
 
 import java.time.Duration;
 
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.Spherical;
 import org.mitre.caasd.commons.collect.DistanceMetric;
+import org.mitre.openaria.core.Point;
 
 /**
  * This DistanceMetric measures "a" distance between two Points. The distance computed is a function
@@ -70,7 +70,7 @@ public class FlatDistanceMetric implements DistanceMetric<Point> {
      * @param p2 A Point with latitude, longitude, and time
      *
      * @return A distance measurement between these points. The distance measurement is a metric in
-     *     the formal algebraic sense. Consequently, this metric can be use to help organize point
+     *     the formal algebraic sense. Consequently, this metric can be used to help organize point
      *     data. The metric measurement returned is the sum of the difference in the time dimension
      *     (measured in milliseconds) and the difference in the "physical space" dimension (measured
      *     in ft). Note: Altitude is ignored

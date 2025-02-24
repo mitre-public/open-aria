@@ -27,7 +27,7 @@ import com.google.gson.GsonBuilder;
  * data creation in Kafka and the event actually occurring?)
  * <p>
  * The change in these important data streams is computed, bundled into a JsonWritable object, and
- * then emitted to external targets (e.g. Flat Log Files, Kafka Topics, Databases, etc).
+ * then emitted to external targets (e.g. Flat Log Files, Kafka Topics, Databases, etc.).
  *
  * @param <T> the type of key in the mapping to {@link KafkaLatencyCollector}s, e.g.
  *            {@link Facility}
@@ -37,7 +37,7 @@ public class KafkaLatencyLogger<T> implements Runnable {
     //The sources of log data, all KPIs must be defined at construction time.
     private final Map<T, KafkaLatencyCollector> dataSources;
 
-    //Where Log information gets written to..(after getting converted to JSON Strings)
+    //Where Log information gets written to...(after getting converted to JSON Strings)
     private final Consumer<String> logDestination;
 
     //Values retained from the last time this logger was executed

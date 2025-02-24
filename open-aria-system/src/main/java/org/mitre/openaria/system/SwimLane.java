@@ -113,7 +113,7 @@ public class SwimLane {
     public void processQueuedData() {
         // drain the current queue to a separate List so that we process a well-defined
         // bite of data.
-        // We don't want to setup an infinite race between the data provider and the kpi
+        // We don't want to set up an infinite race between the data provider and the kpi
         List<Point> dataToProcess = Lists.newArrayList();
         queue.drainTo(dataToProcess);
 

@@ -11,25 +11,21 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import org.mitre.openaria.system.SwimLane;
 import org.mitre.caasd.commons.out.JsonWritable;
+import org.mitre.openaria.system.SwimLane;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * A SwimLaneLogger collects "heartbeat" information about the amount of data
- * that has entered and left a SwimLane's queue of data.
+ * A SwimLaneLogger collects "heartbeat" information about the amount of data that has entered and
+ * left a SwimLane's queue of data.
  * <p>
- * At each execution of this Runnable the SwimLaneLogger harvests a "snapshot"
- * of current
- * metrics (e.g. How many points were ingested? And How many points were
- * processed?)
+ * At each execution of this Runnable the SwimLaneLogger harvests a "snapshot" of current metrics
+ * (e.g. How many points were ingested? And How many points were processed?)
  * <p>
- * The change in these important data streams is computed, bundled into a
- * JsonWritable object, and
- * then emitted to external targets (e.g. Flat Log Files, Kafka Topics,
- * Databases, etc).
+ * The change in these important data streams is computed, bundled into a JsonWritable object, and
+ * then emitted to external targets (e.g. Flat Log Files, Kafka Topics, Databases, etc.).
  *
  * @param <T> the type of key in the mapping to (e.g. Facility or Airport)
  */
@@ -38,7 +34,7 @@ public class SwimLaneLogger<T> implements Runnable {
     // The sources of log data, all KPIs must be defined at construction time.
     private final Map<T, SwimLane> dataSources;
 
-    // Where Log information gets written to..(after getting converted to JSON
+    // Where Log information gets written to...(after getting converted to JSON
     // Strings)
     private final Consumer<String> logDestination;
 

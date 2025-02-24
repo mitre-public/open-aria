@@ -52,22 +52,22 @@ public class RandomAssignor extends AbstractPartitionAssignor {
         return assignment;
     }
 
-    /** Same as method from RoundRobinAssignor.class */
+    /** Same as method from RoundRobinAssignor */
     public List<TopicPartition> allPartitionsSorted(Map<String, Integer> partitionsPerTopic, Map<String, Subscription> subscriptions) {
-        SortedSet<String> topics = new TreeSet();
-        Iterator subIter = subscriptions.values().iterator();
+        SortedSet<String> topics = new TreeSet<>();
+        Iterator<Subscription> subIter = subscriptions.values().iterator();
 
         while (subIter.hasNext()) {
-            Subscription subscription = (Subscription) subIter.next();
+            Subscription subscription = subIter.next();
             topics.addAll(subscription.topics());
         }
 
-        List<TopicPartition> allPartitions = new ArrayList();
-        Iterator topIter = topics.iterator();
+        List<TopicPartition> allPartitions = new ArrayList<>();
+        var topIter = topics.iterator();
 
         while (topIter.hasNext()) {
-            String topic = (String) topIter.next();
-            Integer numPartitionsForTopic = (Integer) partitionsPerTopic.get(topic);
+            String topic = topIter.next();
+            Integer numPartitionsForTopic = partitionsPerTopic.get(topic);
             if (numPartitionsForTopic != null) {
                 allPartitions.addAll(AbstractPartitionAssignor.partitions(topic, numPartitionsForTopic));
             }

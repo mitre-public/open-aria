@@ -142,7 +142,7 @@ public class NopPointsTest {
     @Test
     public void testAccessToNopRhMessageNop() {
         /*
-         * Test test verifies that each NopPoint can provide access to the correct type of
+         * Test verifies that each NopPoint can provide access to the correct type of
          * NopRadarHit
          */
         NopHit center = new NopHit(CENTER_RH_MESSAGE);
@@ -251,6 +251,6 @@ public class NopPointsTest {
         Optional<Point<NopHit>> optFromBadLat = parseSafely(badLatitude);
         assertThat(optFromBadLat.isPresent(), is(false));
 
-        //NOTICE -- NONE OF THESE THROW EXCEPTION -- THEY PROVIDE EMPTY OPTIONALS..
+        //NOTICE -- NONE OF THESE THROW EXCEPTION -- THEY PROVIDE EMPTY OPTIONALS
     }
 }

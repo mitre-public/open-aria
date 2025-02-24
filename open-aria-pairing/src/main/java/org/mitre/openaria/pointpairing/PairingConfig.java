@@ -10,7 +10,7 @@ import org.mitre.caasd.commons.Spherical;
 /**
  * A PairingConfig requires 3 inputs {pairingDistanceInNm, timeCoef, and distCoef}.
  *
- * <p>These 3 inputs are used to derived the 2 inputs that a PointPairFinder requires: the
+ * <p>These 3 inputs are used to derive the 2 inputs that a PointPairFinder requires: the
  * DistanceMetric itself and the pairing threshold.
  */
 public class PairingConfig {

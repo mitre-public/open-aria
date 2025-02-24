@@ -21,14 +21,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 
 
 /**
@@ -42,7 +41,7 @@ import com.beust.jcommander.Parameter;
  * (using the -p <PARTITION_NUM> command line flags) or (B) download messages from every partition
  * of a Kafka topic (using the --all command line flag)
  *
- * <p>By default PullKafkaDataAsStrings downloads all messages from any partitions it is configured
+ * <p>By default, PullKafkaDataAsStrings downloads all messages from any partitions it is configured
  * to pull. If you use the -n <NUM_MESSAGES> command line flag the program will limit the number of
  * messages that are downloaded from Kafka.
  *

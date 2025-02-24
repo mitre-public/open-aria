@@ -24,7 +24,7 @@ public class TrackPairCleaner implements DataCleaner<TrackPair> {
      *
      * @param trackPair A pair of tracks that will be cleaned.
      *
-     * @return An Optional TrackPair if and only if both Track in the original Pair would cleaned
+     * @return An Optional TrackPair if and only if both Tracks in the original Pair are cleaned
      *     successfully.
      */
     @Override

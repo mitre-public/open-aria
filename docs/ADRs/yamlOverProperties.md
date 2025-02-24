@@ -4,13 +4,20 @@ This page describes the trade-offs between using `java.util.Properties` vs. `yam
 
 **Bottom Line:** YAML is better.
 
-**Protip:** Use YAML to create `Builders` or `Suppliers` that construct the class you need.  Resist the temptation to directly construct the "target class" via YAML parsing.  Like all serialization frameworks, making a class compatible with direct YAML parsing imposes design constraints.  These constraints will be irrelevant sometimes and other times completely block class creation. Consequently, make it standard practice to weave in a Builder or Supplier to take on those design constraints.  This will drastically simplify code when the "target class" is more complex than a "bag of primitives POJO" [see more here](#advice).  
+**Protip:** Use YAML to create `Builders` or `Suppliers` that construct the class you need. Resist the temptation to
+directly construct the "target class" via YAML parsing. Like all serialization frameworks, making a class compatible
+with direct YAML parsing imposes design constraints. These constraints will be irrelevant sometimes and other times
+completely block class creation. Consequently, make it standard practice to weave in a Builder or Supplier to take on
+those design constraints. This will drastically simplify code when the "target class" is more complex than a "bag of
+primitives POJO" [see more here](#advice-for-using-yaml-advice).
 
 ### Properties are better because...
+
 - No dependency needs to be added the classpath
 - Bugs are easy to fix because the "code path" is clear (i.e., no reflection magic)
 
 ### Properties are worse because...
+
 - Bugs are more common.
 - `Properties` do not natively support: integers, double, or lists.
 - `Properties` have no structure. They are just a continuous spam of key-value pairs. 
@@ -38,17 +45,17 @@ This page describes the trade-offs between using `java.util.Properties` vs. `yam
 - YAML is a serialization framework like Avro and GSON. The power of YAML serialization means the cleanest code you can create with YAML is better than the cleanest code you can create with `Properties`.  However, the ugliest code you can create with YAML is worse than the ugliest code you are likely to create with `Properties`.
 
 
-### Advice for using YAML {#advice}
+### Advice for using YAML
 
 1. YAML is great for replacing a list of command-line arguments with a simple text file like `config.yaml`.  The text file can directly correspond to a static helper class defined right beside the main method (i.e., `org.mitre.openaria.RunableProgram$ConfigOptions`).
-1. It is better to create static helper classes (e.g., `ClassIWant.Builder` or `ClassIWant.Supplier`) with YAML than the actual "target class" (e.g. `ClassIWant`).
+2. It is better to create static helper classes (e.g., `ClassIWant.Builder` or `ClassIWant.Supplier`) with YAML than the actual "target class" (e.g. `ClassIWant`).
     - **Why:** Designing a class to be correctly built through YAML parsing imposes constraints on the implementation of the class.  Imposing these constraints on an ephemeral Builder or Supplier (rather than directly on `ClassIWant`) will **drastically** simplify code when creating complex classes. When creating simple classes this is a trivial extra step.
-1. YAML is great for **powerful dependency injection that supports externally written code**.  Use this pattern to inject "Plugin Strategy Objects" from external code-bases.
+3. YAML is great for **powerful dependency injection that supports externally written code**.  Use this pattern to inject "Plugin Strategy Objects" from external code-bases.
     1. Declare an interface in your project you will expect others to implement on their own in some unknown external code-bases (e.g. `FileParser`, `OutputSink`, or `InterfaceMyAppUses`).
-    1. Use YAML to name a class that implements `Supplier<InterfaceMyAppUses>`.  The Supplier layer is important because it makes life easier for our unknown external collaborators. Using a Supplier means our unknown collaborators can focus on correctly implementing  `InterfaceMyAppUses` in one class and push all "YAML compatibility requirements" to the class that implements `Supplier<InterfaceMyAppUses>`.
-    1. Next, Use YAML to create the `Supplier`.  Then call the Supplier's `.get()` method.  This pattern allows the injected Supplier class to call a regular old constructor AND it allows the implementation of `InterfaceMyAppUses` to ignore all "Yaml  compatibility concerns".
+    2. Use YAML to name a class that implements `Supplier<InterfaceMyAppUses>`.  The Supplier layer is important because it makes life easier for our unknown external collaborators. Using a Supplier means our unknown collaborators can focus on correctly implementing  `InterfaceMyAppUses` in one class and push all "YAML compatibility requirements" to the class that implements `Supplier<InterfaceMyAppUses>`.
+    3. Next, Use YAML to create the `Supplier`.  Then call the Supplier's `.get()` method.  This pattern allows the injected Supplier class to call a regular old constructor AND it allows the implementation of `InterfaceMyAppUses` to ignore all "Yaml  compatibility concerns".
     
-1. Learn how to use `PluginFactory` and `YamlConfigured` to create Suppliers that provide "Plugin Strategy Objects" from external code-bases.  For example, ARIA code needs to send its output "somewhere" (see `OutputSink` interface).  The OutputSink used for a particular execution of ARIA is a configurable component.  It is important for ARIA to support "injecting" OutputSinks that are defined outside the ARIA codebase.  See `org.mitre.openaria.airborne.OutputConfig.Builder` for an example of injecting unknown OutputSinks by creating objects that implements `Supplier<OutputSink<AirborneEvent>>`.
+4. Learn how to use `PluginFactory` and `YamlConfigured` to create Suppliers that provide "Plugin Strategy Objects" from external code-bases.  For example, ARIA code needs to send its output "somewhere" (see `OutputSink` interface).  The OutputSink used for a particular execution of ARIA is a configurable component.  It is important for ARIA to support "injecting" OutputSinks that are defined outside the ARIA codebase.  See `org.mitre.openaria.airborne.OutputConfig.Builder` for an example of injecting unknown OutputSinks by creating objects that implements `Supplier<OutputSink<AirborneEvent>>`.
 
 
 ```

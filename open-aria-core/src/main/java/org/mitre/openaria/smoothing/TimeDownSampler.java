@@ -28,8 +28,8 @@ public class TimeDownSampler<T> implements DataCleaner<Track<T>> {
     /**
      * Create a DownSampler that will remove all "trailing" points that occur within a fixed
      * duration of an earlier point in the track. A DownSampler implicitly assumes all data is good,
-     * this filter is not attempting to "pick the best" point but it is trying to "thin" a Track
-     * with a high-update rate.
+     * this filter is not attempting to "pick the best" point. It "thins" a Track with a high-update
+     * rate.
      *
      * @param minPointSeparation The minimum time spacing between to sequential points in a track.
      */

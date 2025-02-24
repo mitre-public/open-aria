@@ -16,7 +16,7 @@ public enum IfrVfrStatus {
     /**
      * Convert a String, which typically comes directly from raw NOP data, to an IfrVfrStatus enum
      * value. This method will convert "OTP" (i.e. VFR-on-top codes) to "IFR". The OTP designation
-     * is rare enough that it isn't being promoted to a full fledged enum value because the OTP
+     * is rare enough that it isn't being promoted to a full-fledged enum value because the OTP
      * designation is technically an IFR designation (despite the name "VFR-on-top"). This guidance
      * was provided directly from a knowledgeable FAA employee.
      *

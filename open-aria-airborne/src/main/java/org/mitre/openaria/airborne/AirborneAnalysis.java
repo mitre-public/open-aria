@@ -13,11 +13,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import org.mitre.caasd.commons.Distance;
+import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.openaria.core.ScoredInstant;
 import org.mitre.openaria.core.SeparationTimeSeries;
 import org.mitre.openaria.core.TrackPair;
-import org.mitre.caasd.commons.Distance;
-import org.mitre.caasd.commons.TimeWindow;
 
 import com.google.common.collect.Streams;
 
@@ -237,7 +237,7 @@ public class AirborneAnalysis {
 
         SeparationTimeSeries separationStats = trackPair.separationInfo();
 
-        //do an separation prediction analysis at each of these moments in time
+        //Compute separation prediction analysis at each of these moments in time
         ArrayList<SeparationPrediction> predictions = Streams.stream(separationStats.times())
             .map(instant -> new SeparationPrediction(trackPair, instant))
             .collect(toCollection(ArrayList::new));

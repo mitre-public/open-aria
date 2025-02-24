@@ -311,7 +311,7 @@ public class TrackPairerTest {
         ArrayList<Point> allPoints = new ArrayList<>(200);
         Instant t0 = Instant.ofEpochSecond(123456);
 
-        // this track has a 46 second gap (which exceeds the default 45 sec threshold)
+        // this track has a 46-second gap (which exceeds the default 45 sec threshold)
 
         for (int i = 0; i < 20; i++) {
 

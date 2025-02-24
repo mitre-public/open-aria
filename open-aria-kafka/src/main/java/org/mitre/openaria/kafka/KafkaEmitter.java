@@ -101,8 +101,8 @@ public class KafkaEmitter<T> implements Consumer<T> {
          * IMPORTANT NOTE: The Future<RecordMetadata> returned by kafkaProducer.send(...) is NOT
          * being used here. This means we need to rely on the call back function to "notice/handle"
          * successful sends and failed send attempts. The default behavior is to throw exceptions
-         * when sends fail so at least the absence of exceptions will inform us that the send was
-         * successful.
+         * when sends fail so at least the absence of exceptions will inform us that the send call
+         * was successful.
          */
     }
 

@@ -28,8 +28,8 @@ public class RunAirborneOnKafkaNop {
     /**
      * Example Usage: java -cp ARIA.jar org.mitre.openaria.RunAirborneOnKafkaNop config.yaml
      *
-     * <p>This is a long-running program does not terminate.  The executable start several long
-     * lived threads (in its executor) that continually pull data from Kafka and process it.
+     * <p>This is a long-running program does not terminate.  The executable start several
+     * long-lived threads (in its executor) that continually pull data from Kafka and process it.
      */
     public static void main(String[] args) throws Exception {
         checkArgument(args.length == 1, "One command line argument is required: The properties file");

@@ -7,13 +7,12 @@ import static org.mitre.caasd.commons.Spherical.feetPerNM;
 
 import java.util.function.Predicate;
 
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.Pair;
+import org.mitre.openaria.core.Point;
 
 /**
- * A CylindricalFilter provides a yes/no answer regarding whether or not two points are both (A)
- * within a certain vertical distance and (B) within a certain horizontal distance. Note, time is
- * ignored in this comparison.
+ * A CylindricalFilter tells us when two points are both (A) within a certain vertical distance and
+ * (B) within a certain horizontal distance. Note, time is ignored in this comparison.
  */
 public class CylindricalFilter implements Predicate<Pair<Point, Point>> {
 

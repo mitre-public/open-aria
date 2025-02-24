@@ -75,7 +75,7 @@ public class PointDistanceMetric implements DistanceMetric<Point> {
      * @param p2 A Point with latitude, longitude, altitude, and time
      *
      * @return A distance measurement between these points. The distance measurement is a metric in
-     *     the formal algebraic sense. Consequently, this metric can be use to help organize point
+     *     the formal algebraic sense. Consequently, this metric can be used to help organize point
      *     data. The metric measurement returned is the sum of the difference in the time dimension
      *     (measured in milliseconds) and the difference in the "physical space" dimension (measured
      *     in ft).

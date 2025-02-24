@@ -64,7 +64,7 @@ public class RunAirborneViaStdIn {
 
     /**
      * @return Create a PointIterator that is based on Strings read in from System.in. This
-     *     capability is should be used when using a unix/linux | operator to pipe data to program
+     *     capability should be used when using a unix/linux | operator to pipe data to program
      *     as input.
      */
     private static PointIterator stdInPointIterator() {

@@ -62,7 +62,7 @@ public class ProfilingDemo {
 
         PointIterator iterator = new PointIterator(new NopParser(sourceFile));
 
-        //This TrackMaker will smooth every Track it emits..
+        //This TrackMaker will smooth every Track it emits...
         Smoother smoother = new Smoother();
         StreamingTimeSorter<Point> sorter2 = new StreamingTimeSorter<>(
             new TrackMaker(smoother),
@@ -93,7 +93,7 @@ public class ProfilingDemo {
             //Do the computation work...
             Optional<Track<NopHit>> smoothedTrack = smoother.clean(track);
 
-            //Remember how much work was done (under estimates count because small tracks are thrown out)
+            //Remember how much work was done (underestimates count because small tracks are thrown out)
             int pointCount = smoothedTrack.map(Track::size).orElse(0);
             stats.add(pointCount);
         }
