@@ -37,7 +37,7 @@ public class AvroOutputSink<T> implements OutputSink<T> {
 
         this.sinkFileName = sinkFileName;
         this.schema = ReflectData.get().getSchema(typeToArchive);
-        this.dataFileWriter = new DataFileWriter<T>(
+        this.dataFileWriter = new DataFileWriter<>(
             new ReflectDatumWriter<>(schema)
         );
         //Hard coding the codec like this is bad.  This should be moved to a config option...

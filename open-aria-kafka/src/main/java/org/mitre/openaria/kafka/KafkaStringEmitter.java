@@ -27,8 +27,6 @@ public class KafkaStringEmitter implements Consumer<String> {
      * implementation that does not set a Partition, a key, or a KafkaHeader information.
      */
     private static ProducerRecordFactory<String, String, String> emitToTopic(final String topic) {
-        return (String messageForKafka) -> {
-            return new ProducerRecord(topic, messageForKafka);
-        };
+        return (String messageForKafka) -> new ProducerRecord(topic, messageForKafka);
     }
 }

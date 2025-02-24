@@ -49,7 +49,7 @@ class AvroOutputSinkTest {
 
         assertThat("We just made an avro file with 1 record!", targetAvroFile.exists(), is(true));
 
-        DataFileReader<AvroFriendlyPojo> reader = new DataFileReader<AvroFriendlyPojo>(
+        DataFileReader<AvroFriendlyPojo> reader = new DataFileReader<>(
             targetAvroFile,
             new ReflectDatumReader<>(sink.schema())
         );

@@ -81,7 +81,7 @@ public class LateralOutlierDetector<T> implements DataCleaner<Track<T>> {
             return new LateralAnalysisResult(false);
         }
 
-        LateralRegression<T> localRegression = new LateralRegression<T>(pointsNearby, testPoint);
+        LateralRegression<T> localRegression = new LateralRegression<>(pointsNearby, testPoint);
 
 //        return oldMethod(localRegression, testPoint);
         return newMethod(localRegression, testPoint);

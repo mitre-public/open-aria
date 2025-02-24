@@ -34,7 +34,7 @@ public class NopToCsv {
 
     /**
      * Converts a String of NOP data to a String of "simplified CSV data".
-     *
+     * <p>
      * The PURPOSE is to strip all "format specific data" from the "general" data model.
      */
     public static String nopToAriaCsvFormat(String nopString) {

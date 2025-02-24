@@ -1,10 +1,10 @@
 package org.mitre.openaria.airborne;
 
-import static java.lang.Double.compare;
 import static org.mitre.openaria.system.FacilitySet.allFacilites;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.TreeSet;
@@ -39,7 +39,7 @@ public class AirborneEvents {
         AirborneEventGrabber kafkaDataGrabber = new AirborneEventGrabber(kafkaProperties, allFacilites());
 
         TreeSet<AirborneEvent> allEvents = new TreeSet<>(
-            (AirborneEvent e1, AirborneEvent e2) -> compare(e1.score(), e2.score())
+            Comparator.comparingDouble(AirborneEvent::score)
         );
 
         ArrayList<AirborneEvent> newEvents = null;

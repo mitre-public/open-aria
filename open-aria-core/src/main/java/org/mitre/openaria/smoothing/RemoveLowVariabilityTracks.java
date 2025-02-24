@@ -17,7 +17,7 @@ import org.mitre.openaria.core.Track;
 public class RemoveLowVariabilityTracks<T> extends DataFilter<Track<T>> {
 
     public RemoveLowVariabilityTracks() {
-        this(new HasLowVariability<T>(), ignored -> {});
+        this(new HasLowVariability<>(), ignored -> {});
     }
 
     public RemoveLowVariabilityTracks(HasLowVariability<T> test) {

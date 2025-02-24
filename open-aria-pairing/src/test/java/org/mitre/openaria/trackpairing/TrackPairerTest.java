@@ -26,6 +26,7 @@ import org.mitre.openaria.core.PointIterator;
 import org.mitre.openaria.core.Track;
 import org.mitre.openaria.core.TrackPair;
 import org.mitre.openaria.core.formats.nop.NopEncoder;
+import org.mitre.openaria.core.formats.nop.NopHit;
 import org.mitre.openaria.core.formats.nop.NopParser;
 import org.mitre.openaria.threading.TrackMaker;
 
@@ -37,7 +38,7 @@ public class TrackPairerTest {
      * This files contains two tracks worth of NOP data. These tracks come EXTREMELY close to each
      * other.
      */
-    private static String TEST_FILE = "twoTracks.txt";
+    private static final String TEST_FILE = "twoTracks.txt";
 
     private static File getTestFile() {
         File file = new File("src/test/resources/twoTracks.txt");
@@ -49,7 +50,7 @@ public class TrackPairerTest {
         return file;
     }
 
-    private static ArrayList<Point> getTestPoints() {
+    private static ArrayList<Point<NopHit>> getTestPoints() {
         PointIterator ptIter = new PointIterator(new NopParser(getTestFile()));
         return newArrayList(ptIter);
     }
@@ -65,10 +66,10 @@ public class TrackPairerTest {
             standardPairingProperties()
         );
 
-        ArrayList<Point> points = getTestPoints();
+        ArrayList<Point<NopHit>> points = getTestPoints();
         Collections.sort(points);
 
-        for (Point point : points) {
+        for (Point<NopHit> point : points) {
             instance.accept(point);
         }
 
@@ -85,8 +86,8 @@ public class TrackPairerTest {
         ConsumingArrayList<Track> fromPairer = tracksFromTrackPairer();
 
         assertEquals(fromMaker.size(), fromPairer.size());
-        assertEquals(fromMaker.size(), 2);
-        assertEquals(fromPairer.size(), 2);
+        assertThat(fromMaker, hasSize(2));
+        assertThat(fromPairer, hasSize(2));
 
         for (int i = 0; i < 2; i++) {
             confirmTracksMatch(
@@ -117,7 +118,7 @@ public class TrackPairerTest {
 
         TrackMaker maker = new TrackMaker(trackConsumer);
 
-        ArrayList<Point> points = getTestPoints();
+        ArrayList<Point<NopHit>> points = getTestPoints();
         Collections.sort(points);
 
         for (Point point : points) {
@@ -138,10 +139,10 @@ public class TrackPairerTest {
             standardPairingProperties()
         );
 
-        ArrayList<Point> points = getTestPoints();
+        ArrayList<Point<NopHit>> points = getTestPoints();
         Collections.sort(points);
 
-        for (Point point : points) {
+        for (Point<NopHit> point : points) {
             instance.accept(point);
         }
 
@@ -163,10 +164,10 @@ public class TrackPairerTest {
             alwaysFalsePredicate
         );
 
-        ArrayList<Point> points = getTestPoints();
+        ArrayList<Point<NopHit>> points = getTestPoints();
         Collections.sort(points);
 
-        for (Point point : points) {
+        for (Point<NopHit> point : points) {
             instance.accept(point);
         }
 
@@ -196,12 +197,10 @@ public class TrackPairerTest {
             standardPairingProperties()
         );
 
-        ArrayList<Point> points = getOverwrittenTrackPairPoints();
+        ArrayList<Point<NopHit>> points = getOverwrittenTrackPairPoints();
         Collections.sort(points);
 
-        for (Point point : points) {
-            instance.accept(point);
-        }
+        points.forEach(instance);
 
         instance.innerTrackMaker().flushAllTracks();
 
@@ -212,7 +211,7 @@ public class TrackPairerTest {
         assertThat(pairConsumer.get(0).track2().callsign(), is("SWA2208"));  //and not "NDU543"
     }
 
-    private static ArrayList<Point> getOverwrittenTrackPairPoints() {
+    private static ArrayList<Point<NopHit>> getOverwrittenTrackPairPoints() {
 
         File testFile = new File("src/test/resources/overwrittenTrackPair.txt");
 
@@ -242,7 +241,7 @@ public class TrackPairerTest {
             standardPairingProperties()
         );
 
-        ArrayList<Point> points = getDataForEventThatWasMissed();
+        ArrayList<Point<NopHit>> points = getDataForEventThatWasMissed();
         Collections.sort(points);
 
         for (Point point : points) {
@@ -266,7 +265,7 @@ public class TrackPairerTest {
         assertThat(pairConsumer.get(1).track2().callsign(), is("N38CT"));
     }
 
-    private static ArrayList<Point> getDataForEventThatWasMissed() {
+    private static ArrayList<Point<NopHit>> getDataForEventThatWasMissed() {
 
 //        File testFile = FileUtils.getResourceFile("missedPair.txt");
         File testFile = new File("src/test/resources/missedPair.txt");

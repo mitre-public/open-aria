@@ -132,9 +132,7 @@ public class KafkaEmitter<T> implements Consumer<T> {
      * Partition information, Header information, or Keys are provided.
      */
     public static <T> ProducerRecordFactory<String, String, T> emitToTopic(final String topic) {
-        return (T messageForKafka) -> {
-            return new ProducerRecord(topic, messageForKafka);
-        };
+        return (T messageForKafka) -> new ProducerRecord(topic, messageForKafka);
     }
 
 }

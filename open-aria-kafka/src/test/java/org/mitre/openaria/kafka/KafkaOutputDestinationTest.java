@@ -71,7 +71,7 @@ public class KafkaOutputDestinationTest {
 
         KafkaOutputSink<DataClassThatCanBecomeJson> kafkaWriter = new KafkaOutputSink<>(
             new SimpleProducerRecordFactory(),
-            new KafkaProducer<String, String>(props)
+            new KafkaProducer<>(props)
         );
 
         DataClassThatCanBecomeJson sendMeToKafka = new DataClassThatCanBecomeJson("myKey", 123);

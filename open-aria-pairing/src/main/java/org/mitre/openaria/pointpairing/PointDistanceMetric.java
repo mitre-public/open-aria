@@ -1,14 +1,14 @@
 
 package org.mitre.openaria.pointpairing;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.math3.util.FastMath.hypot;
 
 import java.time.Duration;
-import java.util.Objects;
 
-import org.mitre.openaria.core.Point;
 import org.mitre.caasd.commons.Spherical;
 import org.mitre.caasd.commons.collect.DistanceMetric;
+import org.mitre.openaria.core.Point;
 
 /**
  * This DistanceMetric measures "a" distance between two Points. The distance computed is a function
@@ -91,12 +91,12 @@ public class PointDistanceMetric implements DistanceMetric<Point> {
         Duration timeDelta = Duration.between(p1.time(), p2.time()); //can be positive of negative
         timeDelta = timeDelta.abs();
 
-        Double horizontalDistanceInNm = p1.distanceInNmTo(p2);
+        double horizontalDistanceInNm = p1.distanceInNmTo(p2);
 
-        Double horizontalDistanceInFeet = horizontalDistanceInNm * Spherical.feetPerNM();
-        Double altitudeDifferenceInFeet = Math.abs(p1.altitude().inFeet() - p2.altitude().inFeet());
+        double horizontalDistanceInFeet = horizontalDistanceInNm * Spherical.feetPerNM();
+        double altitudeDifferenceInFeet = Math.abs(p1.altitude().inFeet() - p2.altitude().inFeet());
 
-        Double distInFeet = hypot(horizontalDistanceInFeet, altitudeDifferenceInFeet);
+        double distInFeet = hypot(horizontalDistanceInFeet, altitudeDifferenceInFeet);
 
         return (distanceCoef * distInFeet) + (timeCoef * timeDelta.toMillis());
     }
@@ -108,17 +108,16 @@ public class PointDistanceMetric implements DistanceMetric<Point> {
      *
      * @return True if and only if the input Point has the 6 require fields.
      */
-    private boolean hasRequireData(Point p) {
+    private boolean hasRequireData(Point<?> p) {
 
-        boolean allAreNonNull
-            = Objects.nonNull(p.latLong())
-            && Objects.nonNull(p.altitude())
-            && Objects.nonNull(p.time());
+        boolean hasLatLong = nonNull(p.latLong());
+        boolean hasAltitude = nonNull(p.altitude());
+        boolean hasTime = nonNull(p.time());
 
-        return allAreNonNull;
+        return hasLatLong && hasAltitude && hasTime;
     }
 
-    private void confirmRequiredDataIsPresent(Point p) {
+    private void confirmRequiredDataIsPresent(Point<?> p) {
         if (!hasRequireData(p)) {
             throw new IllegalArgumentException(
                 "The input Point p does not have enough internal data "

@@ -151,24 +151,20 @@ public class Points {
      * Points with missing/null values. This Comparator does not properly handle cases where the
      * inputs are of different classes that should not be compared against one another.
      */
-    static final Comparator<Comparable> NULLABLE_COMPARATOR = new Comparator<Comparable>() {
+    static final Comparator<Comparable> NULLABLE_COMPARATOR = (o1, o2) -> {
 
-        @Override
-        public int compare(Comparable o1, Comparable o2) {
-
-            if (o1 != null && o2 != null) {
-                //when both are not null return the comparison
-                return o1.compareTo(o2);
-            } else if (o1 == null && o2 == null) {
-                //when both are null return 0
-                return 0;
-            } else if (o1 == null) {
-                //when left is null return "right is greater"
-                return -1;
-            } else {
-                //when right is null return "left is greater"
-                return 1;
-            }
+        if (o1 != null && o2 != null) {
+            //when both are not null return the comparison
+            return o1.compareTo(o2);
+        } else if (o1 == null && o2 == null) {
+            //when both are null return 0
+            return 0;
+        } else if (o1 == null) {
+            //when left is null return "right is greater"
+            return -1;
+        } else {
+            //when right is null return "left is greater"
+            return 1;
         }
     };
 

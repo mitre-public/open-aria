@@ -136,7 +136,7 @@ public class NopPointsTest {
         Point<NopHit> nopPoint = NopHit.from(
             "[RH],AGW,RDG,09/20/2017,17:28:02.096,,,,2525,000,425,252,040.49450,-075.76505,110,,10.66,5.09,,,,RDG,,,,,???,,,,,4221,???,,00,,,1,,0,,90.31,88.64,{RH}"
         );
-        assertTrue(nopPoint.time().equals(parseNopTime("09/20/2017", "17:28:02.096")));
+        assertThat(nopPoint.time(), is(parseNopTime("09/20/2017", "17:28:02.096")));
     }
 
     @Test
@@ -215,7 +215,7 @@ public class NopPointsTest {
     @Test
     public void meartsPointWithoutTrackId_doesNotThrowException() {
 
-        Point p = NopHit.from(MEARTS_RH_NO_TRACKID);
+        Point<NopHit> p = NopHit.from(MEARTS_RH_NO_TRACKID);
         assertThat(p.hasTrackId(), is(false));
         assertThat(p.trackIdIsMissing(), is(true));
         assertThat(p.trackId(), nullValue());

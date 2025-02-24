@@ -159,8 +159,8 @@ public class TrackPair<T> implements Serializable {
         checkArgument(timeOverlap().get().contains(time), "The provided time must occur within the overlap");
 
         return PointPair.of(
-            (Point) track1.interpolatedPoint(time).get(),
-            (Point) track2.interpolatedPoint(time).get()
+            track1.interpolatedPoint(time).get(),
+            track2.interpolatedPoint(time).get()
         );
     }
 
@@ -210,7 +210,7 @@ public class TrackPair<T> implements Serializable {
      * Rely on the precomputed SeparationTimeSeries to determine if these two aircraft come within
      * the specified lateral distance.
      *
-     * @param lateralDistance
+     * @param lateralDistance The distance threshold applied
      *
      * @return True if these aircraft come at least this close
      */
@@ -230,8 +230,8 @@ public class TrackPair<T> implements Serializable {
      * Rely on the precomputed SeparationTimeSeries to determine if these two aircraft come within
      * the specified lateral and vertical distances.
      *
-     * @param lateralDistance
-     * @param verticalDistance
+     * @param lateralDistance The lateral distance threshold applied
+     * @param verticalDistance The vertical distance threshold applied
      *
      * @return True if these aircraft come at least this close
      */

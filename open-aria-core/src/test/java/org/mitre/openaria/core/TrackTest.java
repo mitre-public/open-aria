@@ -49,7 +49,7 @@ public class TrackTest {
 
     @Test
     public void testInterpolate_bug117() {
-        /**
+        /*
          * Bug 117 is when creating an interpolated point at the very beginning of a track is
          * failing. This unit test is designed to FAIL due to this bug. When this unit test passes
          * it is a sign that the bug has been fixed.

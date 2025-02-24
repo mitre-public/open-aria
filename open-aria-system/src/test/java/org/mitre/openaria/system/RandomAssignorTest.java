@@ -1,8 +1,6 @@
 package org.mitre.openaria.system;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +32,7 @@ public class RandomAssignorTest {
     @Test
     public void assignmentWorksWithMultipleConsumers() {
         String topic = "testTopic";
-        List<String> topicList = new ArrayList<String>();
+        List<String> topicList = new ArrayList<>();
         topicList.add(topic);
         String consumerId1 = "testConsumer1";
         String consumerId2 = "testConsumer2";
@@ -61,7 +59,7 @@ public class RandomAssignorTest {
     public void onlyPartitionsFromSubscribedTopicsAreAssigned() {
         String topic1 = "testTopic1";
         String topic2 = "testTopic2";
-        List<String> topicList = new ArrayList<String>();
+        List<String> topicList = new ArrayList<>();
         topicList.add(topic1);
         String consumerId = "testConsumer";
         Map<String, Integer> partitionsPerTopic = new HashMap<>();
@@ -84,7 +82,7 @@ public class RandomAssignorTest {
         String topic1 = "testTopic1";
         String topic2 = "testTopic2";
         String topic3 = "testTopic3";
-        List<String> topicList = new ArrayList<String>();
+        List<String> topicList = new ArrayList<>();
         topicList.add(topic1);
         topicList.add(topic2);
         topicList.add(topic3);

@@ -40,10 +40,10 @@ public class AirborneKafkaSinkSupplier implements Supplier<KafkaOutputSink<Airbo
         checkState(mapping.exists(), "Could not find the kafkaPartitionMappingFile: " + kafkaPartitionMappingFile);
         Properties props = loadProperties(kafkaPropFile);
 
-        return new KafkaOutputSink<AirborneEvent>(
+        return new KafkaOutputSink<>(
 //            new AirborneProducerRecordFactory(topic, parseFacilityMappingFile(mapping)),
             new AirborneProducerRecordFactory(topic, (AirborneEvent e) -> 0),  //@todo -- Temporary STOP GAP! SHOULD NOT SEND ALL EVENTS TO PARTITION 0! SHOULD NOT IGNORE PARTITION MAPPING FILE
-            new KafkaProducer<String, String>(props)
+            new KafkaProducer<>(props)
         );
     }
 
