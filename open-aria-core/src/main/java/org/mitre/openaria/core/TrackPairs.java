@@ -36,7 +36,7 @@ public class TrackPairs {
         return TrackPair.of(t1, t2).timeOverlap();
     }
 
-    public static boolean atLeastOneTrackHasAircraftId(TrackPair pair) {
+    public static <T> boolean atLeastOneTrackHasAircraftId(TrackPair<T> pair) {
         return hasAircraftId(pair.track1()) || hasAircraftId(pair.track2());
     }
 
@@ -55,7 +55,7 @@ public class TrackPairs {
      * @return The maximum instantaneous distance between each track (ignores altitude, only uses
      *     Lat/Long position data for this computation)
      */
-    public static double maxDistBetween(TrackPair pair) {
+    public static <T> double maxDistBetween(TrackPair<T> pair) {
         return Tracks.maxDistBetween(pair.track1(), pair.track2());
     }
 

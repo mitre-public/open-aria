@@ -6,10 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mitre.openaria.airborne.SerializableAnalysis.checkSameLength;
 import static org.mitre.openaria.airborne.SerializableAnalysis.parseJson;
 
-import org.junit.jupiter.api.Test;
-
 import com.google.gson.Gson;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Test;
 
 public class AirborneDynamicsTest {
 
@@ -28,37 +27,37 @@ public class AirborneDynamicsTest {
         new double[]{0.0D, 1.0D}
     );
 
-    public static final String asPrettyJson = "{\n"
-        + "  \"epochMsTime\": [\n"
-        + "    0,\n"
-        + "    1\n"
-        + "  ],\n"
-        + "  \"trueVerticalFt\": [\n"
-        + "    2.0,\n"
-        + "    3.0\n"
-        + "  ],\n"
-        + "  \"trueLateralNm\": [\n"
-        + "    0.0,\n"
-        + "    1.0\n"
-        + "  ],\n"
-        + "  \"estTimeToCpaMs\": [\n"
-        + "    2,\n"
-        + "    3\n"
-        + "  ],\n"
-        + "  \"estVerticalAtCpaFt\": [\n"
-        + "    6.0,\n"
-        + "    7.0\n"
-        + "  ],\n"
-        + "  \"estLateralAtCpaNm\": [\n"
-        + "    4.0,\n"
-        + "    5.0\n"
-        + "  ],\n"
-
-        + "  \"score\": [\n"
-        + "    0.0,\n"
-        + "    1.0\n"
-        + "  ]\n"
-        + "}";
+    public static final String asPrettyJson = """
+        {
+          "epochMsTime": [
+            0,
+            1
+          ],
+          "trueVerticalFt": [
+            2.0,
+            3.0
+          ],
+          "trueLateralNm": [
+            0.0,
+            1.0
+          ],
+          "estTimeToCpaMs": [
+            2,
+            3
+          ],
+          "estVerticalAtCpaFt": [
+            6.0,
+            7.0
+          ],
+          "estLateralAtCpaNm": [
+            4.0,
+            5.0
+          ],
+          "score": [
+            0.0,
+            1.0
+          ]
+        }""";
 
     public static final String asStandardJson = "{\"epochMsTime\":[0,1],\"trueVerticalFt\":[2.0,3.0],\"trueLateralNm\":[0.0,1.0],\"estTimeToCpaMs\":[2,3],\"estVerticalAtCpaFt\":[6.0,7.0],\"estLateralAtCpaNm\":[4.0,5.0],\"score\":[0.0,1.0]}";
 

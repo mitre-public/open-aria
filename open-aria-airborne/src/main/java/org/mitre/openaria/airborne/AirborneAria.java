@@ -28,15 +28,6 @@ public class AirborneAria {
 
     private final AirborneAlgorithmDef algorithmDef;
 
-    /** Events with scores above this threshold are ignored. */
-    private final double maxReportableScore;
-
-    /** When true events that are "outside" a particular facility's airspace will be muted. */
-    private final boolean filterByAirspace;
-
-    /** When True only events that contain at least one data tag will be included. */
-    private final boolean requireDataTag;
-
     /** Removed "data imperfections" from the raw input data. */
     private final DataCleaner<TrackPair> dataCleaner;
 
@@ -49,11 +40,11 @@ public class AirborneAria {
     private AirborneAria(AirborneAlgorithmDef algorithmDef) {
         requireNonNull(algorithmDef);
         this.algorithmDef = algorithmDef;
-        this.maxReportableScore = algorithmDef.maxReportableScore();
-        this.filterByAirspace = algorithmDef.filterByAirspace();
-        this.requireDataTag = algorithmDef.requireAtLeastOneDataTag();
         this.dataCleaner = algorithmDef.pairCleaner();
-        this.shouldPublish = new TempShouldPublishPredicate(maxReportableScore, requireDataTag);
+        this.shouldPublish = new TempShouldPublishPredicate(
+            algorithmDef.maxReportableScore(),
+            algorithmDef.requireAtLeastOneDataTag()
+        );
     }
 
     /** Create a new AirborneAria algorithm that uses the default properties. */
@@ -333,12 +324,4 @@ public class AirborneAria {
         }
         throw new AssertionError("Should never get here.");
     }
-
-//
-//    private boolean meetsAirspaceRequirement(AirborneEvent summary) {
-//
-//        return (filterByAirspace)
-//            ? summary.isInsideAirspace()
-//            : true;  //ALL events make the airspace requirement if we aren't applying an airspace requirement
-//    }
 }
