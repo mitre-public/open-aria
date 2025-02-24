@@ -3,7 +3,6 @@ package org.mitre.openaria.trackpairing;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.mitre.caasd.commons.Functions.NO_OP_CONSUMER;
 
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -20,7 +19,7 @@ import org.mitre.openaria.core.TrackPair;
 class TracksMustOverlapInTime extends DataFilter<TrackPair> {
 
     TracksMustOverlapInTime(Duration minOverlap) {
-        this(NO_OP_CONSUMER, minOverlap);
+        this(pair -> {}, minOverlap);
     }
 
     TracksMustOverlapInTime(Consumer<TrackPair> onRemoval, Duration minOverlap) {

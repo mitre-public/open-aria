@@ -222,13 +222,7 @@ public class AirborneAria {
             long oneDelta = abs(one.time().toEpochMilli() - seekTime.toEpochMilli());
             long twoDelta = abs(two.time().toEpochMilli() - seekTime.toEpochMilli());
 
-            if (oneDelta == twoDelta) {
-                return 0;
-            } else if (oneDelta > twoDelta) {
-                return 1;
-            } else {
-                return -1;
-            }
+            return Long.compare(oneDelta, twoDelta);
         };
         return comp;
     }

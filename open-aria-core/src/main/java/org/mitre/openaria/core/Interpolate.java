@@ -51,9 +51,9 @@ public class Interpolate {
         );
 
         if (p1.time().equals(targetTime)) {
-            return (new PointBuilder<T>(p1)).build();
+            return (new PointBuilder<>(p1)).build();
         } else if (p2.time().equals(targetTime)) {
-            return (new PointBuilder<T>(p2)).build();
+            return (new PointBuilder<>(p2)).build();
         } else {
 
             double fraction = window.toFractionOfRange(targetTime);
@@ -81,7 +81,7 @@ public class Interpolate {
             );
 
             //return a copy of the 1st input point but with corrected trajectory data
-            return (new PointBuilder<T>(p1))
+            return (new PointBuilder<>(p1))
                 .latLong(interpolatedLatLong)
                 .course(Course.ofDegrees(interpolatedCourseInDegrees))
                 .speed(Speed.ofKnots(interpolatedSpeed))

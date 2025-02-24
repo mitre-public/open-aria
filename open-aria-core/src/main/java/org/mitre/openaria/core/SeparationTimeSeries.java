@@ -424,14 +424,12 @@ public class SeparationTimeSeries implements Serializable, Iterable<Instant> {
 
     public static Comparator<Triple<Instant, Distance, Distance>> lateralComparator() {
 
-        return (Triple<Instant, Distance, Distance> o1, Triple<Instant, Distance, Distance> o2)
-            -> o1.second().compareTo(o2.second());
+        return Comparator.comparing(Triple::second);
     }
 
     public static Comparator<Triple<Instant, Distance, Distance>> verticalComparator() {
 
-        return (Triple<Instant, Distance, Distance> o1, Triple<Instant, Distance, Distance> o2) ->
-            o1.third().compareTo(o2.third());
+        return Comparator.comparing(Triple::third);
     }
 
     @Override

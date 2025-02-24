@@ -159,8 +159,8 @@ public class TrackPair<T> implements Serializable {
         checkArgument(timeOverlap().get().contains(time), "The provided time must occur within the overlap");
 
         return PointPair.of(
-            (Point) track1.interpolatedPoint(time).get(),
-            (Point) track2.interpolatedPoint(time).get()
+            track1.interpolatedPoint(time).get(),
+            track2.interpolatedPoint(time).get()
         );
     }
 
