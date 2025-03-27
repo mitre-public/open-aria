@@ -122,7 +122,7 @@ See [here](./docs/release-notes.md) for a summary of the changes and features in
 
 ## Versioning and Release Process
 
-- The "current version" (e.g. `v1.2.3`) of this project is computed automatically form git tags and the recent commit
+- The "current version" (e.g. `v1.2.3`) of this project is computed automatically from git tags and the recent commit
   messages.
     - The GitHub Action: [ietf-tools/semver-action](https://github.com/ietf-tools/semver-action) does this work.
 - Consequently, we have also adopted [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).

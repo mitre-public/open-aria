@@ -64,7 +64,7 @@ public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit> 
 
     /**
      * Eagerly parse: {time, latitude, longitude, and linkId} from this CSV.  Other fields are
-     * extract lazily
+     * extracted lazily.
      *
      * @param rawCsv A String of Comma Separated Values that matches the OpenARIA format.
      */
@@ -73,15 +73,19 @@ public class AriaCsvHit implements HasTime, HasPosition, Comparable<AriaCsvHit> 
         requireNonNull(rawCsv);
         this.rawCsv = rawCsv;
 
-        this.commaIndices = findTokenIndices(rawCsv);
+        try {
+            this.commaIndices = findTokenIndices(rawCsv);
 
-        //these fields are cached for speed
-        this.time = Instant.parse(token(2));
-        this.linkId = token(3);
-        this.latitude = Double.parseDouble(token(4));
-        this.longitude = Double.parseDouble(token(5));
-        checkLatitude(latitude);
-        checkLongitude(longitude);
+            //these fields are cached for speed
+            this.time = Instant.parse(token(2));
+            this.linkId = token(3);
+            this.latitude = Double.parseDouble(token(4));
+            this.longitude = Double.parseDouble(token(5));
+            checkLatitude(latitude);
+            checkLongitude(longitude);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Failed to parse AriaCsvHit from: \"" + rawCsv + "\"", ex);
+        }
     }
 
     private static short[] findTokenIndices(String rawCsv) {

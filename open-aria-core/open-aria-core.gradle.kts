@@ -4,6 +4,14 @@ plugins {
 
 dependencies {
 
+    // Approved for Public Release; Distribution Unlimited, Case Number 17-1970.
+    // Note: No Software PRS records appear in MITRE archives
+    // Consulted Sheng Liu on SWIM_OS PRS process to verify PRS validity
+    api(files("libs/swim-parse-7.0.1.jar"))
+
+    // JAXB dependencies for SWIM-parse, needed at runtime
+    api("org.glassfish.jaxb:jaxb-runtime:4.0.0")
+
     testImplementation("nl.jqno.equalsverifier:equalsverifier:3.15.2")
 }
 

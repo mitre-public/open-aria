@@ -53,12 +53,10 @@ from the repo's directory of test assets.
 ### Step 3: Download a config file
 
 - Copy the configuration
-  file [sampleConfig.yaml](https://github.com/mitre-public/open-aria/blob/main/open-aria-airborne/src/test/resources/sampleConfig.yaml)
+  file [sampleNopConfig.yaml](https://github.com/mitre-public/open-aria/blob/main/open-aria-airborne/src/main/resources/sampleNopConfig.yaml)
   from the repo's directory of test assets.
 - Use the "Download raw file" button in the upper right hand corner
 - This file configures `OpenARIA's` event detection algorithm
-
-open-aria-airborne/src/test/resources/sampleConfig.yaml
 
 ### Step 3: Co-locate the data and uber-jar
 
@@ -69,7 +67,7 @@ open-aria-airborne/src/test/resources/sampleConfig.yaml
 
 ### Step 4: Run the `RunAirborneOnFile` program
 
-- Run: `java -cp open-aria-0.3.0.jar org.mitre.openaria.RunAirborneOnFile -f sampleNopData.txt.gz -c sampleConfig.yaml`
+- Run: `java -cp open-aria-0.3.0.jar org.mitre.openaria.RunAirborneOnFile -f sampleNopData.txt.gz -c sampleNopConfig.yaml`
 
 ### Step 5: Inspect the output
 
