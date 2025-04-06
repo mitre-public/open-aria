@@ -19,6 +19,47 @@ jobs:
           majorList: feat!
           minorList: feat
           patchList: fix
+          noVersionBumpBehavior: patch
+          noNewCommitBehavior: silent
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build OpenARIA Jar
+        run: ./gradlew :open-aria-deploy:shadowJar
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io/mitre-public/open-aria
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: azure/setup-helm@v4.3.0
+      - name: Publish OpenARIA Helm Chart
+        run: |
+          helm package open-aria-deploy/helm --version ${{ steps.version.outputs.nextStrict }}
+          helm push open-aria-${{ steps.version.outputs.nextStrict }}.tgz oci://ghcr.io/mitre-public/open-aria/charts
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/mitre-public/open-aria
+          tags: ${{ steps.version.outputs.nextStrict }}
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v6
+        with:
+          context: open-aria-deploy
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
       - name: Create GitHub Release
         env:
@@ -32,3 +73,11 @@ jobs:
         run: |
           git tag ${TAG} ${GITHUB_SHA}
           git push origin ${TAG}
+
+      - name: Upload Release Artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload ${{ steps.version.outputs.nextStrict }} \
+          open-aria-deploy/build/libs/open-aria-uber.jar#OpenARIA-${{ steps.version.outputs.nextStrict }}.jar \
+          open-aria-${{ steps.version.outputs.nextStrict }}.tgz

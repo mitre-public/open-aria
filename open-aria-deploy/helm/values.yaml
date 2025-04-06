@@ -1,0 +1,267 @@
+image:
+  repository: mitre/open-aria
+  pullPolicy: IfNotPresent
+
+namespace: default
+imagePullSecrets: []
+podAnnotations: { }
+podLabels: { }
+podSecurityContext: { }
+securityContext: { }
+nodeSelector: { }
+tolerations: [ ]
+affinity: { }
+
+serviceAccount:
+  automount: true
+  annotations: { }
+  name: "open-aria"
+
+resources:
+  requests:
+    cpu: 1000m
+    memory: 5Gi
+  limits:
+    cpu: 1500m
+    memory: 8Gi
+
+configuration:
+  kafka:
+    producer:
+      properties: |
+    consumer:
+      properties: |
+  aria:
+    yaml:
+      entrypoint: org.mitre.openaria.RunAirborneOnKafkaNop
+      pointTopic: aria-points-topic
+      airborneEventsTopic: aria-airborne-events
+      loggingPeriodSec: 300
+      dataProcessingOptions:
+        pointPrefetchLimit: 500000
+        numWorkerThreads: 2
+        milliSecBtwPollAttempts: 2000
+        useConsumerGroups: false
+        minPartition: 0
+        maxPartition: 1
+      airborneConfig:
+        algorithmDef:
+          dataFormat: "nop"
+          hostId: "open-aria"
+          maxReportableScore: 30.0
+          filterByAirspace: true
+          publishAirborneDynamics: true
+          publishTrackData: true
+          requiredDiverganceDistInNM: 0.5
+          onGroundSpeedInKnots: 80.0
+          requiredTimeOverlapInMs: 7500
+          formationFilters: "0.5,60,false"
+          requiredProximityInNM: 7.5
+          sizeOfTrackSmoothingCache: 500
+          trackSmoothingExpirationSec: 120
+          logDuplicateTracks: false
+          applySmoothing: true
+          requireDataTag: false
+          airborneDynamicsRadiusNm: 15.0
+          verbose: false
+        trackPairingDistanceInNM: 8.33
+        inMemorySortBufferSec: 600
+
+  partitions:
+    mapping: |
+      A11 : 0
+      A80 : 1
+      A90 : 2
+      ABE : 3
+      ABI : 4
+      ABQ : 5
+      ACK : 6
+      ACT : 7
+      ACY : 8
+      AGS : 9
+      ALB : 10
+      ALO : 11
+      AMA : 12
+      ANC : 13
+      ASE : 14
+      AUS : 15
+      AVL : 16
+      AVP : 17
+      AZO : 18
+      BFL : 19
+      BGM : 20
+      BGR : 21
+      BHM : 22
+      BIL : 23
+      BIS : 24
+      BNA : 25
+      BOI : 26
+      BTR : 27
+      BTV : 28
+      BUF : 29
+      C90 : 30
+      CAE : 31
+      CAK : 32
+      CHA : 33
+      CHS : 34
+      CID : 35
+      CKB : 36
+      CLE : 37
+      CLT : 38
+      CMH : 39
+      CMI : 40
+      COS : 41
+      COU : 42
+      CPR : 43
+      CRP : 44
+      CRW : 45
+      CVG : 46
+      D01 : 47
+      D10 : 48
+      D21 : 49
+      DAB : 50
+      DLH : 51
+      DSM : 52
+      ELM : 53
+      ELP : 54
+      ERI : 55
+      EUG : 56
+      EVV : 57
+      F11 : 58
+      FAI : 59
+      FAR : 60
+      FAT : 61
+      FAY : 62
+      FLO : 63
+      FMH : 64
+      FNT : 65
+      FSD : 66
+      FSM : 67
+      FWA : 68
+      FYV : 69
+      G90 : 70
+      GEG : 71
+      GGG : 72
+      GPT : 73
+      GRB : 74
+      GRR : 75
+      GSO : 76
+      GSP : 77
+      GTF : 78
+      HSV : 79
+      HTS : 80
+      HUF : 81
+      I90 : 82
+      ICT : 83
+      ILM : 84
+      IND : 85
+      JAN : 86
+      JAX : 87
+      K90 : 88
+      L30 : 89
+      LAN : 90
+      LAS : 91
+      LBB : 92
+      LCH : 93
+      LEX : 94
+      LFT : 95
+      LIT : 96
+      LYH : 97
+      M03 : 98
+      M98 : 99
+      MAF : 100
+      MBS : 101
+      MCI : 102
+      MCO : 103
+      MDT : 104
+      MEM : 105
+      MFD : 106
+      MFR : 107
+      MGM : 108
+      MIA : 109
+      MKE : 110
+      MKG : 111
+      MLI : 112
+      MLU : 113
+      MOB : 114
+      MSN : 115
+      MSO : 116
+      MSY : 117
+      MWH : 118
+      MYR : 119
+      N90 : 120
+      NCT : 121
+      NMM : 122
+      OKC : 123
+      ORF : 124
+      P31 : 125
+      P50 : 126
+      P80 : 127
+      PBI : 128
+      PCT : 129
+      PHL : 130
+      PIA : 131
+      PIT : 132
+      PSC : 133
+      PWM : 134
+      PVD : 135
+      R90 : 136
+      RDG : 137
+      RDU : 138
+      RFD : 139
+      RNO : 140
+      ROA : 141
+      ROC : 142
+      ROW : 143
+      RST : 144
+      RSW : 145
+      S46 : 146
+      S56 : 147
+      SAT : 148
+      SAV : 149
+      SBA : 150
+      SBN : 151
+      SCT : 152
+      SDF : 153
+      SGF : 154
+      SHV : 155
+      SLC : 156
+      SPI : 157
+      SUX : 158
+      SYR : 159
+      T75 : 160
+      TLH : 161
+      TOL : 162
+      TPA : 163
+      TRI : 164
+      TUL : 165
+      TYS : 166
+      U90 : 167
+      Y90 : 168
+      YKM : 169
+      YNG : 170
+      ZAB : 171
+      ZAU : 172
+      ZBW : 173
+      ZDC : 174
+      ZDV : 175
+      ZFW : 176
+      ZHU : 177
+      ZID : 178
+      ZJX : 179
+      ZKC : 180
+      ZLA : 181
+      ZLC : 182
+      ZMA : 183
+      ZME : 184
+      ZMP : 185
+      ZNY : 186
+      ZOA : 187
+      ZOB : 188
+      ZSE : 189
+      ZSU : 190
+      ZTL : 191
+      ZAN : 192
+      ZUA : 193
+      ZHN : 194
+      AZA : 195
