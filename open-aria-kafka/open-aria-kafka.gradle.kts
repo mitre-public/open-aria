@@ -2,6 +2,7 @@ dependencies {
     api(project(":open-aria-core"))
     api("org.apache.kafka:kafka-clients:2.3.1")
     api("org.apache.kafka:kafka_2.12:2.3.0")
+    api("software.amazon.msk:aws-msk-iam-auth:2.3.1")
 }
 
 publishing {

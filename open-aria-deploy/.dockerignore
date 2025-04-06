@@ -1,0 +1,14 @@
+*.jar
+*.class
+*.ipynb
+.kotlin
+build/
+*.secret
+*.gitignore
+*.md
+bin/
+gradle/wrapper/
+ci-scripts/
+bamboo-specs/
+gradlew*
+sonar*
