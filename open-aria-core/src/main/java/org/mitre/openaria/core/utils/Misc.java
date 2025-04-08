@@ -14,6 +14,7 @@ import org.mitre.caasd.commons.TimeWindow;
 import org.mitre.openaria.core.Point;
 
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Multiset;
 
 /**
@@ -89,34 +90,11 @@ public class Misc {
     }
 
 
-
-    // @todo -- Refactor and Move to Commons
     public static <T> Iterator<Point<?>> downCastPointIter(Iterator<Point<T>> typedIter) {
-        return new DownConvertingIteratorOfPoints<>(typedIter);
-    }
-
-    /**
-     * Converts an Iterator<Point<T>> to an Iterator<Point<?>>.
-     * <p>
-     * This is necessary because you CANNOT directly cast the "Iterator of Point", you must cast at
-     * the Point layer
-     */
-    private static class DownConvertingIteratorOfPoints<T> implements Iterator<Point<?>> {
-
-        private final Iterator<Point<T>> typedIterator;
-
-        public DownConvertingIteratorOfPoints(Iterator<Point<T>> iterator) {
-            this.typedIterator = iterator;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return typedIterator.hasNext();
-        }
-
-        @Override
-        public Point<?> next() {
-            return typedIterator.next(); // Safe cast due to wildcard
-        }
+        // Use Guava to compose the original Iterator and a simple cast
+        return Iterators.transform(
+            typedIter,
+            typedPoint -> (Point<?>) typedPoint
+        );
     }
 }
