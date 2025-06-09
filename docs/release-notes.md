@@ -1,5 +1,8 @@
 # Release Notes
 
+### Version 0.5.0 (Released 2025-06-09)
+
+- Bumped to Commons 0.0.59
 
 ### Version 0.4.0 (Released 2025-06-09)
 
