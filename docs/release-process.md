@@ -8,6 +8,16 @@ Our open-source publications are intentionally left un-automated to ensure relea
 
 - [Setup GPG](https://central.sonatype.org/publish/requirements/gpg/) so you can sign your artifacts
     - [Official documentation](https://central.sonatype.org/publish/requirements/gpg/)
+  
+- The `main` branch of `open-aria` was just release
+
+## Release Process
+- Step 1: Click "Release" in 
+- Step 2: Checkout this git hash locally
+- Step 3: Set the target version number in the gradle.properties file
+- Step 4: Run `./scripts/bundle-for-publishing.sh`
+- Step 5: Upload the artifacts to maven central
+
 
 ## The "Helper" Script
 - See: [bundle-for-publishing.sh](../scripts/bundle-for-publishing.sh)
