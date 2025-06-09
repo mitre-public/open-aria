@@ -1,6 +1,16 @@
 # Release Notes
 
 
+### Version 0.4.0 (Released 2025-06-09)
+
+- Updated dependencies (avro, jackson, snakeyaml)
+- `InspectDataset` now analyzes altitude data
+- Improved formating of AirborneEvents when they are written as JSON
+- Bug fix: The `publishTrackData` option now works correctly with both NOP and CSV data
+- Many IDE linting improvements
+- Replaced `DownConvertingIteratorOfPoints` with Guava call
+
+
 ### Version 0.3.0 (Released 2025-02-18)
 
 - Added a `dataFormat` option to the standard yaml Configuration files

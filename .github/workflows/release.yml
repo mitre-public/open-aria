@@ -79,5 +79,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload ${{ steps.version.outputs.nextStrict }} \
-          open-aria-deploy/build/libs/open-aria-uber.jar#OpenARIA-${{ steps.version.outputs.nextStrict }}.jar \
-          open-aria-${{ steps.version.outputs.nextStrict }}.tgz
+          open-aria-deploy/build/libs/open-aria-uber.jar#OpenARIA-${{ steps.version.outputs.nextStrict }}.jar
+#          open-aria-deploy/build/libs/open-aria-uber.jar#OpenARIA-${{ steps.version.outputs.nextStrict }}.jar \
+#          open-aria-${{ steps.version.outputs.nextStrict }}.tgz
