@@ -40,26 +40,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: azure/setup-helm@v4.3.0
-      - name: Publish OpenARIA Helm Chart
-        run: |
-          helm package open-aria-deploy/helm --version ${{ steps.version.outputs.nextStrict }}
-          helm push open-aria-${{ steps.version.outputs.nextStrict }}.tgz oci://ghcr.io/mitre-public/open-aria/charts
-
-      - name: Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ghcr.io/mitre-public/open-aria
-          tags: ${{ steps.version.outputs.nextStrict }}
-
-      - name: Build and Push Image
-        uses: docker/build-push-action@v6
-        with:
-          context: open-aria-deploy
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+#      - uses: azure/setup-helm@v4.3.0
+#      - name: Publish OpenARIA Helm Chart
+#        run: |
+#          helm package open-aria-deploy/helm --version ${{ steps.version.outputs.nextStrict }}
+#          helm push open-aria-${{ steps.version.outputs.nextStrict }}.tgz oci://ghcr.io/mitre-public/open-aria/charts
+#
+#      - name: Docker metadata
+#        id: meta
+#        uses: docker/metadata-action@v5
+#        with:
+#          images: |
+#            ghcr.io/mitre-public/open-aria
+#          tags: ${{ steps.version.outputs.nextStrict }}
+#
+#      - name: Build and Push Image
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: open-aria-deploy
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
 
       - name: Create GitHub Release
         env:
